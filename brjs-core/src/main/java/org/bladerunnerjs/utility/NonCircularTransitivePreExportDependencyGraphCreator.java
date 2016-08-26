@@ -7,60 +7,58 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 
 public class NonCircularTransitivePreExportDependencyGraphCreator {
-	public static Map<SourceModule, List<SourceModule>> createGraph(Map<SourceModule, List<SourceModule>> preExportDependencyGraph, Map<SourceModule, List<SourceModule>> postExportDependencyGraph) throws ModelOperationException {
-		Map<SourceModule, List<SourceModule>> combinedDefineTimeDependencyGraph = new LinkedHashMap<>();
+	
+	public static Map<String, List<String>> createGraph(Map<String, List<String>> preExportDependencyGraph, Map<String, List<String>> postExportDependencyGraph) throws ModelOperationException {
 		
-		for(SourceModule sourceModule : preExportDependencyGraph.keySet()) {
-			List<SourceModule> combinedDefineTimeDependencies = new ArrayList<>(preExportDependencyGraph.get(sourceModule));
-			combinedDefineTimeDependencies.addAll(postExportDependencyGraph.get(sourceModule));
+		Map<String, List<String>> combinedDefineTimeDependencyGraph = new LinkedHashMap<>();
+		
+		for (String sourceModuleRequirePath : preExportDependencyGraph.keySet()) {
+			List<String> combinedDefineTimeDependencies = new ArrayList<>(preExportDependencyGraph.get(sourceModuleRequirePath));
+			combinedDefineTimeDependencies.addAll(postExportDependencyGraph.get(sourceModuleRequirePath));
 			
-			combinedDefineTimeDependencyGraph.put(sourceModule, combinedDefineTimeDependencies);
+			combinedDefineTimeDependencyGraph.put(sourceModuleRequirePath, combinedDefineTimeDependencies);
 		}
 		
-		Map<SourceModule, List<SourceModule>> nonCircularPostExportDependencyGraph = nonCircularPostExportDependencies(postExportDependencyGraph, combinedDefineTimeDependencyGraph);
+		Map<String, List<String>> nonCircularPostExportDependencyGraph = nonCircularPostExportDependencies(postExportDependencyGraph, combinedDefineTimeDependencyGraph);
 		
 		return growDependencyGraph(preExportDependencyGraph, nonCircularPostExportDependencyGraph);
 	}
 
-	private static Map<SourceModule, List<SourceModule>> nonCircularPostExportDependencies(Map<SourceModule, List<SourceModule>> postExportDependencyGraph, Map<SourceModule, List<SourceModule>> combinedDefineTimeDependencyGraph) {
-		Map<SourceModule, List<SourceModule>> nonCircularPostExportDependencyGraph = new LinkedHashMap<>();
+	private static Map<String, List<String>> nonCircularPostExportDependencies(Map<String, List<String>> postExportDependencyGraph, Map<String, List<String>> combinedDefineTimeDependencyGraph) {
 		
-		for(SourceModule sourceModule : postExportDependencyGraph.keySet()) {
-			List<SourceModule> dependentSourceModules = postExportDependencyGraph.get(sourceModule);
-			List<SourceModule> nonCircularDependentSourceModules = new ArrayList<>();
+		Map<String, List<String>> nonCircularPostExportDependencyGraph = new LinkedHashMap<>();
+		
+		for (String sourceModuleRequirePath : postExportDependencyGraph.keySet()) {
+			List<String> dependentSourceModules = postExportDependencyGraph.get(sourceModuleRequirePath);
+			List<String> nonCircularDependentSourceModules = new ArrayList<>();
 			
-			for(SourceModule dependentSourceModule : dependentSourceModules) {
-				if(!reachable(dependentSourceModule, sourceModule, combinedDefineTimeDependencyGraph, new LinkedHashSet<>())) {
-					nonCircularDependentSourceModules.add(dependentSourceModule);
+			for (String dependentSourceModuleRequirePath : dependentSourceModules) {
+				if (!reachable(dependentSourceModuleRequirePath, sourceModuleRequirePath, combinedDefineTimeDependencyGraph, new LinkedHashSet<>())) {
+					nonCircularDependentSourceModules.add(dependentSourceModuleRequirePath);
 				}
 			}
 			
-			nonCircularPostExportDependencyGraph.put(sourceModule, nonCircularDependentSourceModules);
+			nonCircularPostExportDependencyGraph.put(sourceModuleRequirePath, nonCircularDependentSourceModules);
 		}
 		
 		return nonCircularPostExportDependencyGraph;
 	}
 
-	private static boolean reachable(SourceModule fromSourceModule, SourceModule toSourceModule, Map<SourceModule, List<SourceModule>> combinedDefineTimeDependencyGraph, Set<SourceModule> visitedSourceModules) {
+	private static boolean reachable(String fromSourceModuleRequirePath, String toSourceModuleRequirePath, Map<String, List<String>> combinedDefineTimeDependencyGraph, Set<String> visitedSourceModules) {
 		
-		if (!combinedDefineTimeDependencyGraph.containsKey(fromSourceModule)) {
-			throw new RuntimeException("The source module '"+fromSourceModule.getPrimaryRequirePath()+"' does not exist within the 'combinedDefineTimeDependencyGraph'.\n"+
-					"To help debug this issue please add details of the exception and the source module's use to https://github.com/BladeRunnerJS/brjs/issues/1517.");
-		}
-		
-		for(SourceModule dependentSourceModule : combinedDefineTimeDependencyGraph.get(fromSourceModule)) {
-			if(dependentSourceModule == toSourceModule) {
+		for(String dependentSourceModuleRequirePath : combinedDefineTimeDependencyGraph.get(fromSourceModuleRequirePath)) {
+			
+			if (dependentSourceModuleRequirePath.equals(toSourceModuleRequirePath)) {
 				return true;
 			}
 			
-			if(!visitedSourceModules.contains(dependentSourceModule)) {
-				visitedSourceModules.add(dependentSourceModule);
+			if(!visitedSourceModules.contains(dependentSourceModuleRequirePath)) {
+				visitedSourceModules.add(dependentSourceModuleRequirePath);
 				
-				if(reachable(dependentSourceModule, toSourceModule, combinedDefineTimeDependencyGraph, visitedSourceModules)) {
+				if(reachable(dependentSourceModuleRequirePath, toSourceModuleRequirePath, combinedDefineTimeDependencyGraph, visitedSourceModules)) {
 					return true;
 				}
 			}
@@ -69,17 +67,18 @@ public class NonCircularTransitivePreExportDependencyGraphCreator {
 		return false;
 	}
 
-	private static Map<SourceModule, List<SourceModule>> growDependencyGraph(Map<SourceModule, List<SourceModule>> dependencyGraph, Map<SourceModule, List<SourceModule>> nonCircularPostExportDependencyGraph) {
+	private static Map<String, List<String>> growDependencyGraph(Map<String, List<String>> dependencyGraph, Map<String, List<String>> nonCircularPostExportDependencyGraph) {
+		
 		boolean progressMade;
 		
 		do {
 			progressMade = false;
 			
-			for(SourceModule sourceModule : nonCircularPostExportDependencyGraph.keySet()) {
-				for(SourceModule dependentSourceModule : nonCircularPostExportDependencyGraph.get(sourceModule)) {
-					if(!dependencyGraph.get(sourceModule).contains(dependentSourceModule)) {
+			for(String sourceModuleRequirePath : nonCircularPostExportDependencyGraph.keySet()) {
+				for(String dependentSourceModuleRequirePath : nonCircularPostExportDependencyGraph.get(sourceModuleRequirePath)) {
+					if(!dependencyGraph.get(sourceModuleRequirePath).contains(dependentSourceModuleRequirePath)) {
 						progressMade = true;
-						dependencyGraph.get(sourceModule).add(dependentSourceModule);
+						dependencyGraph.get(sourceModuleRequirePath).add(dependentSourceModuleRequirePath);
 					}
 				}
 			}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>My Application</title>
+
+		<@css.bundle theme="standard" alternateTheme="alternate"@/>
+
+		<@html.bundle@/>
+
+		<@i18n.bundle@/>
+
+		<!-- dev-minifier can be set to "combined" for all JS content to be bundled with a single request -->
+		<@js.bundle dev-minifier="none" prod-minifier="combined"@/>
+	</head>
+	<body>
+		<app></app>
+
+		<script>
+			var ng = require("angular2");
+			var AppComponent = require('@appns/AppComponent');
+
+			document.addEventListener('DOMContentLoaded', function() {
+				ng.platform.browser.bootstrap(AppComponent); 
+			});
+		</script>
+	</body>
+</html>

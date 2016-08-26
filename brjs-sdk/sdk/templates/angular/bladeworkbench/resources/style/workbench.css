@@ -1,0 +1,8 @@
+/* workbench styling goes here */
+
+.ng-workbench {
+  position: relative;
+  top: 100px;
+  margin: auto;
+  width: 450px;
+}

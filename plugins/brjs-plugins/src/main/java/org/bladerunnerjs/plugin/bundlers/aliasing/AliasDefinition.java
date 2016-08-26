@@ -1,6 +1,8 @@
 package org.bladerunnerjs.plugin.bundlers.aliasing;
 
 public class AliasDefinition {
+	public static final String UNKNOWN_CLASS_REQUIRE_PATH = "br/UnknownClass";
+	
 	private final String name;
 	private final String className;
 	private final String interfaceName;
@@ -31,7 +33,7 @@ public class AliasDefinition {
 	public String getRequirePath() {
 		// TODO: we need to make require paths a first class concept in aliasing
 		if (className == null) {
-			return "br/UnknownClass";
+			return UNKNOWN_CLASS_REQUIRE_PATH;
 		}
 		return className.replaceAll("\\.", "/");
 	}

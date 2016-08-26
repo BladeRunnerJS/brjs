@@ -19,6 +19,10 @@ I18N.create = function(translator) {
 	* @see {@link br/i18n/Translator:#getMessage}
 	*/
 	var i18n = function(thingToFormat, mTemplateArgs) {
+		if(typeof thingToFormat !== "string" || thingToFormat === ""){
+			return thingToFormat;
+		}
+
 		return translator.getMessage(thingToFormat, mTemplateArgs);
 	};
 
@@ -70,6 +74,10 @@ I18N.create = function(translator) {
 
 	i18n.setLocale = function(locale) {
 		translator.setLocale(locale);
+	};
+
+	i18n.registerTranslations = function(locale, translations) {
+		translator.registerTranslations(locale, translations);
 	};
 
 	return i18n;

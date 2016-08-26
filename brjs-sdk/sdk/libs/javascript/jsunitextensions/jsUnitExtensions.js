@@ -5,7 +5,7 @@
 function assertFails(sMsg, fFunc, oExpectedFailure)
 {
 //	if (!_isMessageSupplied(arguments, 3)) return _reinvokeWithMessage(arguments);
-	
+
     var oException = null;
     try
     {
@@ -64,12 +64,12 @@ function assertAssertError(sMsg, fFunction)
 }
 
 function assertNoException(sMsg, fCode)
-{   
+{
 	if (!_isMessageSupplied(arguments, 2)) return _reinvokeWithMessage(arguments);
-	
+
     try
     {
-        fCode();       
+        fCode();
     }
     catch(e)
     {
@@ -80,7 +80,7 @@ function assertNoException(sMsg, fCode)
 function assertInArray(sMsg, oObj, pArr)
 {
 	if (!_isMessageSupplied(arguments, 3)) return _reinvokeWithMessage(arguments);
-	
+
     for (var i=0, l=pArr.length; i<l; ++i)
     {
         if (oObj === pArr[i])
@@ -94,7 +94,7 @@ function assertInArray(sMsg, oObj, pArr)
 function assertNotInArray(sMsg, oObj, pArr)
 {
 	if (!_isMessageSupplied(arguments, 3)) return _reinvokeWithMessage(arguments);
-	
+
     for (var i=0, l=pArr.length; i<l; ++i)
     {
         if (oObj === pArr[i])
@@ -110,7 +110,7 @@ function assertMapEquals(sMsg, mExpectedMap, mActualMap, pSeenObjects)
 	if (!_isMessageSupplied(arguments, 3)) return _reinvokeWithMessage(arguments);
 
 	pSeenObjects = pSeenObjects || [];
-	
+
     var vExpectedValue, vActualValue;
 
     for(var sKey in mExpectedMap)
@@ -136,7 +136,7 @@ function assertMapEquals(sMsg, mExpectedMap, mActualMap, pSeenObjects)
 function assertArrayEquals(sMsg, pExpectedArray, pActualArray)
 {
 	if (!_isMessageSupplied(arguments, 3)) return _reinvokeWithMessage(arguments);
-	
+
     if(pExpectedArray.length != pActualArray.length)
     {
         fail(sMsg + ": expected array has " + pExpectedArray.length + " items but actual array has " + pActualArray.length +
@@ -158,7 +158,7 @@ function assertVariantEquals(sMsg, vExpectedValue, vActualValue, pSeenObjects)
 	if (!_isMessageSupplied(arguments, 3)) return _reinvokeWithMessage(arguments);
 
 	pSeenObjects = pSeenObjects || [];
-	
+
     if(vExpectedValue === undefined)
     {
         // undefined
@@ -242,8 +242,8 @@ function mergeDefaultMouseEventArgumentsWithArgumentsMap(mOptions)
     };
     if (props)
       for(var n in props) options[n] = props[n];
- 
- 
+
+
     if (document.createEvent && element.dispatchEvent) {
 		// DOM support
       if (window.KeyEvent) {
@@ -284,37 +284,37 @@ function mergeDefaultMouseEventArgumentsWithArgumentsMap(mOptions)
     }
     else throw new ExampleException("No support for synthetic events");
   }
-  
+
 /* Fire a mouse event in a browser-compatible manner */
-function triggerMouseEvent(element, type, mOptions) 
+function triggerMouseEvent(element, type, mOptions)
 {
 	var mArguments = mergeDefaultMouseEventArgumentsWithArgumentsMap(mOptions || {});
 	if(document.createEvent)
 	{
-		var evt = getMouseEventDOMStandard(type, mArguments.canBubble, mArguments.cancelable, mArguments.view, mArguments.detail, mArguments.screenX, mArguments.screenY, 
+		var evt = getMouseEventDOMStandard(type, mArguments.canBubble, mArguments.cancelable, mArguments.view, mArguments.detail, mArguments.screenX, mArguments.screenY,
 			mArguments.clientX, mArguments.clientY, mArguments.ctrlKey, mArguments.altKey, mArguments.shiftKey, mArguments.metaKey, mArguments.button, mArguments.relatedTarget);
 		element.dispatchEvent(evt);
 	}
-	else if (element.fireEvent) 
+	else if (element.fireEvent)
     {
-		evt = getMouseEventIENonStandard(mArguments.canBubble, mArguments.cancelable, mArguments.view, mArguments.detail, mArguments.screenX, mArguments.screenY, 
+		evt = getMouseEventIENonStandard(mArguments.canBubble, mArguments.cancelable, mArguments.view, mArguments.detail, mArguments.screenX, mArguments.screenY,
 			mArguments.clientX, mArguments.clientY, mArguments.ctrlKey, mArguments.altKey, mArguments.shiftKey, mArguments.metaKey, mArguments.button, mArguments.relatedTarget);
-		element.fireEvent("on" + type, evt); 
+		element.fireEvent("on" + type, evt);
     }
 };
 
-function getMouseEventDOMStandard(type, canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, button, relatedTarget) 
+function getMouseEventDOMStandard(type, canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, button, relatedTarget)
 {
 	var evt = document.createEvent('MouseEvents');
 	evt.initMouseEvent(type, canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, button, relatedTarget);
 	return evt;
 };
 
-function getMouseEventIENonStandard(canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, button, relatedTarget) 
+function getMouseEventIENonStandard(canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, button, relatedTarget)
 {
 	//create an IE event object
 	var customEvent = document.createEventObject();
-	
+
 	//assign available properties
 	customEvent.bubbles = canBubble;
 	customEvent.cancelable = cancelable;
@@ -328,7 +328,7 @@ function getMouseEventIENonStandard(canBubble, cancelable, view, detail, screenX
 	customEvent.altKey = altKey;
 	customEvent.metaKey = metaKey;
 	customEvent.shiftKey = shiftKey;
-	
+
 	//fix button property for IE's wacky implementation
 	switch(button){
 	case 0:
@@ -341,9 +341,9 @@ function getMouseEventIENonStandard(canBubble, cancelable, view, detail, screenX
 		customEvent.button = 2;
 		break;
 	default:
-		customEvent.button = 0;                    
-	}    
-	
+		customEvent.button = 0;
+	}
+
 	/*
 	 * Have to use relatedTarget because IE won't allow assignment
 	 * to toElement or fromElement on generic events. This keeps
@@ -355,26 +355,40 @@ function getMouseEventIENonStandard(canBubble, cancelable, view, detail, screenX
 
 //if (!_isMessageSupplied(arguments, 2)) return _reinvokeWithMessage(arguments);
 
-_reinvokeWithMessage = function(oArguments) {
-	var pArgumentsWithMessage = _prependBlankMessageToArgument(oArguments);
+var _reinvokeWithMessage = function(oArguments) {
+	var pArgumentsWithMessage = _prependTheBlankMessageToArgument(oArguments);
 	return oArguments.callee.apply(this, pArgumentsWithMessage);
 };
 
-_isMessageSupplied = function(oArguments, nExpectedArgumentCount) {
+var _isMessageSupplied = function(oArguments, nExpectedArgumentCount) {
 	if (oArguments.length >= nExpectedArgumentCount) {
 		var sMsg = oArguments[0];   // first argument is always the message
 		if (typeof sMsg != "string") {
-			caplin.core.Logger.log(caplin.core.LogLevel.ERROR, "assert incorrectly invoked: first argument needs to be a string message");
+            require('fell').getLogger("jsunitextensions").error("assert incorrectly invoked: first argument needs to be a string message");
 		}
 		return true;
 	}
 	return false;
 };
 
-_prependBlankMessageToArgument = function(oArguments) {	
+var _prependTheBlankMessageToArgument = function(oArguments) {
 	var pArgumentsWithBlankMessage = [""];
 	for (var i = 0; i < oArguments.length; ++i) {
 		pArgumentsWithBlankMessage.push(oArguments[i]);
 	}
 	return pArgumentsWithBlankMessage;
+};
+
+var jsunitextensions = {
+	assertFails: assertFails,
+	assertAssertError: assertAssertError,
+	assertNoException: assertNoException,
+	assertInArray: assertInArray,
+	assertNotInArray: assertNotInArray,
+	assertMapEquals: assertMapEquals,
+	assertArrayEquals: assertArrayEquals,
+	assertVariantEquals: assertVariantEquals,
+	getResourceUrl: getResourceUrl,
+	triggerKeyEvent: triggerKeyEvent,
+	triggerMouseEvent: triggerMouseEvent
 };

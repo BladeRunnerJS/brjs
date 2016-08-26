@@ -9,7 +9,7 @@
 	TranslatorTest.prototype.setUp = function() {
 		JsHamcrest.Integration.JsTestDriver();
 		JsMockito.Integration.JsTestDriver();
-		
+
 		this.subrealm = realm.subrealm();
 		this.subrealm.install();
 
@@ -20,17 +20,17 @@
 		});
 
 		fell.configure("warn", {}, [store]);
-		
+
 		var oThis = this;
 		define('br/I18n/LocalisedTime', function(require, exports, module) {
 			var MockLocalisedTime = function() {};
 			MockLocalisedTime.prototype.format = function() { return "LocalisedTime.format"; };
-			
+
 			module.exports = MockLocalisedTime;
 		});
 
 		require('service!br.app-meta-service').setVersion('1.2.3');
-		
+
 		this.messages = {
 			'defaultValue' : {
 				"caplin.test.key": "default value for test key",
@@ -93,7 +93,7 @@
 				"currency.amd.issuer": "Armenia",
 				"currency.amd.name": "Drams"
 		}};
-		
+
 		this.camelCaseTokens = {
 			'locale' : {
 				"token.CamelcasetokeN": "a Translation"
@@ -295,7 +295,7 @@
 
 		assertEquals(oTranslator.getMessage(sKey, {}), sExpected);
 	};
-	
+
 	TranslatorTest.prototype.test_getMessageForAnUnknownKeyThrowsAnErrorInProd = function()
 	{
 		var sKey = "unknown.key";
@@ -304,7 +304,7 @@
 
 		var Translator = require('br/i18n/Translator');
 		var oTranslator = new Translator({});
-		
+
 		assertEquals(oTranslator.getMessage(sKey, {}), sExpected);
 	};
 
@@ -410,5 +410,34 @@
 		assertEquals(translator.parseNumber('1,000.50'), 1000.50);
 		assertEquals(translator.parseNumber('1000.50'), 1000.50);
 		assertEquals(translator.parseNumber('1,000,000'), 1000000);
+	};
+
+	TranslatorTest.prototype.test_registerTranslations = function() {
+		var translations = {
+			key: 'value',
+			upperCaseKey: 'Value'
+		};
+		var Translator = require('br/i18n/Translator');
+		var translator = new Translator(this.i18nTimeDateNumberMessages, 'locale');
+
+		translator.registerTranslations('locale', translations);
+
+		assertEquals(translator.getMessage('key'), 'value');
+		assertEquals(translator.getMessage('upperCaseKey'), 'Value');
+
+		return translator;
+	};
+
+	TranslatorTest.prototype.test_registerTranslationsDoesNotAllowOverridingMessages = function() {
+		var translations = {
+			key: 'newvalue',
+			upperCaseKey: 'newValue'
+		};
+		var translator = this.test_registerTranslations();
+
+		translator.registerTranslations('locale', translations);
+
+		assertEquals(translator.getMessage('key'), 'value');
+		assertEquals(translator.getMessage('upperCaseKey'), 'Value');
 	};
 })();

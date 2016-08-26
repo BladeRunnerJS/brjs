@@ -11,17 +11,18 @@ import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.LinkedAsset;
 import org.bladerunnerjs.api.SourceModule;
+import org.bladerunnerjs.utility.AssetMap;
 
 public class StandardBundleSet implements BundleSet {
-	private final List<LinkedAsset> seedAssets;
-	private final List<Asset> assets;
-	private final List<SourceModule> sourceModules;
+	private final AssetMap<LinkedAsset> seedAssets;
+	private final AssetMap<Asset> assets;
+	private final AssetMap<SourceModule> sourceModules;
 	private BundlableNode bundlableNode;
 	
 	private Map<List<Class<? extends Asset>>, List<Asset>> assetsByType = new HashMap<>();
 	private Map<List<Class<? extends SourceModule>>, List<SourceModule>> sourceModulesByType = new HashMap<>();
 	
-	public StandardBundleSet(BundlableNode bundlableNode, List<LinkedAsset> seedAssets, List<Asset> assets, List<SourceModule> sourceModules) {
+	public StandardBundleSet(BundlableNode bundlableNode, AssetMap<LinkedAsset> seedAssets, AssetMap<Asset> assets, AssetMap<SourceModule> sourceModules) {
 		this.seedAssets = seedAssets;
 		this.bundlableNode = bundlableNode;
 		this.assets = assets;
@@ -36,7 +37,7 @@ public class StandardBundleSet implements BundleSet {
 	@Override
 	public List<LinkedAsset> seedAssets()
 	{
-		return seedAssets;
+		return seedAssets.values();
 	}
 	
 	@Override
@@ -77,7 +78,7 @@ public class StandardBundleSet implements BundleSet {
 	
 	
 	
-	private static <AT extends Asset> List<AT> getTheAssets(List<AT> assets, Map<List<Class<? extends AT>>, List<AT>> assetsByType, 
+	private static <AT extends Asset> List<AT> getTheAssets(AssetMap<AT> assets, Map<List<Class<? extends AT>>, List<AT>> assetsByType, 
 			List<String> prefixes, List<Class<? extends AT>> assetTypes) {
 		
 		List<AT> assetsOfCorrectType = getAssetsForType(assets, assetsByType, assetTypes);
@@ -96,15 +97,15 @@ public class StandardBundleSet implements BundleSet {
 		return assetsWithRequirePath;
 	}
 	
-	private static <AT extends Asset> List<AT> getAssetsForType(List<AT> assets, Map<List<Class<? extends AT>>, List<AT>> assetsByType, List<Class<? extends AT>> assetTypes) {
+	private static <AT extends Asset> List<AT> getAssetsForType(AssetMap<AT> assets, Map<List<Class<? extends AT>>, List<AT>> assetsByType, List<Class<? extends AT>> assetTypes) {
 		if (assetTypes == null || assetTypes.isEmpty()) {
-			return assets;
+			return assets.values();
 		}
 		
 		List<AT> assetsForAssetsTypes = getAssetsForType(assetsByType, assetTypes);
 		if (assetsForAssetsTypes == null) {
 			assetsForAssetsTypes = new ArrayList<>();
-			for (AT asset : assets) {
+			for (AT asset : assets.values()) {
 				if (assetHasValidType(asset, assetTypes)) {
 					assetsForAssetsTypes.add(asset);
 				}

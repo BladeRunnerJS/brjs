@@ -60,7 +60,7 @@ class GitHubAPIBridge
 	{
 		logger.quiet "getting milestone ID for '${milestone}'"
 
-		def response = doRequest(apiPrefix, "get", getRestUrl("milestones"), "state=all&sort=due_date&direction=desc", JSON, null)
+		def response = doRequest(apiPrefix, "get", getRestUrl("milestones"), "state=all&sort=due_date&direction=desc&per_page=100", JSON, null)
 		def jsonData = response.data
 
 		for (def milestoneData : jsonData) {
@@ -131,7 +131,7 @@ class GitHubAPIBridge
 	void uploadAssetForRelease(File brjsZip, Release release)
 	{
 		logger.quiet "uploading file ${brjsZip.path} for release ${release.tagVersion}"
-		def uploadUrl = release.upload_url.replaceFirst(/{\?[\S]+}/,'') // remove the {abc,xyz} templates at the end of the URL, see https://developer.github.com/v3/#hypermedia
+		def uploadUrl = release.upload_url.replaceFirst("\\{\\?[\\S]+\\}",'') // remove the {abc,xyz} templates at the end of the URL, see https://developer.github.com/v3/#hypermedia
 		def response = doRequest(uploadsPrefix, "post", uploadUrl, "name=${brjsZip.name}", "application/zip", brjsZip)
 		logger.quiet "successfully added release asset, ${brjsZip.toString()}"
 	}

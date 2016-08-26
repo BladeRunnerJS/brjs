@@ -38,7 +38,7 @@ public class BRJSDevServletFilter implements Filter {
 			ThreadSafeStaticBRJSAccessor.initializeModel(brjsDir, brjsDir);
 			
 			try {
-				brjs = ThreadSafeStaticBRJSAccessor.aquireModel();
+				brjs = ThreadSafeStaticBRJSAccessor.acquireModel();
 				app = BRJSServletUtils.localeAppForContext(brjs, servletContext);
 			}
 			finally {
@@ -91,7 +91,7 @@ public class BRJSDevServletFilter implements Filter {
 		}
 		
 		boolean appCanHandleRequestWithAppendedSlash = app.requestHandler().canHandleLogicalRequest(requestPath+"/");
-		if (Pattern.matches("^[a-zA-Z0-9_]+$", requestPath) && appCanHandleRequestWithAppendedSlash) {
+		if (Pattern.matches("^[a-zA-Z0-9_-]+$", requestPath) && appCanHandleRequestWithAppendedSlash) {
 			return true; // /app/aspect was requested
 		}
 		if (requestPath.endsWith("/workbench") && appCanHandleRequestWithAppendedSlash) {

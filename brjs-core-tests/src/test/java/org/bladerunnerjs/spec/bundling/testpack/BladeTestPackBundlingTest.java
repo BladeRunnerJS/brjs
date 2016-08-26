@@ -93,7 +93,7 @@ public class BladeTestPackBundlingTest extends SpecTest
 			.and(blade).containsFile("test-unit/src-test/Util.js")
 			.and(blade).containsFileWithContents("test-unit/tests/Test.js", "require('appns/bs/b1/Util')");
 		when(bladeUTs).requestReceivedInDev("js/dev/combined/bundle.js", response);
-		then(response).containsText("define('appns/bs/b1/Util', function(require, exports, module) {\n");
+		then(response).containsText("define('appns/bs/b1/Util', function(require, exports, module) {");
 	}
 	
 	@Test
