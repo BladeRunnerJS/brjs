@@ -1,2 +1,2 @@
-js: moment-with-langs.js
+js: moment.js
 exports: moment
