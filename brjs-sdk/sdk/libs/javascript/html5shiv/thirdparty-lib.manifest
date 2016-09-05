@@ -1,3 +1,0 @@
-depends: browser-modules
-js: html5shiv.js
-exports: null

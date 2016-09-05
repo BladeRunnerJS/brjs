@@ -36,7 +36,6 @@
  */
 
 var jQuery = require('jquery');
-require('es5-shim');
 
 var br = require('br/Core');
 var Errors = require('br/Errors');
