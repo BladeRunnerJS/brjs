@@ -1,2 +1,2 @@
-depends: shivie8, html5shiv, es5-shim, br-ie8-shim
+depends: shivie8, html5shiv, es5-shim, br-ie8-shim, bluebird
 exports: null

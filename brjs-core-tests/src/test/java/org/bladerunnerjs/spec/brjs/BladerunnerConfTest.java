@@ -33,6 +33,7 @@ public class BladerunnerConfTest extends SpecTest {
 				"   - I18nContentPlugin",
 				"   - ThirdpartyContentPlugin",
 				"   - CommonJsContentPlugin",
+				"   - ServicePopulatorContentPlugin",
 				"   - NamespacedJsContentPlugin",
 				"   - '*'");
 	}
@@ -63,6 +64,7 @@ public class BladerunnerConfTest extends SpecTest {
 				"   - I18nContentPlugin",
 				"   - ThirdpartyContentPlugin",
 				"   - CommonJsContentPlugin",
+				"   - ServicePopulatorContentPlugin",
 				"   - NamespacedJsContentPlugin",
 				"   - '*'");
 	}

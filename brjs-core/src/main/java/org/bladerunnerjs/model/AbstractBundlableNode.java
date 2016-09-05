@@ -68,8 +68,8 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 
 	@Override
-	public LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException {
-		LinkedAsset linkedAsset;
+	public Asset getAsset(String requirePath) throws RequirePathException {
+		Asset asset = null;
 		RuntimeException noLinkedAssetException = null;
 		RequirePlugin requirePlugin;
 		String pluginName;
@@ -86,18 +86,19 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		}
 
 		if (requirePlugin == null) {
-			linkedAsset = (LinkedAsset) defaultRequirePlugin.getAsset(this, requirePath);
+			asset = defaultRequirePlugin.getAsset(this, requirePath);
 			noLinkedAssetException = new RuntimeException("Unable to find a require plugin for the prefix '"+pluginName+"' and there is no asset registered for the require path '"+requirePath+"'.");
-		} else {
-			linkedAsset = (LinkedAsset) requirePlugin.getAsset(this, requirePathSuffix);
+		}
+		else {
+			asset = requirePlugin.getAsset(this, requirePathSuffix);
 			noLinkedAssetException = new RuntimeException("There is no asset registered for the require path '"+requirePathSuffix+"'.");
 		}
 
-		if (linkedAsset == null) {
+		if (asset == null) {
 			throw noLinkedAssetException;
 		}
 
-		return linkedAsset;
+		return asset;
 	}
 
 	@Override
@@ -151,7 +152,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 
 		for(String requirePath : requirePaths) {
 			String canonicalRequirePath = asset.assetContainer().canonicaliseRequirePath(asset, requirePath);
-			assets.add(getLinkedAsset(canonicalRequirePath));
+			assets.add(getAsset(canonicalRequirePath));
 		}
 
 		return assets;
