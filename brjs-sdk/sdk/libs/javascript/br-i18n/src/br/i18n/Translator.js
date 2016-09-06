@@ -8,6 +8,7 @@ var Errors = require('br/Errors');
 var LocalisedNumber = require('./LocalisedNumber');
 var fell = require('fell');
 var log = fell.getLogger('br.i18n.Translator');
+var I18nStore = require('./I18nStore');
 // LocalisedDate and LocalisedTime use br/i18n which depends on this class,
 // so they have to be required where they are used or there would be a circular
 // dependency.
@@ -32,50 +33,20 @@ var TEST_DATE_FORMAT_LONG = "D, d M, Y, h:i:s A";
 * For example <code>require("br/i18n").i18n("some.i18n.key")</code>.</p>
 */
 function Translator(messageDefinitions, useLocale) {
-	/** @private */
-	this.messages = {};
-	/** @private */
-	this.defaultLocaleMessages = {};
-	/** @private */
-	this.messageDefinitions = messageDefinitions;
-	/** @private */
-	this.locale = null;
-
 	var defaultLocale = Object.keys(require('service!br.app-meta-service').getLocales())[0];
-	this._setMessages(this.defaultLocaleMessages, defaultLocale);
 
 	/** @private */
 	this.localizationPrefs = {};
-	this.setLocale(useLocale || 'en');
+
+	I18nStore.initialize(messageDefinitions, useLocale || 'en', defaultLocale);
 }
 
 Translator.MESSAGES = {
 	UNTRANSLATED_TOKEN_LOG_MSG: 'A translation has not been provided for the i18n key "{0}" in the "{1}" locale'
 };
 
-Translator.prototype.registerTranslations = function(locale, translations) {
-	if (this.messageDefinitions[locale] === undefined) {
-		this.messageDefinitions[locale] = {};
-	}
-
-	for (var token in translations) {
-		var lowerCasedToken = token.toLowerCase();
-
-		if (this.messageDefinitions[locale][lowerCasedToken] === undefined) {
-			this.messageDefinitions[locale][lowerCasedToken] = translations[token];
-		}
-
-		if (this.locale === locale && this.messages[lowerCasedToken] === undefined) {
-			this.messages[lowerCasedToken] = translations[token];
-		}
-	}
-};
-
 Translator.prototype.setLocale = function(locale) {
-	this.messages = {};
-	this.locale = locale;
-
-	this._setMessages(this.messages, locale);
+	I18nStore.locale = locale;
 };
 
 /**
@@ -121,8 +92,7 @@ Translator.prototype.translate = function(text, type) {
  *         translation set, otherwise <code>false</code>.
  */
 Translator.prototype.tokenExists = function(token) {
-	token = token.toLowerCase();
-	return token in this.messages || token in this.defaultLocaleMessages;
+	return I18nStore.tokenExists(token);
 };
 
 /**
@@ -173,7 +143,6 @@ Translator.prototype.getMessage = function(token, templateArgs) {
 	}
 	return formatTranslationResponseIfTranslationWasUnknown(token, text);
 };
-
 
 /**
  * Returns the current date format string for use in displaying the current date format or for
@@ -385,15 +354,6 @@ Translator.prototype.setLocalizationPreferences = function(localizationPrefs) {
 };
 
 /** @private */
-Translator.prototype._setMessages = function(messages, locale) {
-	var unprocessedMessages = this.messageDefinitions[locale];
-
-	for (var message in unprocessedMessages) {
-		messages[message.toLowerCase()] = unprocessedMessages[message];
-	}
-};
-
-/** @private */
 Translator.prototype._getTranslationForKey = function(token) {
 	var text = this._getTranslationForKeyOrUndefined(token);
 	return formatTranslationResponseIfTranslationWasUnknown(token, text);
@@ -401,8 +361,6 @@ Translator.prototype._getTranslationForKey = function(token) {
 
 /** @private */
 Translator.prototype._getTranslationForKeyOrUndefined = function(token) {
-	token = token.toLowerCase();
-
 	if (!this.tokenExists(token)) {
 		var logConsole = (window.jstestdriver) ? jstestdriver.console : window.console;
 		if (logConsole && logConsole.warn && !window.suppressI18nWarnings) {
@@ -410,13 +368,15 @@ Translator.prototype._getTranslationForKeyOrUndefined = function(token) {
 		}
 	}
 
-	var message = this.messages[token];
+	var message = I18nStore.getTranslation(token);
+
 	if (typeof message === 'undefined') {
-		log.warn(Translator.MESSAGES.UNTRANSLATED_TOKEN_LOG_MSG, token, this.locale);
+		log.warn(Translator.MESSAGES.UNTRANSLATED_TOKEN_LOG_MSG, token, I18nStore.locale);
 		if (!require('service!br.app-meta-service').isDev()) {
-			message = this.defaultLocaleMessages[token];
+			message = I18nStore.getDefaultTranslation(token);
 		}
 	}
+
 	return message;
 };
 
