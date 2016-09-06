@@ -12,7 +12,7 @@ var Core = require('br/Core');
  * @class
  * @alias module:br/presenter/node/FieldValuePropertyListener
  * @implements module:br/presenter/property/PropertyListener
- * 
+ *
  * @param {module:br/presenter/node/Field} oField
  *
  */
@@ -26,6 +26,26 @@ Core.inherit(FieldValuePropertyListener, PropertyListener);
 
 
 // *********************** PropertyListener Interface ***********************
+
+/**
+ * @private
+ * @see br.presenter.property.PropertyListener#onValidationComplete
+ */
+FieldValuePropertyListener.prototype.onValidationComplete = function() {
+	if (this.m_oField.pending) {
+		this.m_oField.pending.setValue(false);
+	}
+};
+
+/**
+ * @private
+ * @see br.presenter.property.PropertyListener#onPropertyChanged
+ */
+FieldValuePropertyListener.prototype.onPropertyChanged = function() {
+	if (this.m_oField.pending) {
+		this.m_oField.pending.setValue(true);
+	}
+};
 
 /**
  * @private
