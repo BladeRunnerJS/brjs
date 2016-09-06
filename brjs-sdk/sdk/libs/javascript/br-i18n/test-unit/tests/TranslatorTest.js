@@ -412,32 +412,4 @@
 		assertEquals(translator.parseNumber('1,000,000'), 1000000);
 	};
 
-	TranslatorTest.prototype.test_registerTranslations = function() {
-		var translations = {
-			key: 'value',
-			upperCaseKey: 'Value'
-		};
-		var Translator = require('br/i18n/Translator');
-		var translator = new Translator(this.i18nTimeDateNumberMessages, 'locale');
-
-		translator.registerTranslations('locale', translations);
-
-		assertEquals(translator.getMessage('key'), 'value');
-		assertEquals(translator.getMessage('upperCaseKey'), 'Value');
-
-		return translator;
-	};
-
-	TranslatorTest.prototype.test_registerTranslationsDoesNotAllowOverridingMessages = function() {
-		var translations = {
-			key: 'newvalue',
-			upperCaseKey: 'newValue'
-		};
-		var translator = this.test_registerTranslations();
-
-		translator.registerTranslations('locale', translations);
-
-		assertEquals(translator.getMessage('key'), 'value');
-		assertEquals(translator.getMessage('upperCaseKey'), 'Value');
-	};
 })();
