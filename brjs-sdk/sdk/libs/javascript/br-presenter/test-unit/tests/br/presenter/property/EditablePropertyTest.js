@@ -604,7 +604,7 @@
 
     	var oEditableProperty = new EditableProperty().addParser(new fParser(), {});
     	oEditableProperty.setUserEnteredValue(NaN);
-    	assertTrue(Number.isNaN(oEditableProperty.getValue()));
+    	assertTrue(isNaN(oEditableProperty.getValue()));
     };
     
     EditablePropertyTest.prototype.test_parsersCanBeRemovedAndReturnTrueOnlyIfTheyAreRemoved = function()
