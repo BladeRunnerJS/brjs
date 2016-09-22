@@ -1,9 +1,11 @@
 package org.bladerunnerjs.plugin.checki18n;
 
 import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.io.FileOutputStream;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +21,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.api.App;
 import org.bladerunnerjs.api.Aspect;
 import org.bladerunnerjs.api.Asset;
@@ -143,17 +146,35 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 		File file = brjs.storageFile(this.getClass().getSimpleName(), appName + "-tokens.csv" );
 		file.getParentFile().mkdirs();
 		
-		try(Writer writer = new BufferedWriter(new FileWriter(file));) {
+		try{
+			Writer writer = new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream(file), "UTF-8"));
+
 			writer.append("** the 'IsUsed' column only relates to tokens identified in their entirety and"
 					+ " will not include tokens which are concatenated e.g. i18n('a.token.' + value);\n");
 			for(List<String> row : rows){
 				writer.append(StringUtils.join(row, ",")+"\n");
-			}			
-		} catch (IOException e) {
-			e.printStackTrace();
+			}
+			writer.flush();
+			writer.close();
+
+			String content = FileUtils.readFileToString(file, "UTF-8");
+	        FileUtils.write(file, content, "UTF-8");
+			}
+			catch (UnsupportedEncodingException e) 
+			{
+				System.out.println(e.getMessage());
+			}
+			catch (IOException e)
+			{
+				System.out.println(e.getMessage());
+			}
+			catch (Exception e)
+			{
+				System.out.println(e.getMessage());
+			}
+			logger.println(Messages.APP_CHECK_I18N_CONSOLE_MSG, appName, file.getAbsolutePath());
 		}
-		logger.println(Messages.APP_CHECK_I18N_CONSOLE_MSG, appName, file.getAbsolutePath());		
-	}		
 		
 	private void logMissingLocalesToConsole(String appName, String localeToBeChecked, Entry<String, Set<String>> tokensList) {
 		String missingTokensMessage = tokensList.getValue().size() == 0 ? " has no missing translations" : " has no translations defined for the following tokens:";
