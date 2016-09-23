@@ -51,13 +51,13 @@ import com.martiansoftware.jsap.UnflaggedOption;
 import org.bladerunnerjs.api.logging.Logger;
 
 public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
-	
+
 	public class Messages {
 		public static final String APP_CHECK_I18N_CONSOLE_MSG = "I18N tokens for the app '%s' available at '%s'";
 		public static final String APP_DOES_NOT_EXIST_EXCEPTION = "The app '%s' does not exist";
 		public static final String NO_LOCALE_FOR_APP = "The app specified does not contain a default locale";
 	}
-	
+
 	private BRJS brjs;
 	private Logger logger;
 	private String locale;
@@ -72,7 +72,7 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 	public String getCommandName() {
 		return "check-i18n";
 	}
-	
+
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption("app-name").setRequired(true).setHelp("the application to search for missing translations"));
@@ -88,49 +88,49 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("app-name");
 		locale = parsedArgs.getString("locale");
-				
+
 		listMissingTokens(appName);
 		generateAllTranslationsCSV(appName);
 		return missingTokensExist ? -1 : 0;
 	}
-	
+
 	private void listMissingTokens(String appName) throws CommandArgumentsException {		
 		App app = brjs.app(appName);
-		
+
 		try {
 			appLocales = app.appConf().getLocales();
 		} catch (ConfigException e) {
 			e.printStackTrace();
 		}
-		
+
 		if(!app.dirExists()) 
 			throw new CommandArgumentsException( String.format(Messages.APP_DOES_NOT_EXIST_EXCEPTION, appName), this );
-		
+
 		findMissingTranslationsForAppWithLocale(app);
-		
+
 		for (Entry<String, Set<String>> tokensList : missingTokensMap.entrySet()) {
-		    logMissingLocalesToConsole(appName, tokensList.getKey(), tokensList);
+			logMissingLocalesToConsole(appName, tokensList.getKey(), tokensList);
 		}
 	}
 
 	private void generateAllTranslationsCSV(String appName) {	
 		logger.println("\ngenerating CSV\n");
-		
+
 		TreeSet<String> localeNames = new TreeSet<String>();
 		for(Locale locale : appLocales ){
 			localeNames.add(locale.getLanguageCode());
 		}
-				
+
 		List<String> headings = new ArrayList<String>();
 		headings.add("Token");
 		for(String localeName : localeNames){
 			headings.add(localeName);
 		}
 		headings.add("IsUsed");
-		
+
 		List<List<String>> rows = new ArrayList<List<String>>();
 		rows.add(headings);
-		
+
 		for(Entry<String, HashMap<String, String>> translationMap : allExistingTokens.entrySet()){
 			List<String> newEntry = new ArrayList<String>();
 			newEntry.add(translationMap.getKey());
@@ -142,10 +142,10 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 			newEntry.add(translationMap.getValue().get("used"));
 			rows.add(newEntry);
 		}
-		
+
 		File file = brjs.storageFile(this.getClass().getSimpleName(), appName + "-tokens.csv" );
 		file.getParentFile().mkdirs();
-		
+
 		try{
 			Writer writer = new BufferedWriter(new OutputStreamWriter(
 					new FileOutputStream(file), "UTF-8"));
@@ -159,23 +159,20 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 			writer.close();
 
 			String content = FileUtils.readFileToString(file, "UTF-8");
-	        FileUtils.write(file, content, "UTF-8");
-			}
-			catch (UnsupportedEncodingException e) 
-			{
-				System.out.println(e.getMessage());
-			}
-			catch (IOException e)
-			{
-				System.out.println(e.getMessage());
-			}
-			catch (Exception e)
-			{
-				System.out.println(e.getMessage());
-			}
-			logger.println(Messages.APP_CHECK_I18N_CONSOLE_MSG, appName, file.getAbsolutePath());
+			FileUtils.write(file, content, "UTF-8");
 		}
-		
+		catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		catch (IOException e){
+			e.printStackTrace();
+		}
+		catch (Exception e)	{
+			e.printStackTrace();
+		}
+		logger.println(Messages.APP_CHECK_I18N_CONSOLE_MSG, appName, file.getAbsolutePath());
+	}
+
 	private void logMissingLocalesToConsole(String appName, String localeToBeChecked, Entry<String, Set<String>> tokensList) {
 		String missingTokensMessage = tokensList.getValue().size() == 0 ? " has no missing translations" : " has no translations defined for the following tokens:";
 		String firstLogLine = "\n" + "For the locale " + tokensList.getKey() + ", " + appName + missingTokensMessage + "\n";
@@ -189,7 +186,7 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 		for(Aspect aspect : app.aspects()) {
 			logger.println("checking " + aspect.getName() + " aspect");
 			checkMissingLocalsForBundlableNode(aspect);
-			
+
 			checkMissingLocales(aspect);
 		}
 		for(Bladeset bladeset : app.bladesets()) {
@@ -236,7 +233,7 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 			}
 			checkAssetForMissingTokens(bundleSet, content, I18N_HTML_XML_TOKEN_PATTERN);
 		}
-		
+
 		List<SourceModule> sourcceModules = bundleSet.sourceModules();
 		for(SourceModule sourceModule : sourcceModules){
 			String srcContent = null;
@@ -269,7 +266,7 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 		while (i18nTokenMatcher.find()) {
 			Boolean tokenIsNotComplete = false;
 			Boolean propertiesFileContainPartialMatch = false;
-			
+
 			if(i18nTokenMatcher.groupCount() > 1){
 				tokenIsNotComplete = i18nTokenMatcher.group(2) != null && i18nTokenMatcher.group(2).indexOf('+') != -1;
 				propertiesFileContainPartialMatch = mapContainsPartialToken(propertiesMap, i18nTokenMatcher.group(1)) && tokenIsNotComplete;
@@ -292,7 +289,7 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 		else{
 			missingTokensMap.get(localeCode).addAll(missingTokens);
 		}
-		
+
 		addUnusedTokensToAllTokensMap(propertiesMap, localeCode);		
 	}
 
@@ -301,7 +298,7 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 		{
 			String i18nKey = i18nPair.getKey();
 			String translation = i18nPair.getValue();
-			
+
 			if(!allExistingTokens.containsKey(i18nKey)){
 				populateAllTokensMap(localeCode, i18nKey, translation, false);					
 			}
@@ -320,10 +317,10 @@ public class CheckI18nCommand extends JSAPArgsParsingCommandPlugin {
 
 	private boolean mapContainsPartialToken(Map<String, String> propertiesMap, String partialToken) {
 		for(Entry<String, String> entry : propertiesMap.entrySet()) {
-			  String i18nToken = entry.getKey();
-			  if(i18nToken.contains(partialToken))
-				  return true;
-			}
+			String i18nToken = entry.getKey();
+			if(i18nToken.contains(partialToken))
+				return true;
+		}
 		return false;
 	}
 
