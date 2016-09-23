@@ -256,7 +256,7 @@
 			throw new Error("No definition for module " + id + " has been loaded.");
 		}
 
-		// For closer spec compliance we should define id as a nonconfigurable, nonwritable
+		// For closer spec compliance, we should define id as a nonconfigurable, nonwritable
 		// property, but this at least works OK in non-es5 browsers (like ie8).
 		var module = { id: id, exports: new ModuleExports() };
 		this.incompleteExports[id] = module;
