@@ -99,6 +99,20 @@ function MultiSelectionField(vOptions, vValues) {
 	this.visible = new WritableProperty(true);
 
 	/**
+	 * A boolean property representing whether the input field is currently validating
+	 * @type br.presenter.property.WritableProperty
+	 */
+	this.isValidationInProgress = new WritableProperty(false);
+
+	/**
+	 * A boolean property representing whether the input field is currently focused.
+	 * Not all fields will care about tracking whether they have focus or not. For these fields leaving hasFocus
+	 * as undefined seems the most appropriate choice.
+	 * @type br.presenter.property.WritableProperty
+	 */
+	this.hasFocus = new WritableProperty(undefined);
+
+	/**
 	 * The logical control-name the multi-selection field is being bound to &mdash; this
 	 * value will appear within the <code>name</code> attribute if being bound to a native HTML control.
 	 * @type br.presenter.property.WritableProperty
