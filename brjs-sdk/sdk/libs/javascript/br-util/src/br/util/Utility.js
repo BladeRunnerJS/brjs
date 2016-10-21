@@ -9,7 +9,7 @@ var fell = require('fell');
 
 /**
  * This is a static utility class and does not need to be instantiated.
- * 
+ *
  * @private
  * @class
  * @alias module:br/util/Utility
@@ -87,6 +87,18 @@ Utility.performOnce = function(obj, methodName) {
 	}
 
 	this.m_mObjects[obj.__objId][methodName] = obj[methodName].bind(obj);
+};
+
+/**
+ * Cancel the execution of a registered `performOnce` function.
+ *
+ * @param {Object} obj The caller object.
+ * @param {String} methodName The method name to be executed.
+ */
+Utility.cancelPerformOnce = function(obj, methodName) {
+	if (obj.__objId && this.m_mObjects) {
+		delete this.m_mObjects[obj.__objId][methodName];
+	}
 };
 
 module.exports = Utility;
