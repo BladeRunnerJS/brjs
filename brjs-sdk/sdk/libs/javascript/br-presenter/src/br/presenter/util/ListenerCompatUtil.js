@@ -12,7 +12,7 @@ ListenerCompatUtil.enhance = function(listenerMethod) {
 			notifyImmediately = method;
 		}
 		else {
-			if(!listener[method] || !(listener[method] instanceof Function)) {
+			if(!listener[method] || !(typeof listener[method] === 'function')) {
 				throw new TypeError("No such method '" + method + "' on the listener object.");
 			}
 
