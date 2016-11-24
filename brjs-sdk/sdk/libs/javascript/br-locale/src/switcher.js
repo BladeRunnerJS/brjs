@@ -29,7 +29,8 @@ module.exports = {
 		var query = urlParser.search;
 		var hash = urlParser.hash;
 		var fullyQualifiedPath = path.match(/\.html$/);
-		var normalizedPath = path === "/" ? "" : path.replace(/^\/?(.*?)(\/|\/index\.html)?$/, '/$1');
+
+		var normalizedPath = (path === "/" || path === "/index.html" || path === "index.html") ? "" : path.replace(/^\/?(.*?)(\/|\/index\.html)?$/, '/$1');
 		var localizedPath = normalizedPath + '/' + locale + ((fullyQualifiedPath) ? '.html' : '');
 
 		var port80isExplicitlyRequested = pageUrl.match(/:80$/) || pageUrl.match(/:80\//);

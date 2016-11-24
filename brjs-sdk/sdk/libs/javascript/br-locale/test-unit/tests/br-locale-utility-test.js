@@ -25,6 +25,10 @@ require('jasmine');
 			expect(getLocalizedPageUrl('http://acme.com:1337/app/index.html', 'en_GB')).toBe('http://acme.com:1337/app/en_GB.html');
 		});
 
+		it('prepends the locale before the html suffix for urls that contain an html suffix at the root', function() {
+			expect(getLocalizedPageUrl('http://acme.com:1337/index.html', 'en_GB')).toBe('http://acme.com:1337/en_GB.html');
+		});
+
 		it('keeps the query string and anchor in the correct order for urls that contain an html suffix', function() {
 			expect(getLocalizedPageUrl('http://acme.com:1337/app/index.html?query=1#anchor', 'en_GB')).toBe('http://acme.com:1337/app/en_GB.html?query=1#anchor');
 		});
