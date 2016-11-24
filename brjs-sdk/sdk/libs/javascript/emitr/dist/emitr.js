@@ -10,13 +10,13 @@ var MultiMap = require('./MultiMap');
 ///////////////////////////////////////////////////////////////////////////
 var ONCE_FUNCTION_MARKER = {};
 
-function notify(listeners, args, suppressErrors) {
+function notify(listeners, args) {
 	if (listeners.length === 0) { return false; }
 	// take a copy in case one of the callbacks modifies the listeners array.
 	listeners = listeners.slice();
 	for (var i = 0, len = listeners.length; i < len; ++i) {
 		var listener = listeners[i];
-		if (suppressErrors) {
+		if (Emitter.suppressErrors) {
 			try {
 				listener.callback.apply(listener.context, args);
 			} catch (e) {
@@ -208,7 +208,7 @@ Emitter.prototype = {
 			args = slice.call(arguments, 1);
 			if (this._emitterListeners.hasAny(event)) {
 				anyListeners = true;
-				notify(this._emitterListeners.getValues(event), args, this.suppressErrors);
+				notify(this._emitterListeners.getValues(event), args);
 			}
 
 			// navigate up the prototype chain emitting against the constructors.
@@ -217,7 +217,7 @@ Emitter.prototype = {
 				while (proto !== null && proto !== last) {
 					if (this._emitterListeners.hasAny(proto.constructor)) {
 						anyListeners = true;
-						notify(this._emitterListeners.getValues(proto.constructor), arguments, this.suppressErrors);
+						notify(this._emitterListeners.getValues(proto.constructor), arguments);
 					}
 					last = proto;
 					proto = Object.getPrototypeOf(proto);
