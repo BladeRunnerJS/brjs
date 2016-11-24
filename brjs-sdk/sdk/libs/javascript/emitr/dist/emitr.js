@@ -20,7 +20,7 @@ function notify(listeners, args, suppressErrors) {
 			try {
 				listener.callback.apply(listener.context, args);
 			} catch (e) {
-				// Swallowing the errors will make the code resilient
+				// Swallowing the errors will make this for-loop resilient
 			}
 		} else {
 			listener.callback.apply(listener.context, args);
