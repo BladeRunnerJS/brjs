@@ -10,16 +10,20 @@ var MultiMap = require('./MultiMap');
 ///////////////////////////////////////////////////////////////////////////
 var ONCE_FUNCTION_MARKER = {};
 
-function notify(listeners, args) {
+function notify(listeners, args, suppressErrors) {
 	if (listeners.length === 0) { return false; }
 	// take a copy in case one of the callbacks modifies the listeners array.
 	listeners = listeners.slice();
 	for (var i = 0, len = listeners.length; i < len; ++i) {
 		var listener = listeners[i];
-		try {
+		if (suppressErrors) {
+			try {
+				listener.callback.apply(listener.context, args);
+			} catch (e) {
+				// Swallowing the errors will make the code resilient
+			}
+		} else {
 			listener.callback.apply(listener.context, args);
-		} catch(e) {
-			// do nothing
 		}
 	}
 	return true;
@@ -49,6 +53,7 @@ function notifyRemoves(emitter, listenerRecords) {
 function Emitter() {
 	this._emitterListeners = new MultiMap();
 	this._emitterMetaEventsOn = false;
+	this.suppressErrors = true;
 }
 
 Emitter.prototype = {
@@ -204,7 +209,7 @@ Emitter.prototype = {
 			args = slice.call(arguments, 1);
 			if (this._emitterListeners.hasAny(event)) {
 				anyListeners = true;
-				notify(this._emitterListeners.getValues(event), args);
+				notify(this._emitterListeners.getValues(event), args, this.suppressErrors);
 			}
 
 			// navigate up the prototype chain emitting against the constructors.
@@ -213,7 +218,7 @@ Emitter.prototype = {
 				while (proto !== null && proto !== last) {
 					if (this._emitterListeners.hasAny(proto.constructor)) {
 						anyListeners = true;
-						notify(this._emitterListeners.getValues(proto.constructor), arguments);
+						notify(this._emitterListeners.getValues(proto.constructor), arguments, this.suppressErrors);
 					}
 					last = proto;
 					proto = Object.getPrototypeOf(proto);
