@@ -53,7 +53,6 @@ function notifyRemoves(emitter, listenerRecords) {
 function Emitter() {
 	this._emitterListeners = new MultiMap();
 	this._emitterMetaEventsOn = false;
-	this.suppressErrors = true;
 }
 
 Emitter.prototype = {
