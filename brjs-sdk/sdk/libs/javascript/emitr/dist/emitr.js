@@ -282,6 +282,8 @@ Emitter.mixInto = function(destination) {
 	}
 };
 
+Emitter.suppressErrors = true;
+
 module.exports = Emitter;
 
 },{"./MultiMap":4,"./events":5}],2:[function(require,module,exports){
