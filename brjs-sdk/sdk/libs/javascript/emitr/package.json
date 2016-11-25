@@ -1,6 +1,6 @@
 {
   "name": "emitr",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "An node/browser event emitter that supports dispatching based on types.",
   "homepage": "http://BladeRunnerJS.github.io/emitr",
   "license": "MIT",
@@ -10,19 +10,22 @@
   },
   "main": "./src/index.js",
   "scripts": {
-    "prepublish": "browserify src/index.js -s emitr -o dist/emitr.js",
-    "test": "npm run test:lint && npm run test:node && npm run test:browser && npm run test:saucelabs",
-    "test:lint": "eslint src test",
+    "prepublish": "mkdirp dist && browserify src/index.js -s emitr -o dist/emitr.js",
+    "postpublish": "publish-release --assets dist/emitr.js --notes 'Add release notes here.'",
+    "pretest": "npm run pretest:lint",
+    "pretest:lint": "eslint src test",
+    "test": "npm run test:node && npm run test:browser && npm run test:saucelabs",
     "test:node": "mocha test",
     "test:node:debug": "mocha test -w",
     "test:browser": "karma start",
     "test:browser:debug": "karma start karma-debug.conf.js",
-    "test:saucelabs": "karma start karma-saucelabs.conf.js"
+    "test:saucelabs": "envcheck SAUCE_ACCESS_KEY && karma start karma-saucelabs.conf.js"
   },
   "devDependencies": {
     "browserify": "^11.0.0",
     "chai": "^3.2.0",
     "core-js": "^1.0.1",
+    "env-check": "^0.0.1",
     "eslint": "^0.24.1",
     "expectations": "^0.5.1",
     "karma": "^0.13.6",
@@ -32,6 +35,8 @@
     "karma-firefox-launcher": "^0.1.6",
     "karma-mocha": "^0.2.0",
     "karma-sauce-launcher": "^0.2.14",
-    "mocha": "^2.2.5"
+    "mkdirp": "^0.5.1",
+    "mocha": "^2.2.5",
+    "publish-release": "^1.0.2"
   }
 }
