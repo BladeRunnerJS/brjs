@@ -3954,8 +3954,8 @@
 								'value': smlArray[--smlIndex],
 								'index': smlIndex });
 						} else {
-							--bigIndex;
-							--smlIndex;
+							bigIndex = bigIndex - 1;
+							smlIndex = smlIndex - 1;
 							if (!options['sparse']) {
 								editScript.push({
 									'status': "retained",

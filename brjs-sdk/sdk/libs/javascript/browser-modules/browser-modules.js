@@ -9,7 +9,7 @@
 	 * it's synchronous.  Everything that is required must have been previously defined or an error
 	 * will be thrown.
 	 *
-	 * There's a decent chance if you're looking at this that your needs might be better served by
+	 * There's a decent chance if you're looking at this, that your needs might be better served by
 	 * browserify.  Check it out if you haven't already.
 	 *
 	 * There are some extra features such as hierarchical realms, but to get started with the basics,
@@ -256,7 +256,7 @@
 			throw new Error("No definition for module " + id + " has been loaded.");
 		}
 
-		// For closer spec compliance we should define id as a nonconfigurable, nonwritable
+		// For closer spec compliance, we should define id as a nonconfigurable, nonwritable
 		// property, but this at least works OK in non-es5 browsers (like ie8).
 		var module = { id: id, exports: new ModuleExports() };
 		this.incompleteExports[id] = module;

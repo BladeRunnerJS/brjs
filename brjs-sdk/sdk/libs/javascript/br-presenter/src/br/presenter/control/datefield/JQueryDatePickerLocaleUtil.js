@@ -27,7 +27,7 @@ JQueryDatePickerLocaleUtil.getDefaultLocales = function() {
 		currentText: i18n('br.presenter.datepicker.currentText'),
 		monthNames: [
 			i18n('br.presenter.datepicker.months.january'),
-			i18n('br.presenter.datepicker.months.feburary'),
+			i18n('br.presenter.datepicker.months.february'),
 			i18n('br.presenter.datepicker.months.march'),
 			i18n('br.presenter.datepicker.months.april'),
 			i18n('br.presenter.datepicker.months.may'),
@@ -41,7 +41,7 @@ JQueryDatePickerLocaleUtil.getDefaultLocales = function() {
 		],
 		monthNamesShort: [
 			i18n('br.presenter.datepicker.months.short.january'),
-			i18n('br.presenter.datepicker.months.short.feburary'),
+			i18n('br.presenter.datepicker.months.short.february'),
 			i18n('br.presenter.datepicker.months.short.march'),
 			i18n('br.presenter.datepicker.months.short.april'),
 			i18n('br.presenter.datepicker.months.short.may'),

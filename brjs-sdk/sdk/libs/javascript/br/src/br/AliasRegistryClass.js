@@ -6,6 +6,7 @@
 
 var br = require('br/Core');
 var Errors = require('./Errors');
+var dynamicRefRequire = require('br/dynamicRefRequire');
 
 /**
 * @class
@@ -137,7 +138,7 @@ AliasRegistryClass.prototype._getClassRef = function(aliasName) {
 	var alias = this._aliasData[aliasName];
 
 	if(alias.classRef === undefined) {
-		alias.classRef = require(alias["class"]);
+		alias.classRef = dynamicRefRequire(alias["class"]);
 	}
 
 	return alias.classRef;
@@ -151,7 +152,7 @@ AliasRegistryClass.prototype._getInterfaceRef = function(aliasName) {
 
 	if(alias.interfaceRef === undefined) {
 		var interfaceName = alias['interface'];
-		alias.interfaceRef = (interfaceName) ? require(interfaceName) : null;
+		alias.interfaceRef = (interfaceName) ? dynamicRefRequire(interfaceName) : null;
 	}
 
 	return alias.interfaceRef;

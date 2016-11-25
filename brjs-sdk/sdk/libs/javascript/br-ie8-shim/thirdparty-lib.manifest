@@ -1,3 +1,0 @@
-depends: browser-modules
-js: ie8-shim.js, importNode.js
-exports: null
