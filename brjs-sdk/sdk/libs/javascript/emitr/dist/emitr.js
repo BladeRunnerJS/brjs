@@ -16,10 +16,14 @@ function notify(listeners, args) {
 	listeners = listeners.slice();
 	for (var i = 0, len = listeners.length; i < len; ++i) {
 		var listener = listeners[i];
-		try {
+		if (Emitter.suppressErrors) {
+			try {
+				listener.callback.apply(listener.context, args);
+			} catch (e) {
+				// Swallowing the errors will make this for-loop resilient
+			}
+		} else {
 			listener.callback.apply(listener.context, args);
-		} catch(e) {
-			// do nothing
 		}
 	}
 	return true;
@@ -277,6 +281,8 @@ Emitter.mixInto = function(destination) {
 		destination[key] = Emitter.prototype[key];
 	}
 };
+
+Emitter.suppressErrors = true;
 
 module.exports = Emitter;
 
