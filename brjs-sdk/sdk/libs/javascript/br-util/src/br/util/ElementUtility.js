@@ -152,9 +152,7 @@ ElementUtility.getElementsByClassName = function(domElement, tagName, className)
  * @returns {DOMElement} The ancestor element with the specified class, or null.
  */
 ElementUtility.getAncestorElementWithClass = function(element, className) {
-	var classMatcher = new RegExp("(^| )" + className + "($| )");
-
-	while (!element.className || !element.className.match(classMatcher)) {
+	while (!element.className || !element.classList.contains(className)) {
 		if (!element.parentNode) {
 			return null;
 		}
