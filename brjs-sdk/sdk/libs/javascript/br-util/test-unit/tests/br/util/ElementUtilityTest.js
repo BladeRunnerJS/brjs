@@ -1,22 +1,26 @@
 (function() {
 	var ElementUtility = require('br/util/ElementUtility');
 
-	ElementUtilityTest = TestCase('ElementUtilityTest');
+	var testCaseName = 'ElementUtilityTest';
+	var testCase = {
+		'test #setNodeText sets the text contents on an empty element': function() {
+			var element = document.createElement('DIV');
 
-	ElementUtilityTest.prototype.test_setNodeText_SetsTheTextContentsOnAEmptyElement = function() {
-		var element = document.createElement('DIV');
+			ElementUtility.setNodeText(element, 'foo');
 
-		ElementUtility.setNodeText(element, 'foo');
+			assertEquals(element.innerHTML, 'foo');
+		},
 
-		assertEquals(element.innerHTML, 'foo');
+		'test_setNodeText_SetsTheTextContentsOnANonEmptyElement': function() {
+			var element = document.createElement('DIV');
+			element.innerHTML = 'bar';
+
+			ElementUtility.setNodeText(element, 'foo');
+
+			assertEquals(element.innerHTML, 'foo');
+		}
+
 	};
 
-	ElementUtilityTest.prototype.test_setNodeText_SetsTheTextContentsOnANonEmptyElement = function() {
-		var element = document.createElement('DIV');
-		element.innerHTML = 'bar';
-
-		ElementUtility.setNodeText(element, 'foo');
-
-		assertEquals(element.innerHTML, 'foo');
-	};
+	return new TestCase(testCaseName, testCase);
 })();
