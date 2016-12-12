@@ -11,7 +11,7 @@
 			assertEquals(element.innerHTML, 'foo');
 		},
 
-		'test_setNodeText_SetsTheTextContentsOnANonEmptyElement': function() {
+		'test #setNodeText sets the text contents on a non empty element': function() {
 			var element = document.createElement('DIV');
 			element.innerHTML = 'bar';
 
@@ -20,7 +20,7 @@
 			assertEquals(element.innerHTML, 'foo');
 		},
 
-		'test getAncestorElementWithClass returns current element when it has matching class': function() {
+		'test #getAncestorElementWithClass returns current element when it has matching class': function() {
 			var element = document.createElement('DIV');
 			element.className = "myClass";
 
@@ -29,7 +29,7 @@
 			assertEquals(element, returnElement);
 		},
 
-		'test getAncestorElementWithClass returns current element when it has multiple classes including the matching class': function() {
+		'test #getAncestorElementWithClass returns current element when it has multiple classes including the matching class': function() {
 			var element = document.createElement('DIV');
 			element.className = "myClass myOtherClass";
 
@@ -38,7 +38,7 @@
 			assertEquals(element, returnElement);
 		},
 
-		'test getAncestorElementWithClass returns null when using an svg element with no class': function() {
+		'test #getAncestorElementWithClass returns null when using an svg element with no class': function() {
 			var element = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 
 			var returnElement = ElementUtility.getAncestorElementWithClass(element, "myClass");
@@ -46,7 +46,7 @@
 			assertEquals(null, returnElement);
 		},
 
-		'test getAncestorElementWithClass returns current element when using an svg element containing the matching class': function() {
+		'test #getAncestorElementWithClass returns current element when using an svg element containing the matching class': function() {
 			var element = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 			element.setAttribute("class", "myClass myOtherClass");
 
