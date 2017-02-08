@@ -243,6 +243,15 @@ GwtTestRunner.prototype.endTest = function() {
 
 	}
 
+	if (this.m_oFixtureFactory.tearDown) {
+		try {
+			this.m_oFixtureFactory.tearDown();
+		} catch (e) {
+			throw new Errors.CustomError("TestTearDownError", e.message,
+					"Error occured in GwtTestRunner.prototype.endTest() calling this.m_oFixtureFactory.tearDown()");
+		}
+	}
+
 	if (document.body.hasChildNodes()) {
 		for (var i = 0, j = document.body.childNodes.length; i < j; i++) {
 			document.body.removeChild(document.body.childNodes[0]);
