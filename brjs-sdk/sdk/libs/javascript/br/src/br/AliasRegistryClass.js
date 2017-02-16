@@ -36,10 +36,9 @@ var dynamicRefRequire = require('br/dynamicRefRequire');
 * discover all of the classes which implement a particular interface, which
 * makes it a good candidate for creating SPI type, auto-discovery mechanisms.</p>
 */
-var AliasRegistryClass = function(aliasData)
-{
+function AliasRegistryClass(aliasData) {
 	this._aliasData = aliasData;
-};
+}
 
 /**
 * Returns an array containing the names of all aliases in use within the application.
@@ -128,13 +127,24 @@ AliasRegistryClass.prototype.isAlias = function isAlias(aliasName) {
 * @type boolean
 */
 AliasRegistryClass.prototype.isAliasAssigned = function isAliasAssigned(aliasName) {
-	return this.isAlias(aliasName) && this._aliasData[aliasName]["class"] !== undefined;
+	var aliasProviderFunction = typeof this._aliasData[aliasName] === 'function';
+
+	return this.isAlias(aliasName) && (aliasProviderFunction || this._aliasData[aliasName]["class"] !== undefined);
+};
+
+AliasRegistryClass.prototype.registerAliasProvider = function(aliasName, aliasProvider) {
+	this._aliasData[aliasName] = aliasProvider;
 };
 
 /**
  * @private
  */
 AliasRegistryClass.prototype._getClassRef = function(aliasName) {
+	// Do you access the alias via a provider function.
+	if (typeof this._aliasData[aliasName] === 'function') {
+		return this._aliasData[aliasName]();
+	}
+
 	var alias = this._aliasData[aliasName];
 
 	if(alias.classRef === undefined) {
