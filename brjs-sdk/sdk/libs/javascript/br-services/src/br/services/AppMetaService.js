@@ -26,6 +26,14 @@ AppMetaService.prototype.getVersion = function() {
 };
 
 /**
+* Returns true if the app is running in 'dev' mode, false otherwise.
+* @returns true if the app is running in 'dev' mode, false otherwise.
+*/
+AppMetaService.prototype.isDev = function() {
+	throw new Errors.UnimplementedInterfaceError("AppMetaService.isDev() has not been implemented.");
+};
+
+/**
 * Returns the path to content plugins/bundles.
 * @param {String} [bundlePath] The path to a bundle to be appended to the returned path
 * @returns The path to content plugins/bundles.

@@ -16,6 +16,7 @@ var App = function() {
 	this.functionalityTest("i18n", this.testI18n);
 	this.functionalityTest("aliasing", this.playWithAliases);
 	this.functionalityTest("aliasing-implement-fail", this.aliasFail);
+	this.functionalityTest("aliasing-app-override", this.playWithAppLevelAliases);
 	this.functionalityTest("namespaced-js", namedspacedjslib.NamedspacedJsLib.hello);
 	this.functionalityTest("common-js", CommonJsLib.hello);
 	this.functionalityTest("third-party-lib", Testlib3p.hello);
@@ -48,6 +49,12 @@ App.prototype.addItBladeToView = function() {
 
 App.prototype.playWithAliases = function() {
 	var AliasedClass = require('alias!itapp.itbladeset.itblade.NewName');
+	var obj = new AliasedClass();
+	return obj.implementMe();
+};
+
+App.prototype.playWithAppLevelAliases = function() {
+	var AliasedClass = require('alias!itapp.itbladeset.itblade.AppLevelOverrideAlias');
 	var obj = new AliasedClass();
 	return obj.implementMe();
 };

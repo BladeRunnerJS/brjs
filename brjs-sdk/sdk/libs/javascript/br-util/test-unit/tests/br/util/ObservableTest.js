@@ -381,13 +381,12 @@
 		this.m_oObservable.notifyObserversWithTryCatch("method2", [ "good" ]);
 	};
 
-
 	ObservableTest.prototype.test_getAllObservers = function()
 	{
 		this.m_oObservable.addObserver(this.m_oObserver1.proxy());
 		this.m_oObservable.addObserver(this.m_oObserver2.proxy());
-		
-		var pAllObservers = this.m_oObservable._$getAllObservers();
+
+		var pAllObservers = this.m_oObservable.getAllObservers();
 		assertEquals(2, pAllObservers.length);
 		assertTrue(this.m_oObserver1.proxy() == pAllObservers[0]);
 		assertTrue(this.m_oObserver2.proxy() == pAllObservers[1]);

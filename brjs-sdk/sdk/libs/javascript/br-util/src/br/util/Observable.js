@@ -147,13 +147,12 @@ Observable.prototype.removeAllObservers = function() {
 	this.m_pObservers = [];
 };
 
-/**
+ /**
  * Gets a list of all the observers that have been registered with this <code>Observable</code>.
- * @private
  *
  * @return {Array} A list of the observers that have been registered.
  */
-Observable.prototype._$getAllObservers = function() {
+Observable.prototype.getAllObservers = function() {
 	return this.m_pObservers;
 };
 

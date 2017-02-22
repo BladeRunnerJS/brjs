@@ -60,11 +60,6 @@
 		this.m_oViewFixture.doThen("view.(div#hidden-div).isVisible", false);
 	};
 
-	IsVisibleTest.prototype.test_divElementWithZeroSizeIsInvisible = function()
-	{
-		this.m_oViewFixture.doThen("view.(div#zero-div).isVisible", false);
-	};
-
 	IsVisibleTest.prototype.test_childOfInvisibleElementIsInvisible = function()
 	{
 		this.m_oViewFixture.doThen("view.(div#hidden-parent).isVisible", false);

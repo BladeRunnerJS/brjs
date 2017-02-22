@@ -61,8 +61,8 @@ function CalendarDateField(vDate, vStartDate, vEndDate) {
 	this._updateValidDates();
 
 	// Listeners
-	this.currentMonth.addChangeListener(this, '_updateValidDates');
-	this.currentYear.addChangeListener(this, '_updateValidDates');
+	this.currentMonth.addChangeListener(this._updateValidDates.bind(this));
+	this.currentYear.addChangeListener(this._updateValidDates.bind(this));
 }
 
 Core.extend(CalendarDateField, DateField);

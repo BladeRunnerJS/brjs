@@ -30,6 +30,19 @@
         
     };
 
+    PropertiesTest.prototype.test_Getter = function()
+    {
+        var oProperty1 = new Property("p1");
+        var oProperty2 = new Property("p2");
+        var props = [oProperty1, oProperty2];
+
+        var propertiesA = new Properties(props);
+        assertEquals(2, propertiesA.getProperties().length);
+
+        var propertiesB = new Properties();
+        assertEquals([], propertiesB.getProperties());
+    };
+
     PropertiesTest.prototype.test_AddProperty = function()
     {
         var oProperty1 = new Property("p1");

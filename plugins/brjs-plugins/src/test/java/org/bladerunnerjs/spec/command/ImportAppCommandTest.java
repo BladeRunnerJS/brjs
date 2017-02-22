@@ -120,6 +120,18 @@ public class ImportAppCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void exportedAppsCanBeReimportedWithTheSameNamespace() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+			.and(app.appConf()).hasRequirePrefix("appns")
+			.and(aspect).classRequires("appns/Class2", "appns/Class1")
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "appns");
+		then(importedAspect).fileContentsContains("src/appns/Class2.js", "require('appns/Class1')")
+			.and(importedApp).hasFile("WEB-INF/lib/brjs-lib1.jar");
+	}
+	
+	@Test
 	public void exportedAppsCanBeReimportedWithADifferentModel() throws Exception {
 		given(aspect).hasClass("appns/Class1")
     		.and(aspect).classRequires("appns/Class2", "appns/Class1")
@@ -211,6 +223,22 @@ public class ImportAppCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void allSrcDirectoriesAreCorrectlyReNamespacedWhenImportedWithTheSameRequirePrefixAsTheAppBeingImported() throws Exception {
+		given(aspect).containsFile("src/appns/AspectClass.js")
+			.and(app.appConf()).hasRequirePrefix("appns")
+			.and(bladeset).containsFile("src/appns/bs/BladesetClass.js")
+			.and(blade1).containsFile("src/appns/bs/b1/BladeClass.js")
+			.and(workbench).containsFile("src/appns/bs/b1/WorkbenchClass.js")
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "appns");
+		then(importedApp).hasDir("bs-bladeset/blades/b1/src/appns")
+			.and(importedApp).hasDir("bs-bladeset/src/appns")
+			.and(importedApp).hasDir("default-aspect/src/appns")
+			.and(importedApp).hasDir("bs-bladeset/blades/b1/workbench/src/appns/bs/b1/");
+	}
+	
+	@Test
 	public void allTestDirectoriesAreCorrectlyReNamespacedWhenImported() throws Exception {
 		given(aspect).containsFile("tests/appns/AspectTestClass.js")
 			.and(aspect).containsFile("tests/test-unit/js-test-driver/src-test/appns/AspectTestClass.js")
@@ -229,6 +257,28 @@ public class ImportAppCommandTest extends SpecTest {
 			.and(importedApp).hasDir("bs-bladeset/tests/test-unit/js-test-driver/tests/importedns/")
 			.and(importedApp).hasDir("default-aspect/tests/test-unit/js-test-driver/src-test/importedns/")
 			.and(importedApp).hasDir("default-aspect/tests/test-unit/js-test-driver/tests/importedns/");
+	}
+	
+	@Test
+	public void allTestDirectoriesAreCorrectlyReNamespacedWhenImportedWithTheSameRequirePrefixAsTheAppBeingImported() throws Exception {
+		given(aspect).containsFile("tests/appns/AspectTestClass.js")
+			.and(app.appConf()).hasRequirePrefix("appns")
+			.and(aspect).containsFile("tests/test-unit/js-test-driver/src-test/appns/AspectTestClass.js")
+			.and(aspect).containsFile("tests/test-unit/js-test-driver/tests/appns/AspectTest.js")
+			.and(bladeset).containsFile("tests/test-unit/js-test-driver/src-test/appns/bs/BladeTestClass.js")
+			.and(bladeset).containsFile("tests/test-unit/js-test-driver/tests/appns/bs/BladeTest.js")
+			.and(blade1).containsFile("src/appns/bs/b1/BladeClass.js")
+			.and(blade1).containsFile("tests/test-unit/js-test-driver/src-test/appns/bs/b1/BladeTestClass.js")
+			.and(blade1).containsFile("tests/test-unit/js-test-driver/tests/appns/bs/b1/BladeTest.js")
+			.and(brjs).commandHasBeenRun("export-app", "app")
+			.and(appJars).containsFile("brjs-lib1.jar");
+		when(brjs).runCommand("import-app", "../generated/exported-apps/app.zip", "imported-app", "appns");
+		then(importedApp).hasDir("bs-bladeset/blades/b1/tests/test-unit/js-test-driver/src-test/appns/")
+			.and(importedApp).hasDir("bs-bladeset/blades/b1/tests/test-unit/js-test-driver/tests/appns/")
+			.and(importedApp).hasDir("bs-bladeset/tests/test-unit/js-test-driver/src-test/appns/")
+			.and(importedApp).hasDir("bs-bladeset/tests/test-unit/js-test-driver/tests/appns/")
+			.and(importedApp).hasDir("default-aspect/tests/test-unit/js-test-driver/src-test/appns/")
+			.and(importedApp).hasDir("default-aspect/tests/test-unit/js-test-driver/tests/appns/");
 	}
 	
 	@Test

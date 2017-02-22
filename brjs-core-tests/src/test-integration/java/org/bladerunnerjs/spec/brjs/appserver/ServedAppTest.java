@@ -10,6 +10,7 @@ import org.bladerunnerjs.api.Blade;
 import org.bladerunnerjs.api.Bladeset;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.spec.engine.SpecTest;
+import org.bladerunnerjs.plugin.plugins.require.AppMetaDataSourceModule;
 import org.bladerunnerjs.api.DirNode;
 import org.bladerunnerjs.api.BladeWorkbench;
 import org.junit.After;
@@ -32,6 +33,7 @@ public class ServedAppTest extends SpecTest
 	StringBuffer response = new StringBuffer();
 	DirNode sdkLibsDir;
 	private Aspect anotherAspect;
+	private Aspect anotherAspectWithSpace;
 	private Bladeset bladeset;
 	private Aspect defaultAspect;
 	private App appWithDefaultAspect;
@@ -55,6 +57,7 @@ public class ServedAppTest extends SpecTest
 			appWithDefaultAspect = brjs.app("anotherApp");
 			defaultAspect = appWithDefaultAspect.defaultAspect();
 			anotherAspect = app.aspect("another");
+			anotherAspectWithSpace = app.aspect("another-space");
 			systemAspect = systemApp.defaultAspect();
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
@@ -154,7 +157,19 @@ public class ServedAppTest extends SpecTest
 			.and(appServer).started();
 		then(appServer).requestIs302Redirected("/app/another", "/app/another/");
 	}
-	
+
+	@Test
+	public void localeForwarderPageOfANonDefaultAspectWithSpaceCanBeAccessedWithoutEndingInForwardSlash() throws Exception
+	{
+		given(app).hasBeenPopulated("default")
+				.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+				.and(anotherAspectWithSpace).hasBeenPopulated()
+				.and(appServer).started();
+		then(appServer).requestIs302Redirected("/app/another-space", "/app/another-space/");
+	}
+
 	@Test
 	public void localeRequestsAreOnlyRedirectedIfTheyAreValidModelRequests() throws Exception
 	{
@@ -539,8 +554,12 @@ public class ServedAppTest extends SpecTest
 			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
 				+ "locales: en,de\n"
 				+ "requirePrefix: appns")
-			.and(defaultAspect).containsFileWithContents("src/App.js", "@BRJS.APP.LOCALE@")
-			.and(defaultAspect).indexPageHasContent("<@js.bundle@/>\n"+"require('appns/App');")
+			.and(aspect).containsFileWithContents(
+					"src/App.js",
+					"@BRJS.APP.LOCALE@" +
+					"require('" + AppMetaDataSourceModule.PRIMARY_REQUIRE_PATH + "');"
+			)
+			.and(aspect).indexPageHasContent("<@js.bundle@/>\n" + "require('appns/App');")
 			.and(brjs).hasVersion("123")
 			.and(appServer).started();
 		then(appServer).requestForUrlContains("/app/v/123/js/prod/combined/bundle.js", "en");

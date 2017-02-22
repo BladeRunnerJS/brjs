@@ -152,9 +152,7 @@ ElementUtility.getElementsByClassName = function(domElement, tagName, className)
  * @returns {DOMElement} The ancestor element with the specified class, or null.
  */
 ElementUtility.getAncestorElementWithClass = function(element, className) {
-	var classMatcher = new RegExp("(^| )" + className + "($| )");
-
-	while (!element.className || !element.className.match(classMatcher)) {
+	while (!element.className || !elementHasClass(element, className)) {
 		if (!element.parentNode) {
 			return null;
 		}
@@ -164,6 +162,15 @@ ElementUtility.getAncestorElementWithClass = function(element, className) {
 
 	return element;
 };
+
+/** @private */
+function elementHasClass(element, className) {
+	if(element.classList != null) {
+		return element.classList.contains(className);
+	}
+	//SVGs in IE11:
+	return element.getAttribute("class") != null && element.getAttribute("class").indexOf(className) > -1;
+}
 
 /**
  * Returns the node index of the element as it exists in the parent.

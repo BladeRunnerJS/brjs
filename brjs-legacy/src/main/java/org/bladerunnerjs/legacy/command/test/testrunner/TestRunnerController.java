@@ -16,15 +16,11 @@ import org.bladerunnerjs.api.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.api.plugin.CommandPlugin;
 import org.bladerunnerjs.legacy.command.test.testrunner.TestRunner.TestType;
 import org.bladerunnerjs.legacy.conf.TestRunnerConfLocator;
+import org.bladerunnerjs.model.DefaultAppVersionGenerator;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.api.DirNode;
 
-import com.martiansoftware.jsap.FlaggedOption;
-import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPResult;
-import com.martiansoftware.jsap.Switch;
-import com.martiansoftware.jsap.UnflaggedOption;
-import com.martiansoftware.jsap.stringparsers.EnumeratedStringParser;
 
 public class TestRunnerController
 {
@@ -41,33 +37,10 @@ public class TestRunnerController
 	{
 		this.mode = mode;
 	}
-
-	public String getUsage() {
-		try
-		{
-			return createArgsParser(mode).getUsage();
-		}
-		catch (CommandOperationException e)
-		{
-			return null;
-		}
-	}
 	
-	public String getHelp() {
-		try
-		{
-			return createArgsParser(mode).getHelp();
-		}
-		catch (CommandOperationException e)
-		{
-			return null;
-		}
-	}
-	
-	public int run(BRJS brjs, String[] args, CommandPlugin testCommand) throws CommandArgumentsException, CommandOperationException
+	public int run(BRJS brjs, JSAPResult config, CommandPlugin testCommand) throws CommandArgumentsException, CommandOperationException
 	{
-		JSAP argsParser = createArgsParser(mode);
-		JSAPResult config = argsParser.parse(args);
+		brjs.getAppVersionGenerator().setVersion( DefaultAppVersionGenerator.DEV_VERSION );
 		
 		assertValidTestDirectory(brjs, testCommand, config);
 		
@@ -125,7 +98,7 @@ public class TestRunnerController
 					} else {
 						testDir = brjs.getMemoizedFile(dirArg);
 					}
-					success = testRunner.runTests( testDir, getTestTypeEnum(config.getString("testType")) );
+					success = testRunner.runTests( testDir, getTestTypeEnum(config.getString("testType")), config.getString("js-minifier") );
 				}
 				catch (Exception ex)
 				{
@@ -164,34 +137,6 @@ public class TestRunnerController
 	private TestType getTestTypeEnum(String testType) 
 	{
 		return TestRunner.TestType.valueOf(testType.replaceAll("UTs and ATs", "UTsAndATs"));
-	}
-
-	private JSAP createArgsParser(RunMode mode) throws CommandOperationException
-	{
-		JSAP argsParser = new JSAP();
-		try
-		{
-			if (mode == RunMode.RUN_TESTS)
-			{
-				argsParser.registerParameter(new UnflaggedOption("dir").setRequired(true).setHelp("the directory from which to start looking for tests"));
-				argsParser.registerParameter(new UnflaggedOption("testType").setDefault("UTsAndATs").setStringParser(EnumeratedStringParser.getParser("UTs;ATs;ITs;UTsAndATs;ALL;", true)).setHelp("(UTs|ATs|ITs|ALL)"));
-			}
-			argsParser.registerParameter(new FlaggedOption("browsers").setShortFlag('b').setList(true).setListSeparator(',').setHelp("you can use ALL to specify that the tests should be run on all browsers"));
-			// this isnt in the if block above so it appears as the last option in the help menu
-			if (mode == RunMode.RUN_TESTS)
-			{
-				argsParser.registerParameter(new Switch(REPORT_SWITCH).setLongFlag(REPORT_SWITCH).setDefault("false").setHelp("if supplied, generate the HTML reports after running tests"));
-			}
-			if (mode == RunMode.RUN_SERVER)
-			{
-				argsParser.registerParameter(new Switch(NO_BROWSER_SWITCH).setLongFlag(NO_BROWSER_SWITCH).setDefault("false").setHelp("you can start the test-server on it's own without a browser"));
-			}
-		}
-		catch (Exception ex)
-		{
-			throw new CommandOperationException("Error initialising configuration.", ex);
-		}
-		return argsParser;
 	}
 
 	private MemoizedFile getResultsDir() throws CommandOperationException

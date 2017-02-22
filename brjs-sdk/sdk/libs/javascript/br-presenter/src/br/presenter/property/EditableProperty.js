@@ -10,6 +10,7 @@ var Core = require('br/Core');
 var PropertyListener = require('br/presenter/property/PropertyListener');
 var ListenerFactory = require('br/util/ListenerFactory');
 var WritableProperty = require('br/presenter/property/WritableProperty');
+var ListenerCompatUtil = require('../util/ListenerCompatUtil');
 
 /**
  * @module br/presenter/property/EditableProperty
@@ -203,13 +204,12 @@ EditableProperty.prototype.addListener = function(oListener, bNotifyImmediately)
  *   <li><code>sErrorMessage</code> &mdash; The failure message.</li>
  * </ul>
  *
- * @param {Object} oListener The listener to be added.
- * @param {String} sMethod The name of the method on the listener that will be invoked each time there is a validation error.
+ * @param {Function} fCallback The call-back that will be invoked each time there is a validation error.
  * @param {boolean} bNotifyImmediately (optional) Whether to invoke the listener immediately for the current value.
  * @type br.presenter.property.PropertyListener
  */
-EditableProperty.prototype.addValidationErrorListener = function(oListener, sMethod, bNotifyImmediately) {
-	var oPropertyListener = this.m_oValidationErrorListenerFactory.createListener(oListener, sMethod);
+EditableProperty.prototype.addValidationErrorListener = function(fCallback, bNotifyImmediately) {
+	var oPropertyListener = this.m_oValidationErrorListenerFactory.createListener(fCallback);
 	this.addListener(oPropertyListener, bNotifyImmediately);
 
 	return oPropertyListener;
@@ -226,13 +226,12 @@ EditableProperty.prototype.addValidationErrorListener = function(oListener, sMet
  * using this method is that objects can choose to listen to call-back events on
  * multiple properties.</p>
  *
- * @param {Object} oListener The listener to be added.
- * @param {String} sMethod The name of the method on the listener that will be invoked each time validation is successful.
+ * @param {Function} fCallback The call-back that will be invoked each time validation is successful.
  * @param {boolean} bNotifyImmediately (optional) Whether to invoke the listener immediately for the current value.
  * @type br.presenter.property.PropertyListener
  */
-EditableProperty.prototype.addValidationSuccessListener = function(oListener, sMethod, bNotifyImmediately) {
-	var oPropertyListener = this.m_oValidationSuccessListenerFactory.createListener(oListener, sMethod);
+EditableProperty.prototype.addValidationSuccessListener = function(fCallback, bNotifyImmediately) {
+	var oPropertyListener = this.m_oValidationSuccessListenerFactory.createListener(fCallback);
 	this.addListener(oPropertyListener, bNotifyImmediately);
 
 	return oPropertyListener;
@@ -249,13 +248,12 @@ EditableProperty.prototype.addValidationSuccessListener = function(oListener, sM
  * using this method is that objects can choose to listen to call-back events on
  * multiple properties.</p>
  *
- * @param {Object} oListener The listener to be added.
- * @param {String} sMethod The name of the method on the listener that will be invoked each time validation is successful.
+ * @param {Function} fCallback The call-back that will be invoked each time validation is complete.
  * @param {boolean} bNotifyImmediately (optional) Whether to invoke the listener immediately for the current value.
  * @type br.presenter.property.PropertyListener
  */
-EditableProperty.prototype.addValidationCompleteListener = function(oListener, sMethod, bNotifyImmediately) {
-	var oPropertyListener = this.m_oValidationCompleteListenerFactory.createListener(oListener, sMethod);
+EditableProperty.prototype.addValidationCompleteListener = function(fCallback, bNotifyImmediately) {
+	var oPropertyListener = this.m_oValidationCompleteListenerFactory.createListener(fCallback);
 	this.addListener(oPropertyListener, bNotifyImmediately);
 
 	return oPropertyListener;
@@ -387,7 +385,7 @@ EditableProperty.prototype._parse = function(vValue) {
 			var oParser = parsers[i];
 			var vNewValue = oParser.parser.parse(vParsedValue, oParser.config);
 			
-			if(vNewValue !== null && vNewValue !== undefined && !Number.isNaN(vNewValue) && vNewValue !== vParsedValue)
+			if(vNewValue !== null && vNewValue !== undefined && !(typeof vNewValue === 'number' && isNaN(vNewValue)) && vNewValue !== vParsedValue)
 			{
 				vParsedValue = vNewValue;
 				bValueChanged = true;
@@ -403,5 +401,9 @@ EditableProperty.prototype._parse = function(vValue) {
 
 	return vParsedValue;
 };
+
+EditableProperty.prototype.addValidationErrorListener = ListenerCompatUtil.enhance(EditableProperty.prototype.addValidationErrorListener);
+EditableProperty.prototype.addValidationSuccessListener = ListenerCompatUtil.enhance(EditableProperty.prototype.addValidationSuccessListener);
+EditableProperty.prototype.addValidationCompleteListener = ListenerCompatUtil.enhance(EditableProperty.prototype.addValidationCompleteListener);
 
 module.exports = EditableProperty;

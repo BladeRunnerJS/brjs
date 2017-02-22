@@ -6,7 +6,9 @@
 	<alias name="br.xml-service" defaultClass="br.services.xml.BRXmlResourceService">
 		<scenario name="dev" class="br.services.xml.JSTDXmlResourceService" />
 	</alias>
-	<alias name="br.app-meta-service" defaultClass="br.services.appmeta.BRAppMetaService" />
+	<alias name="br.app-meta-service" defaultClass="br.services.appmeta.BRAppMetaService">
+		<scenario name="dev" class="br.services.appmeta.JSTDAppMetaService" />
+	</alias>
 	<alias name="br.locale-provider" defaultClass="br.services.locale.BRLocaleProvider" />
 	<alias name="br.locale-switcher" defaultClass="br.services.locale.BRLocaleForwardingSwitcher" />
 	<alias name="br.locale-service" defaultClass="br.services.locale.BRLocaleService" />

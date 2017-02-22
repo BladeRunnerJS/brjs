@@ -78,9 +78,9 @@ JQueryDatePickerControl.prototype.setPresentationNode = function(oPresentationNo
 	}
 
 	this.m_oPresentationNode = oPresentationNode;
-	this.m_oPresentationNode.enabled.addChangeListener(this, '_setDisabled');
-	this.m_oPresentationNode.visible.addChangeListener(this, '_setVisible');
-	this.m_oPresentationNode.value.addChangeListener(this, '_setValue');
+	this.m_oPresentationNode.enabled.addChangeListener(this._setDisabled.bind(this));
+	this.m_oPresentationNode.visible.addChangeListener(this._setVisible.bind(this));
+	this.m_oPresentationNode.value.addChangeListener(this._setValue.bind(this));
 };
 
 /**

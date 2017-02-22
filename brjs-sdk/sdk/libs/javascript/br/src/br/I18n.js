@@ -9,4 +9,4 @@
 var Translator = require('br/i18n/Translator');
 var I18N = require('br/i18n/I18N');
 
-module.exports = I18N.create(new Translator(window._brjsI18nProperties || {}, window._brjsI18nUseLocale));
+module.exports = I18N.create(new Translator(window.$_brjsI18nProperties || {}, window.$_brjsI18nUseLocale));

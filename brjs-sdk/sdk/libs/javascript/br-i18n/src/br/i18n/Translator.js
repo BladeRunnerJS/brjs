@@ -4,7 +4,11 @@
 * @module br/i18n/Translator
 */
 
+var Errors = require('br/Errors');
 var LocalisedNumber = require('./LocalisedNumber');
+var fell = require('fell');
+var log = fell.getLogger('br.i18n.Translator');
+var I18nStore = require('./I18nStore');
 // LocalisedDate and LocalisedTime use br/i18n which depends on this class,
 // so they have to be required where they are used or there would be a circular
 // dependency.
@@ -17,38 +21,33 @@ var TEST_DATE_FORMAT_LONG = "D, d M, Y, h:i:s A";
 /**
 * @class
 * @alias module:br/i18n/Translator
-* 
+*
 * @classdesc
 * <p>The class within the <code>br.I18N</code> package that is responsible
 * for translating localization tokens in the form of
 * <code>&#64;{key.name}</code> into translated text.</p>
-* 
+*
 * <p>This class should not be instantiated directly. To access i18n functions
 * use the [br/i18n]{@link module:br/i18n} class which returns the
 * [br/i18n/I18N]{@link module:br/i18n/I18N} accessor class.
 * For example <code>require("br/i18n").i18n("some.i18n.key")</code>.</p>
 */
 function Translator(messageDefinitions, useLocale) {
-	/** @private */
-	this.messages = {};
-	/** @private */
-	this.messageDefinitions = messageDefinitions;
+	var defaultLocale = Object.keys(require('service!br.app-meta-service').getLocales())[0];
 
 	/** @private */
 	this.localizationPrefs = {};
-	/** @private */
-	this.testMode = false;
-	this.setLocale(useLocale);
+
+	I18nStore.initialize(messageDefinitions, useLocale || 'en', defaultLocale);
+}
+
+Translator.MESSAGES = {
+	UNTRANSLATED_TOKEN_LOG_MSG: 'A translation has not been provided for the i18n key "{0}" in the "{1}" locale'
 };
 
 Translator.prototype.setLocale = function(locale) {
-	var unproccessedMessages = this.messageDefinitions[locale];
-	this.messages = {};
-
-	for (var message in unproccessedMessages) {
-		this.messages[message.toLowerCase()] = unproccessedMessages[message];
-	}
-}
+	I18nStore.locale = locale;
+};
 
 /**
 * Translate is used to convert raw localization tokens in the form
@@ -83,17 +82,17 @@ Translator.prototype.translate = function(text, type) {
 };
 
 /**
- * Returns whether the current locale contains a given localization token.
+ * Returns whether a given localization token is contained in either the current locale or the default locale.
  *
  * <p>Usage: <code>Translator.getTranslator().tokenExists("br.core.field.start.date")</code></p>
  *
  * @param {String} sText The token name
  * @type boolean
- * @returns <code>true</code> if the localization token exists in the current locale's
+ * @returns <code>true</code> if the localization token exists in the current locale or the default locale's
  *         translation set, otherwise <code>false</code>.
  */
 Translator.prototype.tokenExists = function(token) {
-	return token.toLowerCase() in this.messages;
+	return I18nStore.tokenExists(token);
 };
 
 /**
@@ -135,7 +134,7 @@ Translator.prototype.convertXMLEntityChars = function(text) {
  */
 Translator.prototype.getMessage = function(token, templateArgs) {
 	templateArgs = templateArgs || {};
-	var text = this._getTranslationForKeyOrUndefinedIfKeyIsUnknown(token);
+	var text = this._getTranslationForKeyOrUndefined(token);
 	if (text != null) {
 		for (var key in templateArgs) {
 			var regEx = new RegExp("\\[" + key + "\\]", "g");
@@ -144,7 +143,6 @@ Translator.prototype.getMessage = function(token, templateArgs) {
 	}
 	return formatTranslationResponseIfTranslationWasUnknown(token, text);
 };
-
 
 /**
  * Returns the current date format string for use in displaying the current date format or for
@@ -355,32 +353,31 @@ Translator.prototype.setLocalizationPreferences = function(localizationPrefs) {
 	this.localizationPrefs = localizationPrefs;
 };
 
-
-/**
-* @private
-*/
-Translator.prototype._setMessages = function(messages) {
-	this.messages = messages;
-};
-
 /** @private */
 Translator.prototype._getTranslationForKey = function(token) {
-	var text = this._getTranslationForKeyOrUndefinedIfKeyIsUnknown(token);
+	var text = this._getTranslationForKeyOrUndefined(token);
 	return formatTranslationResponseIfTranslationWasUnknown(token, text);
 };
 
 /** @private */
-Translator.prototype._getTranslationForKeyOrUndefinedIfKeyIsUnknown = function(token) {
-	token = token.toLowerCase();
-	if (this.testMode === true) {
-		if (token == "br.i18n.date.format") {
-			return TEST_DATE_FORMAT_SHORT;
-		} else if (token == "br.i18n.date.format.long") {
-			return TEST_DATE_FORMAT_LONG;
+Translator.prototype._getTranslationForKeyOrUndefined = function(token) {
+	if (!this.tokenExists(token)) {
+		var logConsole = (window.jstestdriver) ? jstestdriver.console : window.console;
+		if (logConsole && logConsole.warn && !window.suppressI18nWarnings) {
+		    logConsole.warn('Unable to find a replacement for the i18n key "' + token + '"');
 		}
-		return ".";
 	}
-	return this.messages[token];
+
+	var message = I18nStore.getTranslation(token);
+
+	if (typeof message === 'undefined') {
+		log.warn(Translator.MESSAGES.UNTRANSLATED_TOKEN_LOG_MSG, token, I18nStore.locale);
+		if (!require('service!br.app-meta-service').isDev()) {
+			message = I18nStore.getDefaultTranslation(token);
+		}
+	}
+
+	return message;
 };
 
 function formatTranslationResponseIfTranslationWasUnknown(key, text) {

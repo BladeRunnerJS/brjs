@@ -21,7 +21,7 @@ public class AliasDefinitionsData {
 	}
 	
 	public boolean equals(AliasDefinitionsData aliasDefinitionsData) {
-		return aliasDefinitions.equals(aliasDefinitionsData) && scenarioAliases.equals(aliasDefinitionsData.scenarioAliases) && groupAliases.equals(aliasDefinitionsData.groupAliases);
+		return aliasDefinitions.equals(aliasDefinitionsData.aliasDefinitions) && scenarioAliases.equals(aliasDefinitionsData.scenarioAliases) && groupAliases.equals(aliasDefinitionsData.groupAliases);
 	}
 	
 	public Map<String, AliasOverride> getScenarioAliases(String aliasName) {

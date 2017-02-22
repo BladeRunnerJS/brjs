@@ -92,11 +92,16 @@
 	};
 
 	ServiceRegistryTest.test_getService_WorksWithServicesRegisteredWithAliases = function() {
+		define('br/AliasRegistry', function(require, exports, module) {
+			var AliasRegistryClass = require('br/AliasRegistryClass');
+			module.exports = new AliasRegistryClass( {'my.service': {'class': 'MyService', 'className': 'my.Service'}} );
+		});
+		define('br/ServiceRegistry', function(require, exports, module) {
+			module.exports = new (require('br/ServiceRegistryClass'));
+		});
+		
 		window.MyService = function() {};
-		var aliasRegistry = require('br/AliasRegistry');
-		aliasRegistry._aliasData = {'my.service': {'class': 'MyService', 'className': 'my.Service'}};
-
-		assertTrue(ServiceRegistry.getService('my.service') instanceof MyService);
+		assertTrue(require('br/ServiceRegistry').getService('my.service') instanceof MyService);
 	};
 	
 	ServiceRegistryTest.test_disposeCallsDisposeOnAllServices = function() {

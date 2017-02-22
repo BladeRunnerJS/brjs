@@ -29,7 +29,7 @@ function Alias(oProperty) {
 	/** @private */
 	this.m_oWrappedProperty = oProperty;
 
-	oProperty.addChangeListener(this, '_onWrappedChanged', false);
+	oProperty.addChangeListener(this._onWrappedChanged.bind(this), false);
 	var vInitial = oProperty.getValue();
 	Property.call(this, vInitial);
 }

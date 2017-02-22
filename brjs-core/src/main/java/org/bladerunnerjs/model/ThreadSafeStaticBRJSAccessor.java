@@ -52,7 +52,7 @@ public class ThreadSafeStaticBRJSAccessor {
 		}
 	}
 	
-	public static BRJS aquireModel() {
+	public static BRJS acquireModel() {
 		lock.lock();
 		return model;
 	}

@@ -99,9 +99,9 @@ ToggleSwitchControl.prototype.setPresentationNode = function(oPresentationNode) 
 	this._refresh();
 
 	oPresentationNode.value.addListener(this);
-	oPresentationNode.options.addChangeListener(this, '_updateOptions');
-	oPresentationNode.enabled.addChangeListener(this, '_updateEnabled', true);
-	oPresentationNode.visible.addChangeListener(this, '_updateVisible', true);
+	oPresentationNode.options.addChangeListener(this._updateOptions.bind(this));
+	oPresentationNode.enabled.addChangeListener(this._updateEnabled.bind(this), true);
+	oPresentationNode.visible.addChangeListener(this._updateVisible.bind(this), true);
 };
 
 /**

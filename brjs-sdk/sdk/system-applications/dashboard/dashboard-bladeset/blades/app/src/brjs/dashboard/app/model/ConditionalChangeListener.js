@@ -4,13 +4,12 @@ var NodeListListener = require('br/presenter/node/NodeListListener');
 var PropertyListener = require('br/presenter/property/PropertyListener');
 var Core = require('br/Core');
 
-function ConditionalChangeListener(oListener, sMethod, oConditionProperty, vConditionValue) {
-	this.m_oListener = oListener;
-	this.m_sMethod = sMethod;
+function ConditionalChangeListener(fCallback, oConditionProperty, vConditionValue) {
+	this.m_fCallback = fCallback;
 	this.m_oConditionProperty = oConditionProperty;
 	this.m_vConditionValue = vConditionValue;
 
-	this.m_oConditionProperty.addChangeListener(this, '_onConditionPropertyChanged');
+	this.m_oConditionProperty.addChangeListener(this._onConditionPropertyChanged.bind(this));
 }
 
 Core.inherit(ConditionalChangeListener, PropertyListener);
@@ -30,7 +29,7 @@ ConditionalChangeListener.prototype._onConditionPropertyChanged = function() {
 
 ConditionalChangeListener.prototype._sendUpdates = function() {
 	if (this.m_oConditionProperty.getValue() === this.m_vConditionValue) {
-		this.m_oListener[this.m_sMethod].call(this.m_oListener);
+		this.m_fCallback();
 	}
 };
 

@@ -6,6 +6,8 @@ import java.util.Date;
 
 public class DefaultAppVersionGenerator implements AppVersionGenerator
 {
+	public static final String DEV_VERSION = "dev";
+	
 	private String version = null;
 	private boolean appendTimetamp = true;
 	private String timestamp;

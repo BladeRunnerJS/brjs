@@ -97,7 +97,14 @@ public class AppBuilderUtilis
 	{
 		String indexPageExtension = (aspect.file("index.jsp").exists()) ? ".jsp" : ".html";
 		String indexPageRequestPath = aspect.requestHandler().createIndexPageRequest(locale);
-		String indexPageFileName = (indexPageRequestPath.isEmpty()) ? "index" : indexPageRequestPath;
+		String indexPageFileName;
+		if (indexPageRequestPath.isEmpty()) {
+			indexPageFileName = "index";
+		} else if (indexPageRequestPath.endsWith("/")) {
+			indexPageFileName = indexPageRequestPath+"/index";
+		} else {
+			indexPageFileName = indexPageRequestPath;
+		}
 		
 		File localeIndexPageFile = new File(targetDir, indexPageFileName + indexPageExtension);
 		localeIndexPageFile.getParentFile().mkdirs();

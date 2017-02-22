@@ -26,7 +26,6 @@ public interface RootNode extends Node {
 	
 	boolean isNodeRegistered(Node node);
 	void registerNode(Node node) throws NodeAlreadyRegisteredException;
-	void clearRegisteredNode(Node node);
 	Node getRegisteredNode(MemoizedFile childPath) throws MultipleNodesForPathException;
 	Node getRegisteredNode(MemoizedFile childPath, Class<? extends Node> nodeClass) throws MultipleNodesForPathException;
 	List<Node> getRegisteredNodes(MemoizedFile childPath);

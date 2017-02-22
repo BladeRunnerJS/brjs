@@ -28,10 +28,10 @@ function ImportMotifDialog(oPresentationModel) {
 	this.appName.value.addValidator(new AppNameValidator(oPresentationModel));
 	this.appNamespace.value.addValidator(new AppNamespaceValidator());
 
-	this.appZip.fileSelected.addChangeListener(this, '_updateDialog');
-	this.appName.value.addValidationCompleteListener(this, '_updateDialog');
-	this.appNamespace.value.addValidationCompleteListener(this, '_updateDialog');
-	this.appNamespace.value.addChangeListener(this, '_onNamespaceChanged');
+	this.appZip.fileSelected.addChangeListener(this._updateDialog.bind(this));
+	this.appName.value.addValidationCompleteListener(this._updateDialog.bind(this));
+	this.appNamespace.value.addValidationCompleteListener(this._updateDialog.bind(this));
+	this.appNamespace.value.addChangeListener(this._onNamespaceChanged.bind(this));
 }
 
 Core.extend(ImportMotifDialog, DialogViewNode);

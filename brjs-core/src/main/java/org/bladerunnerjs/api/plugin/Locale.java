@@ -80,9 +80,11 @@ public class Locale
 		return !hasLanguageCode() && !hasCountryCode();
 	}
 	
-	public boolean equals(Locale locale)
-	{
-		return toString().equals(locale);
+	public boolean equals(Locale locale) {
+		if (locale == null) { 
+			return false;
+		}
+		return toString().equals(locale.toString());
 	}
 	
 	@Override

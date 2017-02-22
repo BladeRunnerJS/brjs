@@ -11,6 +11,7 @@ import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.api.BladeWorkbench;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -66,7 +67,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).hasBeenCreated()
 			.and(aspect).containsEmptyFile("index.html");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
-		then(response).containsOrderedTextFragments("if (!window._brjsI18nProperties) { window._brjsI18nProperties = {} };", "window._brjsI18nProperties['en_GB'] = {};");
+		then(response).containsOrderedTextFragments("if (!window.$_brjsI18nProperties) { window.$_brjsI18nProperties = {} };", "window.$_brjsI18nProperties['en_GB'] = {};");
 	}
 	
 	@Test
@@ -75,7 +76,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).hasBeenCreated()
 			.and(aspect).containsEmptyFile("index.html");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
-		then(response).containsOrderedTextFragments("window._brjsI18nProperties['en_GB'] = {};", "window._brjsI18nUseLocale = 'en_GB';");
+		then(response).containsOrderedTextFragments("window.$_brjsI18nProperties['en_GB'] = {};", "window.$_brjsI18nUseLocale = 'en_GB';");
 	}
 	
 	@Test
@@ -84,7 +85,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).hasBeenCreated()
 			.and(aspect).containsEmptyFile("index.html");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
-		then(response).containsText("window._brjsI18nProperties['en_GB'] = ");
+		then(response).containsText("window.$_brjsI18nProperties['en_GB'] = ");
 	}
 	
 	@Test
@@ -94,7 +95,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).hasBeenCreated()
 			.and(aspect).containsEmptyFile("index.html");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
-		then(response).containsText("window._brjsI18nProperties['en_GB'] = {};");
+		then(response).containsText("window.$_brjsI18nProperties['en_GB'] = {};");
 	}
 	
 	@Test
@@ -106,7 +107,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en_GB.properties", "appns.property=property value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.property\": \"property value\"\n"
 				+ "};");
 	}
@@ -121,7 +122,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("de_DE.properties", "appns.property=a different value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.property\": \"property value\"\n"
 				+ "};");
 	}
@@ -135,7 +136,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en.properties", "appns.property=property value");
 		when(aspect).requestReceivedInDev("i18n/en.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en'] = {\n"
+				"window.$_brjsI18nProperties['en'] = {\n"
 				+ "  \"appns.property\": \"property value\"\n"
 				+ "};");
 	}
@@ -150,7 +151,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en_GB.properties", "appns.property=another value");
 		when(aspect).requestReceivedInDev("i18n/en.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en'] = {\n"
+				"window.$_brjsI18nProperties['en'] = {\n"
 				+ "  \"appns.property\": \"property value\"\n"
 				+ "};");
 	}
@@ -165,7 +166,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en_GB.properties", "appns.another.property=another value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.another.property\": \"another value\",\n"
 				+ "  \"appns.some.property\": \"property value\"\n"
 				+ "};");
@@ -181,7 +182,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en_GB.properties", "appns.property=another value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.property\": \"another value\"\n"
 				+ "};");
 	}
@@ -195,7 +196,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en.properties", "appns.property=property value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.property\": \"property value\"\n"
 				+ "};");
 	}
@@ -209,7 +210,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("i18n/en.properties", "appns.property=property value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.property\": \"property value\"\n"
 				+ "};");
 	}
@@ -224,7 +225,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsFileWithContents("src/appns/en.properties", "appns.property=property value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.property\": \"property value\"\n"
 				+ "};");
 	}
@@ -240,7 +241,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en.properties", "appns.bs.b1.property=aspect value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.bs.b1.property\": \"aspect value\"\n"
 				+ "};");
 	}
@@ -255,7 +256,7 @@ public class I18nContentPluginTest extends SpecTest
 		.and(workbench).containsResourceFileWithContents("en.properties", "appns.bs.b1.property=workbench value");
 		when(workbench).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.bs.b1.property\": \"workbench value\"\n"
 				+ "};");
 	}
@@ -288,7 +289,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en.properties", "appns.p3=v3\nappns.p1=v1\nappns.p2=v2\n");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.p1\": \"v1\",\n"
 				+ "  \"appns.p2\": \"v2\",\n"
 				+ "  \"appns.p3\": \"v3\"\n"
@@ -304,7 +305,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en.properties", "appns.p1=v\\n1");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.p1\": \"v\\n1\"\n"
 				+ "};");
 	}
@@ -318,7 +319,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en.properties", "appns.p1=\"quoted\"");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.p1\": \"\\\"quoted\\\"\"\n"
 				+ "};");
 	}
@@ -332,7 +333,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).containsResourceFileWithContents("en.properties", "appns.p1=\"$£€\"");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"appns.p1\": \"\\\"$£€\\\"\"\n"
 				+ "};");
 	}
@@ -346,7 +347,7 @@ public class I18nContentPluginTest extends SpecTest
     		.and(aspect).containsResourceFileWithContents("en.properties", "appns.p1=\"$£\"");
     	when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
     	then(response).containsText(	
-    			"window._brjsI18nProperties['en_GB'] = {\n"
+    			"window.$_brjsI18nProperties['en_GB'] = {\n"
     			+ "  \"appns.p1\": \"\\\"$£\\\"\"\n"
     			+ "};");
 	}
@@ -361,7 +362,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(sdkLib).containsResourceFileWithContents("en_GB.properties", "foo.bar.property=property value");
 		when(aspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText(	
-				"window._brjsI18nProperties['en_GB'] = {\n"
+				"window.$_brjsI18nProperties['en_GB'] = {\n"
 				+ "  \"foo.bar.property\": \"property value\"\n"
 				+ "};");
 	}
@@ -383,4 +384,221 @@ public class I18nContentPluginTest extends SpecTest
 		when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
 		then(response).containsText("\"appns.property\": \"property value\"");
 	}
+	
+	
+	/* ** Dependencies from HTML files ** */
+	
+	@Test
+	public void i18nPropertiesInBladesetResourcesReferencedFromAnAspectHtmlTemplateAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("view.html", "<div>@{appns.bs.key@}</div>")
+    		.and(bladeset).containsFileWithContents("resources/en_GB.properties", "appns.bs.key=translation");
+    	when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+    	then(response).containsText("\"appns.bs.key\": \"translation\"");
+	}
+	
+	@Test
+	public void i18nPropertiesInBladesetSrcReferencedFromAnAspectHtmlTemplateAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("view.html", "<div>@{appns.bs.key@}</div>")
+    		.and(bladeset).containsFileWithContents("src/en_GB.properties", "appns.bs.key=translation");
+    	when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+    	then(response).containsText("\"appns.bs.key\": \"translation\"");
+	}
+	
+	@Test @Ignore
+	public void i18nPropertiesInBladesetSrcPackageDirReferencedFromAnAspectHtmlTemplateAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("view.html", "<div>@{appns.bs.pkg.key@}</div>")
+    		.and(bladeset).containsFileWithContents("src/pkg/en_GB.properties", "appns.bs.pkg.key=translation");
+    	when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+    	then(response).containsText("\"appns.bs.pkg.key\": \"translation\"");
+	}
+	
+	@Test
+	public void i18nPropertiesInBladeResourcesReferencedFromAnAspectHtmlTemplateAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("view.html", "<div>@{appns.bs.b1.key@}</div>")
+			.and(blade).containsFileWithContents("resources/en_GB.properties", "appns.bs.b1.key=translation");
+		when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"appns.bs.b1.key\": \"translation\"");
+	}
+	
+	@Test
+	public void i18nPropertiesInBladeSrcReferencedFromAnAspectHtmlTemplateAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("view.html", "<div>@{appns.bs.b1.key@}</div>")
+			.and(blade).containsFileWithContents("src/en_GB.properties", "appns.bs.b1.key=translation");
+		when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"appns.bs.b1.key\": \"translation\"");
+	}
+	
+	@Test @Ignore
+	public void i18nPropertiesInBladeSrcPackageDirReferencedFromAnAspectHtmlTemplateAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("view.html", "<div>@{appns.bs.b1.pkg.key@}</div>")
+			.and(blade).containsFileWithContents("src/pkg/en_GB.properties", "appns.bs.b1.pkg.key=translation");
+		when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"appns.bs.b1.pkg.key\": \"translation\"");
+	}
+	
+	@Test @Ignore
+	public void i18nPropertiesInLibResourcesReferencedFromAnAspectHtmlTemplateAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("view.html", "<div>@{lib.key@}</div>")
+			.and(sdkLib).containsFileWithContents("resources/en_GB.properties", "lib.key=translation")
+			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: lib");
+		when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"lib.key\": \"translation\"");
+	}
+	
+	@Test @Ignore
+	public void i18nPropertiesInLibSrcReferencedFromAnAspectHtmlTemplateAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("view.html", "<div>@{lib.key@}</div>")
+			.and(sdkLib).containsFileWithContents("src/en_GB.properties", "lib.key=translation")
+			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: appns");
+		when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"lib.key\": \"translation\"");
+	}
+	
+	@Test @Ignore
+	public void i18nPropertiesInLibSrcPackageDirReferencedFromAnAspectHtmlTemplateAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("view.html", "<div>@{lib.pkg.key@}</div>")
+			.and(sdkLib).containsFileWithContents("src/pkg/en_GB.properties", "lib.pkg.key=translation")
+			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: appns");
+		when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"lib.key\": \"translation\"");
+	}
+	
+	@Test @Ignore
+	public void i18nPropertiesInLibResourcesReferencedFromAnotherLibTestHtmlTemplateAreBundled() throws Exception {
+		SdkJsLib sdkLib2 = brjs.sdkLib("test");
+		given(sdkLib2).containsResourceFileWithContents("view.html", "<div>@{lib.key@}</div>")
+			.and(sdkLib).containsFileWithContents("resources/en_GB.properties", "lib.key=translation")
+			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: appns");
+		when(sdkLib2.testType("ut").defaultTestTech()).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"lib.key\": \"translation\"");
+	}
+	
+	@Test @Ignore
+	public void i18nPropertiesInLibSrcReferencedFromAotherLibTestHtmlTemplateAreBundled() throws Exception {
+		SdkJsLib sdkLib2 = brjs.sdkLib("test");
+		given(sdkLib2).containsResourceFileWithContents("view.html", "<div>@{lib.key@}</div>")
+			.and(sdkLib).containsFileWithContents("src/en_GB.properties", "lib.key=translation")
+			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: appns");
+		when(sdkLib2.testType("ut").defaultTestTech()).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"lib.key\": \"translation\"");
+	}
+	
+	@Test @Ignore
+	public void i18nPropertiesInLibSrcPackageDirReferencedFromAotherLibTestHtmlTemplateAreBundled() throws Exception {
+		SdkJsLib sdkLib2 = brjs.sdkLib("test");
+		given(sdkLib2).containsResourceFileWithContents("view.html", "<div>@{lib.pkg.key@}</div>")
+			.and(sdkLib).containsFileWithContents("src/pkg/en_GB.properties", "lib.pkg.key=translation")
+			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: appns");
+		when(sdkLib2.testType("ut").defaultTestTech()).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"lib.pkg.key\": \"translation\"");
+	}
+	
+	
+	/* ** Dependencies from XML files ** */
+	
+	@Test
+	public void i18nPropertiesInBladesetResourcesReferencedFromAnAspectXmlFileAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("config.xml", "<div>@{appns.bs.key@}</div>")
+    		.and(bladeset).containsFileWithContents("resources/en_GB.properties", "appns.bs.key=translation");
+    	when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+    	then(response).containsText("\"appns.bs.key\": \"translation\"");
+	}
+	
+	@Test
+	public void i18nPropertiesInBladesetSrcReferencedFromAnAspectXmlFileAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("config.xml", "<div>@{appns.bs.key@}</div>")
+    		.and(bladeset).containsFileWithContents("src/en_GB.properties", "appns.bs.key=translation");
+    	when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+    	then(response).containsText("\"appns.bs.key\": \"translation\"");
+	}
+	
+	@Test @Ignore
+	public void i18nPropertiesInBladesetSrcPackageDirReferencedFromAnAspectXmlFileAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("config.xml", "<div>@{appns.bs.pkg.key@}</div>")
+    		.and(bladeset).containsFileWithContents("src/pkg/en_GB.properties", "appns.bs.pkg.key=translation");
+    	when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+    	then(response).containsText("\"appns.bs.pkg.key\": \"translation\"");
+	}
+	
+	@Test
+	public void i18nPropertiesInBladeResourcesReferencedFromAnAspectXmlFileAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("config.xml", "<div>@{appns.bs.b1.key@}</div>")
+			.and(blade).containsFileWithContents("resources/en_GB.properties", "appns.bs.b1.key=translation");
+		when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"appns.bs.b1.key\": \"translation\"");
+	}
+	
+	@Test
+	public void i18nPropertiesInBladeSrcReferencedFromAnAspectXmlFileAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("config.xml", "<div>@{appns.bs.b1.key@}</div>")
+			.and(blade).containsFileWithContents("src/en_GB.properties", "appns.bs.b1.key=translation");
+		when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"appns.bs.b1.key\": \"translation\"");
+	}
+	
+	@Test @Ignore
+	public void i18nPropertiesInBladeSrcPackageDirReferencedFromAnAspectXmlFileAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("config.xml", "<div>@{appns.bs.b1.pkg.key@}</div>")
+			.and(blade).containsFileWithContents("src/pkg/en_GB.properties", "appns.bs.b1.pkg.key=translation");
+		when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"appns.bs.b1.pkg.key\": \"translation\"");
+	}
+	
+	@Test @Ignore
+	public void i18nPropertiesInLibResourcesReferencedFromAnAspectXmlFileAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("config.xml", "<div>@{lib.key@}</div>")
+			.and(sdkLib).containsFileWithContents("resources/en_GB.properties", "lib.key=translation")
+			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: lib");
+		when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"lib.key\": \"translation\"");
+	}
+	
+	@Test @Ignore
+	public void i18nPropertiesInLibSrcReferencedFromAnAspectXmlFileAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("config.xml", "<div>@{lib.key@}</div>")
+			.and(sdkLib).containsFileWithContents("src/en_GB.properties", "lib.key=translation")
+			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: appns");
+		when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"lib.key\": \"translation\"");
+	}
+	
+	@Test @Ignore
+	public void i18nPropertiesInLibSrcPackageDirReferencedFromAnAspectXmlFileAreBundled() throws Exception {
+		given(defaultAspect).containsResourceFileWithContents("config.xml", "<div>@{lib.pkg.key@}</div>")
+			.and(sdkLib).containsFileWithContents("src/pkg/en_GB.properties", "lib.pkg.key=translation")
+			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: appns");
+		when(defaultAspect).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"lib.pkg.key\": \"translation\"");
+	}
+	
+	@Test @Ignore
+	public void i18nPropertiesInLibResourcesReferencedFromAnotherLibTestXmlFileAreBundled() throws Exception {
+		SdkJsLib sdkLib2 = brjs.sdkLib("test");
+		given(sdkLib2).containsResourceFileWithContents("config.xml", "<div>@{lib.key@}</div>")
+			.and(sdkLib).containsFileWithContents("resources/en_GB.properties", "lib.key=translation")
+			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: appns");
+		when(sdkLib2.testType("ut").defaultTestTech()).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"lib.key\": \"translation\"");
+	}
+	
+	@Test @Ignore
+	public void i18nPropertiesInLibSrcReferencedFromAotherLibTestXmlFileAreBundled() throws Exception {
+		SdkJsLib sdkLib2 = brjs.sdkLib("test");
+		given(sdkLib2).containsResourceFileWithContents("config.xml", "<div>@{lib.key@}</div>")
+			.and(sdkLib).containsFileWithContents("src/en_GB.properties", "lib.key=translation")
+			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: appns");
+		when(sdkLib2.testType("ut").defaultTestTech()).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"lib.key\": \"translation\"");
+	}
+	
+	@Test @Ignore
+	public void i18nPropertiesInLibSrcPackageDirReferencedFromAotherLibTestXmlFileAreBundled() throws Exception {
+		SdkJsLib sdkLib2 = brjs.sdkLib("test");
+		given(sdkLib2).containsResourceFileWithContents("config.xml", "<div>@{lib.pkg.key@}</div>")
+			.and(sdkLib).containsFileWithContents("src/pkg/en_GB.properties", "lib.pkg.key=translation")
+			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: appns");
+		when(sdkLib2.testType("ut").defaultTestTech()).requestReceivedInDev("i18n/en_GB.js", response);
+		then(response).containsText("\"lib.pkg.key\": \"translation\"");
+	}
+	
 }

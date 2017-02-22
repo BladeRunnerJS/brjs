@@ -19,7 +19,7 @@ function NewBladesetDialog(oPresentationModel) {
 
 	this.bladesetName.value.addValidator(new BladesetNameValidator(oPresentationModel));
 
-	this.bladesetName.value.addValidationCompleteListener(this, '_updateDialog');
+	this.bladesetName.value.addValidationCompleteListener(this._updateDialog.bind(this));
 }
 
 Core.extend(NewBladesetDialog, DialogViewNode);

@@ -307,7 +307,7 @@ public class LogMessageStore
 	private void verifyNoLogMessage(String logLevel, List<LogMessage> messages, LogMessage logMessage)
 	{
 		LogMessage foundMessage = findFirstMessageMatching(messages, logMessage.message, null);
-		assertNull( String.format("found log message, expected not to", logLevel, logMessage.message) , foundMessage );
+		assertNull( "found log message, expected not to. Log level: " + logLevel + ", message: " + logMessage.message, foundMessage );
 	}
 
 	private String concatenateMessages(List<LogMessage> messages)
@@ -343,6 +343,7 @@ public class LogMessageStore
 
 	private void verifyNoMoreMessageOnList(String logLevel, List<LogMessage> messages)
 	{
+		assertionMade = true;
 		assertTrue( String.format(UNEXPECTED_LOG_MESSAGES, logLevel, Joiner.on(",\n\t\t").join(messages)), messages.isEmpty() );
 	}
 
@@ -353,6 +354,18 @@ public class LogMessageStore
 		verifyNoMoreWarnMessages();
 		verifyNoMoreInfoMessages();
 	}
+	
+	public void verifyNoUnhandledMessageAtTestTearDown()
+	{
+		boolean assertionMadeAtTestTearDown = assertionMade; // we need to do this because the 'verify' methods below set assertionMade = true
+		verifyNoMoreFatalMessages();
+		verifyNoMoreErrorMessages();
+		verifyNoMoreWarnMessages();
+		verifyNoMoreInfoMessages();
+		assertionMade = assertionMadeAtTestTearDown;
+	}
+	
+	
 	
 	public void noMessagesLogged()
 	{

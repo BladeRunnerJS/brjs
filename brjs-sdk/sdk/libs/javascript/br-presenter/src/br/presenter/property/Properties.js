@@ -5,6 +5,7 @@ var WritableProperty = require('br/presenter/property/WritableProperty');
 var Property = require('br/presenter/property/Property');
 var PropertyListener = require('br/presenter/property/PropertyListener');
 var ListenerFactory = require('br/util/ListenerFactory');
+var ListenerCompatUtil = require('../util/ListenerCompatUtil');
 
 /**
  * @module br/presenter/property/Properties
@@ -57,6 +58,15 @@ Properties.prototype.add = function(vProperties) {
 	} else {
 		throw 'br.presenter.property.Properties.prototype.add() unknown type';
 	}
+};
+
+/**
+ * Returns array of properties in the collection.
+ *
+ * @type Array
+ */
+Properties.prototype.getProperties = function() {
+	return this.m_pProperties.slice(0);
 };
 
 /**
@@ -122,13 +132,12 @@ Properties.prototype.removeAllListeners = function() {
  * using this method is that objects can choose to listen to call-back events on multiple
  * properties.</p>
  * 
- * @param {Object} oListener The listener to be added.
- * @param {String} sMethod The name of the method on the listener that will be invoked each time the property changes.
+ * @param {Function} fCallback The call-back that will be invoked each time the property changes.
  * @param {boolean} bNotifyImmediately (optional) Whether to invoke the listener immediately for the current value.
  * @type br.presenter.property.PropertyListener
  */
-Properties.prototype.addChangeListener = function(oListener, sMethod, bNotifyImmediately) {
-	var oPropertyListener = this.m_oChangeListenerFactory.createListener(oListener, sMethod);
+Properties.prototype.addChangeListener = function(fCallback, bNotifyImmediately) {
+	var oPropertyListener = this.m_oChangeListenerFactory.createListener(fCallback);
 	this.addListener(oPropertyListener, bNotifyImmediately);
 
 	return oPropertyListener;
@@ -145,13 +154,12 @@ Properties.prototype.addChangeListener = function(oListener, sMethod, bNotifyImm
  * using this method is that objects can choose to listen to call-back events on multiple
  * properties.</p>
  *
- * @param {Object} oListener The listener to be added.
- * @param {String} sMethod The name of the method on the listener that will be invoked each time the property changes.
+ * @param {Function} fCallback The call-back that will be invoked each time the property is updated.
  * @param {boolean} bNotifyImmediately (optional) Whether to invoke the listener immediately for the current value.
  * @type br.presenter.property.PropertyListener
  */
-Properties.prototype.addUpdateListener = function(oListener, sMethod, bNotifyImmediately) {
-	var oPropertyListener = this.m_oUpdateListenerFactory.createListener(oListener, sMethod);
+Properties.prototype.addUpdateListener = function(fCallback, bNotifyImmediately) {
+	var oPropertyListener = this.m_oUpdateListenerFactory.createListener(fCallback);
 	this.addListener(oPropertyListener, bNotifyImmediately);
 
 	return oPropertyListener;
@@ -166,5 +174,8 @@ Properties.prototype._addPropertyArray = function(pProperties) {
 		this.m_pProperties.push(pProperties[i]);
 	}
 };
+
+Properties.prototype.addChangeListener = ListenerCompatUtil.enhance(Properties.prototype.addChangeListener);
+Properties.prototype.addUpdateListener = ListenerCompatUtil.enhance(Properties.prototype.addUpdateListener);
 
 module.exports = Properties;

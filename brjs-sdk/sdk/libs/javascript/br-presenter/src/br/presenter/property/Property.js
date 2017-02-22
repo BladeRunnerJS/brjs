@@ -7,6 +7,7 @@ var ListenerFactory = require('br/util/ListenerFactory');
 var Observable = require('br/util/Observable');
 var Errors = require('br/Errors');
 var KnockoutProperty = require('br/presenter/view/knockout/KnockoutProperty');
+var ListenerCompatUtil = require('../util/ListenerCompatUtil');
 
 /**
  * @module br/presenter/property/Property
@@ -219,13 +220,16 @@ Property.prototype.removeAllListeners = function() {
  * using this method is that objects can choose to listen to call-back events on multiple
  * properties.</p>
  *
- * @param {Object} oListener The listener to be added.
- * @param {String} sMethod The name of the method on the listener that will be invoked each time the property changes.
+ * <p>We also allow <code>oListener</code> and <code>sMethod</code> to be used in place of
+ * <code>fCallback</code>, but this form is now deprecated as it's imcompatible with
+ * Closure Compiler's property renaming feature.</p>
+ *
+ * @param {Function} fCallback The call-back that will be invoked each time the property changes.
  * @param {boolean} [bNotifyImmediately] (optional) Whether to invoke the listener immediately for the current value.
  * @type br.presenter.property.PropertyListener
  */
-Property.prototype.addChangeListener = function(oListener, sMethod, bNotifyImmediately) {
-	var oPropertyListener = this.m_oChangeListenerFactory.createListener(oListener, sMethod);
+Property.prototype.addChangeListener = function(fCallback, bNotifyImmediately) {
+	var oPropertyListener = this.m_oChangeListenerFactory.createListener(fCallback, bNotifyImmediately);
 	this.addListener(oPropertyListener, bNotifyImmediately);
 
 	return oPropertyListener;
@@ -242,13 +246,16 @@ Property.prototype.addChangeListener = function(oListener, sMethod, bNotifyImmed
  * using this method is that objects can choose to listen to call-back events on multiple
  * properties.</p>
  *
- * @param {Object} oListener The listener to be added.
- * @param {String} sMethod The name of the method on the listener that will be invoked each time the property changes.
+ * <p>We also allow <code>oListener</code> and <code>sMethod</code> to be used in place of
+ * <code>fCallback</code>, but this form is now deprecated as it's imcompatible with
+ * Closure Compiler's property renaming feature.</p>
+ *
+ * @param {Function} fCallback The call-back that will be invoked each time the property is updated.
  * @param {boolean} bNotifyImmediately (optional) Whether to invoke the listener immediately for the current value.
  * @type br.presenter.property.PropertyListener
  */
-Property.prototype.addUpdateListener = function(oListener, sMethod, bNotifyImmediately) {
-	var oPropertyListener = this.m_oUpdateListenerFactory.createListener(oListener, sMethod);
+Property.prototype.addUpdateListener = function(fCallback, bNotifyImmediately) {
+	var oPropertyListener = this.m_oUpdateListenerFactory.createListener(fCallback, bNotifyImmediately);
 	this.addListener(oPropertyListener, bNotifyImmediately);
 
 	return oPropertyListener;
@@ -280,6 +287,9 @@ Property.prototype._containsPresentationNode = function(pValues) {
 
 	return false;
 };
+
+Property.prototype.addChangeListener = ListenerCompatUtil.enhance(Property.prototype.addChangeListener);
+Property.prototype.addUpdateListener = ListenerCompatUtil.enhance(Property.prototype.addUpdateListener);
 
 module.exports = Property;
 

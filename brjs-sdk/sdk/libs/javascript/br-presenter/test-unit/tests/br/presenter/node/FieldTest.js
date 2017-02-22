@@ -39,10 +39,10 @@
     {
         var fField = this._$getFieldClass();
         var oField = new fField();
-        
+
         assertFalse("1a", oField.hasError.getValue());
         assertEquals("1b", "", oField.failureMessage.getValue());
-        
+
         oField.value.addValidator(this._getTestValidator()).setUserEnteredValue("fail");
         assertTrue("2a", oField.hasError.getValue());
         assertEquals("2b", "only 'pass' is valid", oField.failureMessage.getValue());
@@ -57,4 +57,15 @@
         assertEquals("1b", "label", oField.label.getValue());
         assertEquals("1c", "controlName", oField.controlName.getValue());
     };
+
+    FieldTest.prototype.test_ticketPendingStateGetsChangedOnPropertyChangedAndValidation = function()
+    {
+        var oField = new Field();
+        oField.m_oValueListener.onPropertyChanged();
+        assertTrue(oField.pending.getValue());
+        oField.m_oValueListener.onValidationComplete();
+        assertFalse(oField.pending.getValue());
+
+    };
+
 })();

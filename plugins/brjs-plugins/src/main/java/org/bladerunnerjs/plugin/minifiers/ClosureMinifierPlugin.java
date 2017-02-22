@@ -25,11 +25,15 @@ import org.bladerunnerjs.api.plugin.MinifierPlugin;
 import org.bladerunnerjs.api.plugin.base.AbstractMinifierPlugin;
 
 import com.Ostermiller.util.ConcatReader;
+import com.google.javascript.jscomp.AnonymousFunctionNamingPolicy;
 import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.PropertyRenamingPolicy;
 import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.SourceFile;
+import com.google.javascript.jscomp.VariableRenamingPolicy;
+import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 
 
 public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements MinifierPlugin {
@@ -41,7 +45,11 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 	
 	public static final String CLOSURE_WHITESPACE = "closure-whitespace";
 	public static final String CLOSURE_SIMPLE = "closure-simple";
+	public static final String CLOSURE_SIMPLE_DEBUG = "closure-simple-debug";
+	public static final String CLOSURE_MEDIUM = "closure-medium";
+	public static final String CLOSURE_MEDIUM_DEBUG = "closure-medium-debug";
 	public static final String CLOSURE_ADVANCED = "closure-advanced";
+	public static final String CLOSURE_ADVANCED_DEBUG = "closure-advanced-debug";
 	
 	private Logger logger;
 	
@@ -50,7 +58,11 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 	{
 		settingNames.add(CLOSURE_WHITESPACE);
 		settingNames.add(CLOSURE_SIMPLE);
+		settingNames.add(CLOSURE_SIMPLE_DEBUG);
+		settingNames.add(CLOSURE_MEDIUM);
+		settingNames.add(CLOSURE_MEDIUM_DEBUG);
 		settingNames.add(CLOSURE_ADVANCED);
+		settingNames.add(CLOSURE_ADVANCED_DEBUG);
 	}
 	
 	@Override
@@ -66,14 +78,13 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 	
 	/* using ClosureCompiler API in Java taken from http://blog.bolinfest.com/2009/11/calling-closure-compiler-from-java.html 
 	 * 	and https://code.google.com/p/closure-compiler/wiki/FAQ#How_do_I_call_Closure_Compiler_from_the_Java_API? */
+	@SuppressWarnings("deprecation")
 	@Override
 	public Reader minify(String settingName, List<InputSource> inputSources) throws ContentProcessingException, ResourceNotFoundException {
 		ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
 		
 		Compiler compiler = new Compiler( new PrintStream(errorStream) );
-		CompilerOptions options = new CompilerOptions();
-		
-		getCompilationLevelForSettingName(settingName).setOptionsForCompilationLevel(options);
+		CompilerOptions options = getCompilerOptions(settingName);
 		
 		/* we have to use an extern, so create a dummy one */
 		SourceFile extern = SourceFile.fromCode("externs.js", "function alert(x) {}");
@@ -128,21 +139,43 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 		return new SequenceInputStream( inputStreams.elements() );
 	}
 	
-	private CompilationLevel getCompilationLevelForSettingName(String settingName)
+	private CompilerOptions getCompilerOptions(String settingName)
 	{
+		CompilerOptions options = new CompilerOptions();
+		
 		if (settingName.equals(CLOSURE_WHITESPACE))
 		{
-			return CompilationLevel.WHITESPACE_ONLY;
+			CompilationLevel.WHITESPACE_ONLY.setOptionsForCompilationLevel(options);
 		}
-		if (settingName.equals(CLOSURE_SIMPLE))
+		else if (settingName.equals(CLOSURE_SIMPLE) || settingName.equals(CLOSURE_SIMPLE_DEBUG))
 		{
-			return CompilationLevel.SIMPLE_OPTIMIZATIONS;
+			CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
 		}
-		if (settingName.equals(CLOSURE_ADVANCED))
+		else if (settingName.equals(CLOSURE_MEDIUM) || settingName.equals(CLOSURE_MEDIUM_DEBUG))
 		{
-			return CompilationLevel.ADVANCED_OPTIMIZATIONS;
+			CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
+			options.setRenamingPolicy(VariableRenamingPolicy.LOCAL, PropertyRenamingPolicy.ALL_UNQUOTED);
+			options.setRenamePrivatePropertiesOnly(true);
+			options.setCodingConvention(new BRJSCodingConvention());
 		}
-		throw new RuntimeException("Closure compile does not support the seting " + settingName);
+		else if (settingName.equals(CLOSURE_ADVANCED) || settingName.equals(CLOSURE_ADVANCED_DEBUG))
+		{
+			CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
+		}
+		else
+		{
+			throw new RuntimeException("Closure compile does not support the seting " + settingName);
+		}
+		
+		if(settingName.equals(CLOSURE_SIMPLE_DEBUG) || settingName.equals(CLOSURE_MEDIUM_DEBUG) || settingName.equals(CLOSURE_ADVANCED_DEBUG)) {
+			options.setAnonymousFunctionNaming(AnonymousFunctionNamingPolicy.UNMAPPED);
+			options.setGeneratePseudoNames(true);
+			options.setRemoveClosureAsserts(false);
+			options.setShadowVariables(false);
+		}
+		
+		options.setLanguageIn(LanguageMode.ECMASCRIPT5);
+		return options;
 	}
 	
 }

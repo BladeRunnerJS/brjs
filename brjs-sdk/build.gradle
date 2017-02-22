@@ -21,6 +21,7 @@ dependencies {
 	system project(path: ':brjs-runner')
 	system project(path: ':brjs-logger')
 	system project(":brjs-logger-binding")
+	system project(":plugins:brjs-check-i18n-plugin")
 	system dependency('selenium-java')
 	system dependency('jetty-jsp-v9')
 	system dependency('jetty-jsp-jdt')
@@ -76,15 +77,16 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	destinationDir projectDir
 	inputs.property "buildVersion", buildVersion
 	inputs.property "buildHostname", buildHostname
-	from (configurations.system)
-	{
-		into "sdk/libs/java/system"
-		rename { String fileName ->
-		if ( !fileName.startsWith("brjs-") )
-		{
+	
+	def brjsJarRenamer = { String fileName ->
+		if ( !fileName.startsWith("brjs-") ) {
 			fileName = "brjs-"+fileName
 		}
 	}
+	
+	from (configurations.system) {
+		into "sdk/libs/java/system"
+		rename brjsJarRenamer
 	}
 	from (configurations.javadocs.collect { zipTree(it) }) {
 		eachFile {
@@ -92,33 +94,33 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		}
 		into "sdk/docs/java"
 	}
-	from (configurations.application)
-	{
+	from (configurations.application) {
 		into "sdk/libs/java/application"
-		rename { String fileName ->
-    		if ( !fileName.startsWith("brjs-") )
-    		{
-    			fileName = "brjs-"+fileName
-    		}
+		rename brjsJarRenamer
+	}
+	file("sdk/system-applications").eachDir {
+		into ("sdk/system-applications/${it.name}/WEB-INF/lib") {
+			from configurations.systemAppServlets
+			rename brjsJarRenamer
 		}
 	}
-	file("sdk/system-applications").listFiles().each {
-		if (it.isDirectory()) {
-			into ("sdk/system-applications/${it.name}/WEB-INF/lib") {
-				from configurations.systemAppServlets
-				rename { String fileName ->
-					if ( !fileName.startsWith("brjs-") )
-					{
-						fileName = "brjs-"+fileName
-					}
-				}
+	["apps", "sdk/system-applications"].each { appsHome ->
+		file(appsHome).eachDir {
+			into ("${appsHome}/${it.name}/WEB-INF/lib") {
+				from configurations.application
+				rename brjsJarRenamer
 			}
 		}
 	}
-	from (configurations.testRunner)
-	{
+	from (configurations.testRunner) {
 		into "sdk/libs/java/testRunner"
 		rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
+	}
+	file("apps").eachDir { appDir ->
+		from ("sdk/libs/java/application"){
+			into "apps/${appDir.name}/WEB-INF/lib"
+			include "brjs-*.jar"
+		}
 	}
 
 	doFirst {
@@ -126,6 +128,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		delete file("sdk/phantomjs")
 		delete file("sdk/docs")
 		fileTree(dir:"sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
+		fileTree(dir:"apps", include:"*/WEB-INF/lib/brjs-*").each { delete it }
 	}
 	doLast {
 		file("sdk/version.txt").text =  "{"+
@@ -138,7 +141,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	}
 }
 
-def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
+def createTestTask = { taskName, taskTestDir, taskTestType, browser, taskJsMinifier = null ->
 	task taskName, type: org.bladerunnerjs.gradle.tasks.RunJstdTests, dependsOn: assemble, {
 		description = "Run ${taskTestType} for ${taskTestDir} using ${browser}"
 		dependsOn = [assemble, copyBrowsers]
@@ -149,27 +152,38 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 		testType = taskTestType
 		browsers = browser
 		testDir = taskTestDir
+		jsMinifier = taskJsMinifier
 	}
 }
 
 // "libs/javascript" is relative to the sdk directory
 [ "Chrome", "Firefox", "IE", "PhantomJS", "Safari" ].each {
 	def testJsTask = createTestTask "testJs${it}", "libs/javascript", "ALL", it.toLowerCase()
-	def testSystemAppsTask = createTestTask "testSystemApps${it}", "system-applications", "ALL", it.toLowerCase()
-	task "test${it}", dependsOn: [testJsTask, testSystemAppsTask]
+	def testItAppTask = createTestTask "testItApp${it}", "../apps/it-app", "ALL", it.toLowerCase(), "closure-medium"
+	def testSystemAppsTask = createTestTask "testSystemApps${it}", "system-applications", "ALL", it.toLowerCase(), "closure-medium"
+	task "test${it}", dependsOn: [testJsTask, testItAppTask, testSystemAppsTask]
 }
 
-task runIntegrationTests(type: Exec) {
+task integrationTestItApp(type: Exec, dependsOn: assemble) {
     workingDir './sdk'
     commandLine OSCalculator.getOSSpecificCommand('brjs test-integration ../apps/it-app')
 }
 gradle.addListener(new StartBRJSExecutionListener(
-        runIntegrationTests,
+        integrationTestItApp,
         file('sdk'),
         file('sdk/libs/java/system')
 ))
+task integrationTestDashboard(type: Exec, dependsOn: assemble) {
+  workingDir './sdk'
+  commandLine OSCalculator.getOSSpecificCommand('brjs test-integration system-applications/dashboard')
+}
+gradle.addListener(new StartBRJSExecutionListener(
+	  integrationTestDashboard,
+	  file('sdk'),
+	  file('sdk/libs/java/system')
+))
 
-task test, dependsOn: testPhantomJS
+task test, dependsOn: testChrome
 
 
 task jsdoc, dependsOn: assembleSdk, {

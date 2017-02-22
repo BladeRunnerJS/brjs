@@ -14,9 +14,9 @@ function AppSelectionField(oPresentationModel) {
 	SelectionField.call(this, this._getAppList(this._.currentAppName, this._.sourceApps));
 
 	this._.currentAppName.addListener(new ConditionalChangeListener(
-		this, '_onChange', oPresentationModel.dialog.type, 'importBladesFromAppDialog'));
+		this._onChange.bind(this), oPresentationModel.dialog.type, 'importBladesFromAppDialog'));
 	this._.sourceApps.addListener(new ConditionalChangeListener(
-		this, '_onChange', oPresentationModel.dialog.type, 'importBladesFromAppDialog'));
+		this._onChange.bind(this), oPresentationModel.dialog.type, 'importBladesFromAppDialog'));
 }
 
 Core.extend(AppSelectionField, SelectionField);

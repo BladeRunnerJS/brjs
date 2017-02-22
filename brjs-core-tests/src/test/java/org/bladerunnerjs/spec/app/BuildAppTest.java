@@ -54,6 +54,14 @@ public class BuildAppTest extends SpecTest {
 	}
 	
 	@Test
+	public void builtSingleLocaleAppHasNonDefaultAspectIndexPage() throws Exception {
+		given(nonDefaultAspect).containsFile("index.html")
+			.and(brjs).localeSwitcherHasContents("")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("aspect2/index.html", "index.html");
+	}
+	
+	@Test
 	public void builtMultiLocaleAppHasLocaleForwardingPage() throws Exception {
 		given(appConf).supportsLocales("en", "de")
 			.and(defaultAspect).containsFile("index.html")
@@ -69,6 +77,15 @@ public class BuildAppTest extends SpecTest {
 			.and(brjs).localeSwitcherHasContents("")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("en.html", "index.html");
+	}
+	
+	@Test
+	public void builtMultiLocaleAppHasNonDefaultAspectIndexPage() throws Exception {
+		given(appConf).supportsLocales("en", "de")
+			.and(nonDefaultAspect).containsFile("index.html")
+			.and(brjs).localeSwitcherHasContents("")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("aspect2/en.html", "index.html");
 	}
 	
 	@Test
@@ -199,11 +216,11 @@ public class BuildAppTest extends SpecTest {
 			.and(brjs).localeSwitcherHasContents("")
 			.and(brjs).hasVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("/v/1234/i18n/en.js", "if (!window._brjsI18nProperties) { window._brjsI18nProperties = {} };\n"
-				+ "window._brjsI18nProperties['en'] = {\n"
+		then(targetDir).containsFileWithContents("/v/1234/i18n/en.js", "if (!window.$_brjsI18nProperties) { window.$_brjsI18nProperties = {} };\n"
+				+ "window.$_brjsI18nProperties['en'] = {\n"
 				+ "  \"appns.p1\": \"\\\"$£€\\\"\"\n"
 				+ "};\n"
-				+ "window._brjsI18nUseLocale = 'en';");
+				+ "window.$_brjsI18nUseLocale = 'en';");
 	}
 	
 	@Test
@@ -216,11 +233,11 @@ public class BuildAppTest extends SpecTest {
 			.and(brjs).localeSwitcherHasContents("")
 			.and(brjs).hasVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("/v/1234/i18n/en.js", "if (!window._brjsI18nProperties) { window._brjsI18nProperties = {} };\n"
-				+ "window._brjsI18nProperties['en'] = {\n"
+		then(targetDir).containsFileWithContents("/v/1234/i18n/en.js", "if (!window.$_brjsI18nProperties) { window.$_brjsI18nProperties = {} };\n"
+				+ "window.$_brjsI18nProperties['en'] = {\n"
 				+ "  \"appns.p1\": \"\\\"$£\\\"\"\n"
 				+ "};\n" 
-				+ "window._brjsI18nUseLocale = 'en';");
+				+ "window.$_brjsI18nUseLocale = 'en';");
 	}
 	
 	@Test

@@ -75,7 +75,6 @@
         it("automatically selects a new option when the updated options no longer include the currently selected item", function() {
             given("demo.viewOpened = true");
                 and("demo.model.selectionField.value = 'b'");
-                window.bDebug = true;
             when("demo.model.selectionField.options => ['x', 'y']");
             then("demo.view.(#toggleSwitch1).hasClass = 'choiceASelected'");
                 and("demo.view.(#toggleSwitch1).doesNotHaveClass = 'choiceBSelected'");
