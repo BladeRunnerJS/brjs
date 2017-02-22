@@ -22,8 +22,8 @@ def wrapperUpdateTask = { name, label ->
             distributionUrl version.downloadUrl
         }
         doLast {
-        	def JAVA_OPTS="-Xms128m -Xmx256m -XX:MaxPermSize=128M"
-			def GRADLE_OPTS="-Xms16m -Xmx96m -XX:MaxPermSize=32M"
+        	def JAVA_OPTS="-Xms128m -Xmx256m"
+			def GRADLE_OPTS="-Xms16m -Xmx96m"
 
 			def NIX_DEFAULT_JVM_OPTS="DEFAULT_JVM_OPTS=\"\""
 			def NIX_JAVA_OPTS="JAVA_OPTS=\""+JAVA_OPTS+" \$JAVA_OPTS\""
