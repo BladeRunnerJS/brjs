@@ -26,20 +26,20 @@ configurations.all {
  * 			'jetty-all-server'	:	'org.eclipse.jetty.aggregate:jetty-all-server:8.1.0.v20120127'
  */
 Dependencies.putAll([
-	'jetty-server-all-v9'		:	'org.eclipse.jetty.aggregate:jetty-all:9.3.0.v20150612',
+	'jetty-server-all-v9'		:	'org.eclipse.jetty.aggregate:jetty-all:9.4.0.v20161208',
 	
-//	'jetty-server-v9'			:	'org.eclipse.jetty:jetty-server:9.3.0.v20150612',
-//	'jetty-servlet-v9'			:	'org.eclipse.jetty:jetty-servlet:9.3.0.v20150612',
-//	'jetty-webapp-v9'			:	'org.eclipse.jetty:jetty-webapp:9.3.0.v20150612',
-//	'jetty-security-v9'			:	'org.eclipse.jetty:jetty-security:9.3.0.v20150612',
-//	'jetty-util-v9'				:	'org.eclipse.jetty:jetty-util:9.3.0.v20150612',
-//	'jetty-plus-v9'				:	'org.eclipse.jetty:jetty-plus:9.3.0.v20150612',
-//	'jetty-http-v9'				:	'org.eclipse.jetty:jetty-http:9.3.0.v20150612',
-	'jetty-jndi-v9'				:	'org.eclipse.jetty:jetty-jndi:9.3.0.v20150612',
+//	'jetty-server-v9'			:	'org.eclipse.jetty:jetty-server:9.4.0.v20161208',
+//	'jetty-servlet-v9'			:	'org.eclipse.jetty:jetty-servlet:9.4.0.v20161208',
+//	'jetty-webapp-v9'			:	'org.eclipse.jetty:jetty-webapp:9.4.0.v20161208',
+//	'jetty-security-v9'			:	'org.eclipse.jetty:jetty-security:9.4.0.v20161208',
+//	'jetty-util-v9'				:	'org.eclipse.jetty:jetty-util:9.4.0.v20161208',
+//	'jetty-plus-v9'				:	'org.eclipse.jetty:jetty-plus:9.4.0.v20161208',
+//	'jetty-http-v9'				:	'org.eclipse.jetty:jetty-http:9.4.0.v20161208',
+	'jetty-jndi-v9'				:	'org.eclipse.jetty:jetty-jndi:9.4.0.v20161208',
 	'jetty-jsp-v9'				:	'org.eclipse.jetty:jetty-jsp:9.3.0.M1',
-	'jetty-annotations-v9'		:	'org.eclipse.jetty:jetty-annotations:9.3.0.v20150612',
-	'jetty-apache-jsp-v9'		:	'org.eclipse.jetty:apache-jsp:9.3.0.v20150612',
-	'jetty-apache-jstl-v9'		:	'org.eclipse.jetty:apache-jstl:9.3.0.v20150612',
+	'jetty-annotations-v9'		:	'org.eclipse.jetty:jetty-annotations:apache-jsp',
+	'jetty-apache-jsp-v9'		:	'org.eclipse.jetty:apache-jsp:9.4.0.v20161208',
+	'jetty-apache-jstl-v9'		:	'org.eclipse.jetty:apache-jstl:9.4.0.v20161208',
 	
 	'jetty-jsp-jdt'				:	'org.eclipse.jetty.toolchain:jetty-jsp-jdt:2.3.3',
 	
@@ -83,7 +83,7 @@ Dependencies.putAll([
 	'jmock-junit4'				:	'org.jmock:jmock-junit4:2.6.0',
 	'jmock'						:	'org.jmock:jmock:2.6.0',
 	'mockito-core'				:	'org.mockito:mockito-core:1.9.5',
-	'jetty-servlet-tester'		:	'org.eclipse.jetty:jetty-servlet-tester:7.0.0.M2',
+	'jetty-servlet-tester'		:	'org.eclipse.jetty:jetty-servlet-tester:8.2.0.v20160908',
 	'jyaml'						:	'org.jyaml:jyaml:1.3',
 	'hamcrest-all'				:	'org.hamcrest:hamcrest-all:1.3',
 
