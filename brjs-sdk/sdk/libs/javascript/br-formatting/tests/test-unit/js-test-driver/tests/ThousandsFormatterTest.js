@@ -1,18 +1,24 @@
 (function() {
-	ThousandsFormatterTest = TestCase("ThousandsFormatterTest");
+	var I18nStore = require('br/i18n/I18nStore');
 	var ThousandsFormatter = require('br/presenter/formatter/ThousandsFormatter');
+
+	var originalNumSep;
+	var originalRadixChar;
+	var messageDefinitions;
+	var ThousandsFormatterTest = TestCase("ThousandsFormatterTest");
 
 	ThousandsFormatterTest.prototype.setUp = function()
 	{
+		messageDefinitions = I18nStore.messageDefinitions['en'] || I18nStore.messageDefinitions['en_GB'];
+		originalNumSep = messageDefinitions["br.i18n.number.grouping.separator"];
+		originalRadixChar = messageDefinitions["br.i18n.decimal.radix.character"];
 		this.oFormatter = new ThousandsFormatter();
-
-		this.subrealm = realm.subrealm();
-		this.subrealm.install();
 	};
 
 	ThousandsFormatterTest.prototype.tearDown = function()
 	{
-		this.subrealm.uninstall();
+		messageDefinitions["br.i18n.number.grouping.separator"] = originalNumSep;
+		messageDefinitions["br.i18n.decimal.radix.character"] = originalRadixChar;
 	};
 
 	ThousandsFormatterTest.prototype.test_nonDecimals = function()
@@ -88,17 +94,8 @@
 
 	ThousandsFormatterTest.prototype.test_preFormatedNumbers = function()
 	{
-		define('br/I18n', function(require, exports, module) {
-			var Translator = require('br/i18n/Translator');
-			var I18N = require('br/i18n/I18N');
-
-			module.exports = I18N.create(new Translator({
-				'locale' : {
-					"br.i18n.number.grouping.separator":".",
-					"br.i18n.decimal.radix.character":","
-				}
-			}, 'locale'));
-		});
+		messageDefinitions["br.i18n.number.grouping.separator"] = ".";
+		messageDefinitions["br.i18n.decimal.radix.character"] = ",";
 
 		this.oFormatter = new ThousandsFormatter();
 

@@ -1,34 +1,39 @@
 (function() {
-	LocalisedDateTest = TestCase("LocalisedDateTest");
+	var I18nStore = require('br/i18n/I18nStore');
+
+	var messageDefinitions;
+	var originalApr;
+	var originalJan;
+	var originalDec;
+	var originalSat;
+	var LocalisedDateTest = TestCase("LocalisedDateTest");
+
 	LocalisedDateTest.prototype.setUp = function()
 	{
-		var Translator = require('br/i18n/Translator');
-		var I18N = require('br/i18n/I18N');
-		
 		this.mDateMessages = {
 			'locale' : {
 				"br.i18n.date.format": "DD-MM-YYYY",
-				"br.i18n.date.format.long": "ddd, DD MMM, YYYY, HH:mm:ss A",
-				"br.i18n.date.month.january": "Leden",
-				"br.i18n.date.month.short.april": "Dub",
-				"br.i18n.date.month.short.december": "Pros",
-				"br.i18n.date.day.saturday": "Sobota",
-				"br.i18n.date.day.short.monday": "Mon",
-				"br.i18n.date.day.short.wednesday": "Wed"
+				"br.i18n.date.format.long": "ddd, DD MMM, YYYY, HH:mm:ss A"
 		}};
-		
-		this.subrealm = realm.subrealm();
-		this.subrealm.install();
-		
-		var oThis = this;
-		define('br/I18n', function(require, exports, module) {
-			module.exports = I18N.create(new Translator(oThis.mDateMessages, 'locale'));
-		});
+
+		messageDefinitions = I18nStore.messageDefinitions['en'] || I18nStore.messageDefinitions['en_GB'];
+		originalApr = messageDefinitions["br.i18n.date.month.short.april"];
+		originalJan = messageDefinitions["br.i18n.date.month.january"];
+		originalDec = messageDefinitions["br.i18n.date.month.short.december"];
+		originalSat = messageDefinitions["br.i18n.date.day.saturday"];
+
+		messageDefinitions["br.i18n.date.month.short.april"] = "Dub";
+		messageDefinitions["br.i18n.date.month.january"] = "Leden";
+		messageDefinitions["br.i18n.date.month.short.december"] = "Pros";
+		messageDefinitions["br.i18n.date.day.saturday"] = "Sobota";
 	};
 
 	LocalisedDateTest.prototype.tearDown = function()
 	{
-		this.subrealm.uninstall();
+		messageDefinitions["br.i18n.date.month.short.april"] = originalApr;
+		messageDefinitions["br.i18n.date.month.january"] = originalJan;
+		messageDefinitions["br.i18n.date.month.short.december"] = originalDec;
+		messageDefinitions["br.i18n.date.day.saturday"] = originalSat;
 	};
 
 	//test seconds since epoch
@@ -37,7 +42,7 @@
 		var oDate = new Date(2010, 10, 12, 13, 14, 15, 16);
 		var oLocalisedDate = new (require("br/i18n/LocalisedDate"))(oDate);
 		var secondsSinceUnixEpoch = String(Math.floor(oDate.getTime() / 1000));
-		
+
 		assertEquals("Seconds since unix epoch are not correct",secondsSinceUnixEpoch, oLocalisedDate.format("U") );
 	};
 

@@ -2,7 +2,7 @@
 	var BRHtmlResourceService = require('br/services/html/BRHtmlResourceService');
 	var ServiceRegistry = require('br/ServiceRegistry');
 
-	BRHtmlResourceServiceTest = TestCase("BRHtmlResourceServiceTest");
+	var BRHtmlResourceServiceTest = TestCase("BRHtmlResourceServiceTest");
 
 	// Check if the browser is IE8 (or less)
 	if (window.attachEvent && !window.addEventListener) {
@@ -17,7 +17,7 @@
 			var templateElem = templateElems[i];
 			templateElem.parentNode.removeChild(templateElem);
 		}
-		
+
 	};
 
 	BRHtmlResourceServiceTest.prototype.test_scriptTagsAreParsedByTheBrowser = function()
