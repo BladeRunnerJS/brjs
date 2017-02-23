@@ -1,5 +1,6 @@
 (function() {
-    require('jsunitextensions');
+    var assertAssertError = require('jsunitextensions').assertAssertError;
+    var assertFails = require('jsunitextensions').assertFails;
     var Errors = require("br/Errors");
     var ViewFixture = require("br/test/ViewFixture");
     var ViewFixtureTest = TestCase("ViewFixtureTest");

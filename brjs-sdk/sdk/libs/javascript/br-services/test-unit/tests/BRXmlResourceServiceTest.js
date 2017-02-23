@@ -1,7 +1,7 @@
 (function() {
 	var BRXmlResourceService = require('br/services/xml/BRXmlResourceService');
 
-	BRXmlResourceServiceTest = TestCase("BRXmlResourceServiceTest");
+	var BRXmlResourceServiceTest = TestCase("BRXmlResourceServiceTest");
 
 	BRXmlResourceServiceTest.prototype.test_getXmlResource = function()
 	{
@@ -14,9 +14,9 @@
 	{
 		if (window.navigator.userAgent == "PhantomJS") {
 			return; // don't run this test on PhantomJS as it doesn't support ActiveX objects or selectSingleNode
-			//TODO: find a way to run this test on PhantomJS 
+			//TODO: find a way to run this test on PhantomJS
 		}
-		
+
 		var error = null;
 		try
 		{

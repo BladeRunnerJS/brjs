@@ -1,23 +1,28 @@
 (function() {
+	var I18nStore = require('br/i18n/I18nStore');
 	var ThousandsParser = require('br/parsing/ThousandsParser');
-	
-	ThousandsParserTest = TestCase("ThousandsParserTest");
+
+	var decimalRadix;
+	var numberGroupSep;
+	var messageDefinitions;
+	var ThousandsParserTest = TestCase("ThousandsParserTest");
 
 	ThousandsParserTest.prototype.setUp = function() {
-		this.oParser = new ThousandsParser();
+		messageDefinitions = I18nStore.messageDefinitions[I18nStore.locale];
+		decimalRadix = messageDefinitions["br.i18n.decimal.radix.character"];
+		numberGroupSep = messageDefinitions["br.i18n.number.grouping.separator"];
 
-		this.subrealm = realm.subrealm();
-		this.subrealm.install();
+		this.oParser = new ThousandsParser();
 	};
 
 	ThousandsParserTest.prototype.tearDown = function()
 	{
-		this.subrealm.uninstall();
+		messageDefinitions["br.i18n.decimal.radix.character"] = decimalRadix;
+		messageDefinitions["br.i18n.number.grouping.separator"] = numberGroupSep;
 	};
 
 	ThousandsParserTest.prototype.test_Int = function() {
 		assertEquals("12345", this.oParser.parse("12,345", {separator: ","}));
-
 	};
 
 	ThousandsParserTest.prototype.test_defaultSeparatorInt = function() {
@@ -29,17 +34,8 @@
 	};
 
 	ThousandsParserTest.prototype.test_bigFloatAndDotSeparator = function() {
-		define('br/I18n', function(require, exports, module) {
-			var Translator = require('br/i18n/Translator');
-			var I18N = require('br/i18n/I18N');
-
-			module.exports = I18N.create(new Translator({
-				'locale' : {
-					"br.i18n.number.grouping.separator":".",
-					"br.i18n.decimal.radix.character":"!"
-				}
-			}, 'locale'));
-		});
+		messageDefinitions["br.i18n.number.grouping.separator"] = ".";
+		messageDefinitions["br.i18n.decimal.radix.character"] = "!";
 
 		this.oParser = new ThousandsParser();
 

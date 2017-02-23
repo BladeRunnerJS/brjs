@@ -1,7 +1,7 @@
 (function() {
-	RoundingFormatterTest = TestCase("RoundingFormatterTest");
+	var RoundingFormatterTest = TestCase("RoundingFormatterTest");
 
-	var RoundingFormatterTest = require('br/presenter/formatter/RoundingFormatter');
+	var RoundingFormatter = require('br/presenter/formatter/RoundingFormatter');
 
 	RoundingFormatterTest.prototype.setUp = function() {
 		this.oFormatter = new RoundingFormatter();

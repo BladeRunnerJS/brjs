@@ -1,17 +1,19 @@
 (function() {
-
 	require("jsmockito");
+
+	var I18nStore = require('br/i18n/I18nStore');
 
 	var store;
 	var fell;
+	var messageDefinitions;
 
 	TranslatorTest = TestCase("TranslatorTest");
 	TranslatorTest.prototype.setUp = function() {
 		JsHamcrest.Integration.JsTestDriver();
 		JsMockito.Integration.JsTestDriver();
 
-		this.subrealm = realm.subrealm();
-		this.subrealm.install();
+		messageDefinitions = I18nStore.messageDefinitions;
+		I18nStore.messageDefinitions = {};
 
 		fell = require('fell');
 
@@ -20,14 +22,6 @@
 		});
 
 		fell.configure("warn", {}, [store]);
-
-		var oThis = this;
-		define('br/I18n/LocalisedTime', function(require, exports, module) {
-			var MockLocalisedTime = function() {};
-			MockLocalisedTime.prototype.format = function() { return "LocalisedTime.format"; };
-
-			module.exports = MockLocalisedTime;
-		});
 
 		require('service!br.app-meta-service').setVersion('1.2.3');
 
@@ -102,8 +96,7 @@
 
 	TranslatorTest.prototype.tearDown = function()
 	{
-		this.subrealm.uninstall();
-
+		I18nStore.messageDefinitions = messageDefinitions;
 		require('service!br.app-meta-service').resetAllValues();
 	};
 
@@ -148,6 +141,7 @@
 	// TODO: If formatTime is changed to not delegate to LocalisedTime - new tests must be added.
 	TranslatorTest.prototype.test_formatTimeDelegatesToLocalisedTime = function()
 	{
+		I18nStore.messageDefinitions = messageDefinitions;
 		var Translator = require('br/i18n/Translator');
 		var oTranslator = new Translator(this.i18nTimeDateNumberMessages);
 		assertEquals("20:00:00", oTranslator.formatTime("200000"));

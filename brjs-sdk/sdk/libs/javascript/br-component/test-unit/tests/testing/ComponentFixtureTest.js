@@ -1,5 +1,6 @@
 (function () {
 
+	var assertFails = require('jsunitextensions').assertFails;
 	var Mock4JS = require('mock4js');
 
 	var ComponentFixtureTest = TestCase("ComponentFixtureTest");
@@ -14,11 +15,11 @@
 		var Mock4JS = require('mock4js');
 		Mock4JS.addMockSupport(window);
 		Mock4JS.clearMocksToVerify();
-		
+
 		this.m_oMockModelFixture = mock(PresentationModelFixture);
 		this.m_oMockViewFixture = mock(ViewFixture);
 		this.m_oMockFixtureRegistry = mock(FixtureRegistry);
-		
+
 		this.m_eElement = document.createElement("div");
 
 		this.m_oMockComponent = mock(TestSerializableComponent);
