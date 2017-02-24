@@ -1,4 +1,6 @@
 (function() {
+    var assertFails = require('jsunitextensions').assertFails;
+
     var Frame = require("br/component/Frame");
     var PresentationNode = require("br/presenter/node/PresentationNode");
     var RootPresentationNode = require("br/presenter/testing/node/RootPresentationNode");
@@ -21,7 +23,7 @@
     PresentationModelTest.prototype.test_PrivateMemberVariablesDontHavePathSet = function()
     {
         var oPresentationModel = new RootPresentationNode();
-        
+
         oPresentationModel._$setPath("");
 		assertEquals("1a", undefined, oPresentationModel.m_oPrivateProperty1.getPath());
         assertEquals("1c", "child.grandchild", oPresentationModel.child.grandchild.getPath());
@@ -30,9 +32,9 @@
     PresentationModelTest.prototype.test_FailIfWeHaveTwoPublicReferenceToTheSamePresentationNodeInAPresentationModel = function()
     {
         var oPresentationModel = new RootPresentationNode();
-        
+
         oPresentationModel.publicCopyOfPresentationNode = oPresentationModel.child.grandchild;
-        
+
         assertFails("Expected exception for double public reference of same Presentation Node." , function() {
             //When
             oPresentationModel._$setPath("");
@@ -43,11 +45,11 @@
     {
         var oMockComponentFrame = mock(Frame);
         var oPresentationModel = new RootPresentationNode();
-        
+
         assertUndefined(oPresentationModel.getComponentFrame());
-        
+
         oPresentationModel.setComponentFrame(oMockComponentFrame);
-        
+
         assertEquals(oMockComponentFrame, oPresentationModel.getComponentFrame());
     };
 })();

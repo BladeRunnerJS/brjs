@@ -1,4 +1,6 @@
 (function() {
+	var assertFails = require('jsunitextensions').assertFails;
+
     var ToolTipField = require("br/presenter/node/ToolTipField");
     var Field = require("br/presenter/node/Field");
     var ErrorMonitor = require("br/presenter/util/ErrorMonitor");
@@ -17,7 +19,7 @@
 		setUp: function() {
 			JsHamcrest.Integration.JsTestDriver();
 			JsMockito.Integration.JsTestDriver();
-			
+
 			tooltipNode = new ToolTipNode();
 			errorMonitor = new ErrorMonitor(tooltipNode);
 		},
