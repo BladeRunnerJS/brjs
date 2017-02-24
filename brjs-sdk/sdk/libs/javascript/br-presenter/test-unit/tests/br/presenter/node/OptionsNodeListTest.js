@@ -1,4 +1,6 @@
 (function() {
+	var assertFails = require('jsunitextensions').assertFails;
+
     var Errors = require("br/Errors");
     var WritableProperty = require("br/presenter/property/WritableProperty");
     var OptionsNodeList = require("br/presenter/node/OptionsNodeList");
@@ -84,7 +86,7 @@
 
     	optionFound = optionList.getOptionByLabel('ALABEL', true);
     	assertEquals('aValue', optionFound.value.getValue());
-    	
+
     	assertFails( "'ignoreCase' argument must be a Boolean value", function() {
     		optionList.getOptionByLabel('ALABEL', 'foo');
     	});

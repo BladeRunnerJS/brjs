@@ -1,4 +1,6 @@
 (function() {
+    var assertFails = require('jsunitextensions').assertFails;
+
     var PresenterComponentFixture = require("br/presenter/testing/PresenterComponentFixture");
     var ComponentFixture = require("br/component/testing/ComponentFixture");
     var Core = require("br/Core");
@@ -8,12 +10,12 @@
 
     PresenterComponentFixtureTest.prototype.setUp = function()
     {
-        Mock4JS.addMockSupport(window);	
+        Mock4JS.addMockSupport(window);
         Mock4JS.clearMocksToVerify();
-        
+
         this.m_sTestViewID = "test-id";
         this.m_sTestPM = "acme.MyComponent";
-        
+
         this.m_fOrigComponentDoGiven = ComponentFixture.prototype.doGiven;
         this.m_pDoGivenInvocations = [];
         var self = this;
@@ -90,7 +92,7 @@
     //{
     //	var oPresenterComponentFixture = new br.presenter.testing.PresenterComponentFixture(this.m_sTestViewID,
     //			this.m_sTestPM);
-    //	
+    //
     //	assertFails("2a", function() {oPresenterComponentFixture.doGiven("opened", false);});
     //};
 
@@ -123,7 +125,7 @@
     //{
     //	var oPresenterComponentFixture = new br.presenter.testing.PresenterComponentFixture(this.m_sTestViewID,
     //			this.m_sTestPM);
-    //	
+    //
     //	assertFails("4a", function() {oPresenterComponentFixture.doGiven("viewOpened", false);});
     //};
 
@@ -131,7 +133,7 @@
     {
         var oPresenterComponentFixture = new PresenterComponentFixture(this.m_sTestViewID,
                 this.m_sTestPM);
-        
+
         oPresenterComponentFixture.doGiven("viewOpened", true);
         assertEquals("5a", [{property:'opened', value:true}], this.m_pDoGivenInvocations);
     };
@@ -149,13 +151,13 @@
     {
         var oPresenterComponentFixture = new PresenterComponentFixture(this.m_sTestViewID,
                 this.m_sTestPM);
-        
+
         assertFails("6a", function() {oPresenterComponentFixture.doWhen("opened", true);});
-        
+
         assertFails("6b", function() {oPresenterComponentFixture.doThen("opened", true);});
 
         assertFails("6c", function() {oPresenterComponentFixture.doWhen("viewOpened", true);});
-        
+
         assertFails("6d", function() {oPresenterComponentFixture.doThen("viewOpened", true);});
     };
 })();
