@@ -37,7 +37,9 @@
             "sdk/libs/javascript/topiarist",
             "sdk/libs/javascript/knockout",
             "sdk/libs/javascript/emitr",
-            "sdk/libs/javascript/presenter-knockout"
+            "sdk/libs/javascript/presenter-knockout",
+            "sdk/libs/javascript/br-services/src/br/services/html/ConfigurableHTMLResourceService.js",
+            "sdk/libs/javascript/br-services/src/br/services/xml/ConfigurableXMLResourceService.js"
         ],
         "excludePattern": "(^|\\/|\\\\)_|[\\\\|//]test(s|-[a-z]+)[\\\\|//]|[\\\\|//]spec[\\\\|//]|[\\\\|//]bundles[\\\\|//]"
     },
