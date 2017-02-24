@@ -1,4 +1,6 @@
 (function() {
+	var assertAssertError = require('jsunitextensions').assertAssertError;
+
 	DoesNotHaveClassTest = TestCase("DoesNotHaveClassTest");
 
 	require('br/test/ViewFixture');

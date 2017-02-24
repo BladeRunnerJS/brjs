@@ -1,12 +1,12 @@
 (function() {
-    require('jsunitextensions');
+    var assertAssertError = require('jsunitextensions').assertAssertError;
     var Errors = require("br/Errors");
     var AlertFixture = require("br/test/AlertFixture");
     AlertFixtureTest = TestCase("AlertFixtureTest");
 
     AlertFixtureTest.prototype.setUp = function()
     {
-        
+
     };
 
     AlertFixtureTest.prototype.tearDown = function()
@@ -44,11 +44,11 @@
         oAlertFixture.setUp();
         alert("hello");
         alert("world");
-        
+
         assertAssertError("1a", function() {
             oAlertFixture.doThen("alert.triggered", "world");
         });
-        
+
         assertAssertError("2a", function() {
             oAlertFixture.tearDown();
         });
@@ -60,7 +60,7 @@
         oAlertFixture.setUp();
         alert("hello")
         alert("world")
-        
+
         oAlertFixture.doThen("alert.triggered", "hello");
 
         assertAssertError("1a", function() {
@@ -85,11 +85,11 @@
     {
         var oAlertFixture = new AlertFixture();
         oAlertFixture.setUp();
-        
+
         assertException("1a", function() {
             oAlertFixture.doGiven("property-name", "property-value");
         }, Errors.INVALID_TEST);
-        
+
         oAlertFixture.tearDown();
     };
 
@@ -97,11 +97,11 @@
     {
         var oAlertFixture = new AlertFixture();
         oAlertFixture.setUp();
-        
+
         assertException("1a", function() {
             oAlertFixture.doWhen("property-name", "property-value");
         }, Errors.INVALID_TEST);
-        
+
         oAlertFixture.tearDown();
     };
 })();

@@ -1,5 +1,6 @@
 (function() {
-	require('jsunitextensions');
+	var assertAssertError = require('jsunitextensions').assertAssertError;
+
 	HasClassTest = TestCase("HasClassTest");
 
 	var Errors = require('br/Errors');
