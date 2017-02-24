@@ -7,15 +7,6 @@
     var RootPresentationNode = require("br/presenter/testing/node/RootPresentationNode");
     var PresentationNodeTest = TestCase("PresentationNodeTest");
 
-    var subrealm;
-
-    PresentationNodeTest.prototype.tearDown = function() {
-        if (subrealm) {
-            subrealm.uninstall();
-            subrealm = null;
-        }
-    }
-
     PresentationNodeTest.prototype.test_nodes = function()
     {
         var node = new RootPresentationNode();
@@ -272,25 +263,28 @@
 
     PresentationNodeTest.prototype.test_allListenersFromNodesAndChildNodesGetRemoved = function()
     {
-        subrealm = realm.subrealm();
-        subrealm.install();
-
         var nListeners = 0;
-        define('br/presenter/property/WritableProperty', function(require, exports, module) {
-            var WritableProperty = subrealm.recast("br/presenter/property/WritableProperty");
-            WritableProperty.prototype.addListener = function()
-            {
-                nListeners++;
-            }
-            WritableProperty.prototype.removeAllListeners = function()
-            {
-                nListeners--;
-            }
-            module.exports = WritableProperty;
-        });
+
+        function addListenerStub() {
+            nListeners++;
+        }
+
+        function removeAllListenersStub() {
+            nListeners--;
+        }
 
         var RootPresentationNode = require("br/presenter/testing/node/RootPresentationNode");
         var oPresentationNode = new RootPresentationNode();
+
+        oPresentationNode.property1.addListener = addListenerStub;
+        oPresentationNode.child.property2.addListener = addListenerStub;
+        oPresentationNode.child.property3.addListener = addListenerStub;
+        oPresentationNode.child.grandchild.property4.addListener = addListenerStub;
+        oPresentationNode.property1.removeAllListeners = removeAllListenersStub;
+        oPresentationNode.child.property2.removeAllListeners = removeAllListenersStub;
+        oPresentationNode.child.property3.removeAllListeners = removeAllListenersStub;
+        oPresentationNode.child.grandchild.property4.removeAllListeners = removeAllListenersStub;
+
         oPresentationNode.property1.addListener();
         oPresentationNode.child.property2.addListener();
         oPresentationNode.child.property3.addListener();
