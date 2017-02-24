@@ -4,9 +4,9 @@
 	require('jsmockito');
 
 	var TopiaristTest = TestCase('TopiaristTest');
-	var BaseClass = require('itapp/backwardscompat/topiarist/BaseClass');
-	var TestInterface = require('itapp/backwardscompat/topiarist/TestInterface');
-	var ImplementingClass = require('itapp/backwardscompat/topiarist/ImplementingClass');
+	var BaseClass = require('itapp/backwardscompat/topiarist-test/BaseClass');
+	var TestInterface = require('itapp/backwardscompat/topiarist-test/TestInterface');
+	var ImplementingClass = require('itapp/backwardscompat/topiarist-test/ImplementingClass');
 	var topiarist = require('topiarist');
 
 	TopiaristTest.prototype.setUp = function () {
