@@ -1,3 +1,4 @@
+require('../_resources/de.properties');
 (function() {
 	I18nTest = TestCase("I18nTest");
 
