@@ -1,6 +1,10 @@
 (function() {
+    var PresenterComponent = require('br/presenter/component/PresenterComponent');
+    var MultiViewPresentationModel = require('br/presenter/MultiViewPresentationModel');
     var GwtTestRunner = require("br/test/GwtTestRunner");
+
     GwtTestRunner.initialize();
+    PresenterComponent.PRESENTATION_MODEL_CLASSES['br/presenter/MultiViewPresentationModel'] = MultiViewPresentationModel;
 
     describe("The ability to bind several view templates to the same presentation model", function() {
 

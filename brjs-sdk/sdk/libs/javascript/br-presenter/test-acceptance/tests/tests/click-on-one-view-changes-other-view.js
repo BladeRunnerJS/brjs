@@ -1,6 +1,10 @@
 (function() {
+    var PresenterComponent = require('br/presenter/component/PresenterComponent');
+    var MultiViewClickPresentationModel = require('br/presenter/MultiViewClickPresentationModel');
     var GwtTestRunner = require("br/test/GwtTestRunner");
+
     GwtTestRunner.initialize();
+    PresenterComponent.PRESENTATION_MODEL_CLASSES['br/presenter/MultiViewClickPresentationModel'] = MultiViewClickPresentationModel;
 
     describe("The ability to click on one view of a model and it should change the other view", function() {
 
@@ -16,7 +20,7 @@
                 and("multiViewClick.view.(#radioButtons input:first).checked = true");
                 and("multiViewClick.view.(#radioButtons input:last).checked = false");
         });
-        
+
         it("displays both views correctly after click", function()
         {
             given("test.continuesFrom = 'displays stuff correctly in multi view click'");
