@@ -1,5 +1,6 @@
 'use strict';
 
+var PresenterComponent = require("br/presenter/component/PresenterComponent");
 var PresentationModelFixture = require('br/presenter/testing/PresentationModelFixture');
 var ComponentFixture = require('br/component/testing/ComponentFixture');
 var Errors = require('br/Errors');
@@ -56,7 +57,6 @@ function PresenterComponentFixture(sTemplateId, sPresentationModel) {
 		throw new Errors.InvalidParametersError('PresenterComponentFixture must be provided with a presentation model');
 	}
 
-	require("br/presenter/component/PresenterComponent"); // require presenter component so it's seen as a dependency
 	var sPresenterComponentXML = '<br.presenter.component.PresenterComponent templateId="' + sTemplateId + '" presentationModel="' + sPresentationModel + '"></br.presenter.component.PresenterComponent>';
 
 	// call super constructor
@@ -69,8 +69,10 @@ function PresenterComponentFixture(sTemplateId, sPresentationModel) {
 	this.m_fBindPresentationModel = presenter_knockout.applyBindings;
 }
 
-
 Core.extend(PresenterComponentFixture, ComponentFixture);
+// Concat can be removed once this code is checked in to CT5 monorepo, this is to prevent conversion tool
+// from changing the string to new module identifier.
+ComponentFixture.COMPONENT_CLASSES['br' + '/presenter/component/PresenterComponent'] = PresenterComponent;
 
 /**
  * PresenterComponentFixture handles properties 'opened' and 'viewOpened'.
