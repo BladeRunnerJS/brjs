@@ -66,6 +66,8 @@ function PresenterComponent(sTemplateId, vPresentationModel) {
 Core.implement(PresenterComponent, Component);
 Core.implement(PresenterComponent, Serializable);
 
+PresenterComponent.PRESENTATION_MODEL_CLASSES = {};
+
 /**
  * @private
  */
@@ -190,9 +192,13 @@ PresenterComponent.deserialize = function(sXml) {
 	}
 
 	var sTemplateId = oPresenterNode.getAttribute('templateId');
-	var sPresentationModel = oPresenterNode.getAttribute('presentationModel');
+	var vPresentationModel = oPresenterNode.getAttribute('presentationModel');
 
-	var oPresenterComponent = new PresenterComponent(sTemplateId, sPresentationModel);
+	if (PresenterComponent.PRESENTATION_MODEL_CLASSES[vPresentationModel]) {
+		vPresentationModel = new PresenterComponent.PRESENTATION_MODEL_CLASSES[vPresentationModel]();
+	}
+
+	var oPresenterComponent = new PresenterComponent(sTemplateId, vPresentationModel);
 	oPresenterComponent.deserialize(sXml);
 
 	return oPresenterComponent;

@@ -56,6 +56,8 @@ function ComponentFixture(sXml, oModelFixture, oViewFixture) {
 
 br.implement(ComponentFixture, Fixture);
 
+ComponentFixture.COMPONENT_CLASSES = {};
+
 /**
  * Upon set-up of the ComponentFixture, the ComponentFactory is configured not to create an ErrorComponent. If
  * no component can be created with the given XML configuration, an exception will be thrown instead.
@@ -226,7 +228,7 @@ ComponentFixture.prototype._createComponent = function(sXml) {
 	var requirePath = sType.replace(/\./g, "/");
 	var Component;
 	try {
-		Component = require(requirePath);
+		Component = ComponentFixture.COMPONENT_CLASSES[requirePath] || require(requirePath);
 	} catch(e) {
 		try {
 			Component = AliasRegistry.getClass( sType );
