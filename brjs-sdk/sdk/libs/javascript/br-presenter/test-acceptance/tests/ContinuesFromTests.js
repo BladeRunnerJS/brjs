@@ -1,10 +1,8 @@
 (function() {
-    var ComponentFixture = require('br/component/testing/ComponentFixture');
     var PresenterComponent = require('br/presenter/component/PresenterComponent');
     var TestPresentationModel = require('br/presenter/TestPresentationModel');
     var GwtTestRunner = require("br/test/GwtTestRunner");
 
-    ComponentFixture.COMPONENT_CLASSES['br/presenter/component/PresenterComponent'] = PresenterComponent;
     PresenterComponent.PRESENTATION_MODEL_CLASSES['br/presenter/TestPresentationModel'] = TestPresentationModel;
     GwtTestRunner.initialize();
 
