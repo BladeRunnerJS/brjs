@@ -5,7 +5,6 @@ var KnockoutComponent = require( 'br/knockout/KnockoutComponent' );
 var CommonJsLib = require('commonjslib/CommonJsLib');
 var Testlib3p = require('testlib3p');
 var i18n = require( 'br/I18n' );
-require('namedspacedjslib/NamedspacedJsLib');
 
 var App = function() {
     var element = document.getElementById("hello-world");
@@ -17,7 +16,6 @@ var App = function() {
 	this.functionalityTest("aliasing", this.playWithAliases);
 	this.functionalityTest("aliasing-implement-fail", this.aliasFail);
 	this.functionalityTest("aliasing-app-override", this.playWithAppLevelAliases);
-	this.functionalityTest("namespaced-js", namedspacedjslib.NamedspacedJsLib.hello);
 	this.functionalityTest("common-js", CommonJsLib.hello);
 	this.functionalityTest("third-party-lib", Testlib3p.hello);
 	this.functionalityTest("jndi", this.testJNDI);
