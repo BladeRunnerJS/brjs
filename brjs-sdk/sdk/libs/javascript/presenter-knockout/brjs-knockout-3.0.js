@@ -1137,7 +1137,7 @@
 				/* start BRJS change */
 				var WritableProperty;
 				try {
-					WritableProperty = require("br/presenter/property/WritableProperty");
+					WritableProperty = require("br-presenter/property/WritableProperty");
 				} catch(e) {
 					// ignore the failed require
 				}
@@ -1951,7 +1951,7 @@
 							/* start BRJS change */
 							var EditableProperty;
 							try {
-								EditableProperty = require("br/presenter/property/EditableProperty");
+								EditableProperty = require("br-presenter/property/EditableProperty");
 							} catch(e) {
 								// ignore the failed require
 							}
