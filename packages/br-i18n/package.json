@@ -1,0 +1,16 @@
+{
+  "name": "br-i18n",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "br-i18n": "file:../br-i18n",
+    "br": "file:../br",
+    "br-presenter": "file:../br-presenter",
+    "jsmockito": "file:../jsmockito",
+    "fell": "file:../fell",
+    "momentjs": "file:../momentjs"
+  }
+}

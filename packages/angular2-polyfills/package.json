@@ -1,0 +1,12 @@
+{
+  "name": "angular2-polyfills",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./converted_library.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "angular2-polyfills": "file:../angular2-polyfills"
+  }
+}

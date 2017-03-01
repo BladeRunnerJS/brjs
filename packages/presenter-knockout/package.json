@@ -1,0 +1,13 @@
+{
+  "name": "presenter-knockout",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./converted_library.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "br-presenter": "file:../br-presenter",
+    "presenter-knockout": "file:../presenter-knockout"
+  }
+}

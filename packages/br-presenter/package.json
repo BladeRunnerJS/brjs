@@ -1,0 +1,29 @@
+{
+  "name": "br-presenter",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "br-presenter": "file:../br-presenter",
+    "br-test": "file:../br-test",
+    "br": "file:../br",
+    "br-i18n": "file:../br-i18n",
+    "br-util": "file:../br-util",
+    "mock4js": "file:../mock4js",
+    "jquery": "file:../jquery",
+    "jsmockito": "file:../jsmockito",
+    "jsunitextensions": "file:../jsunitextensions",
+    "br-component": "file:../br-component",
+    "presenter-knockout": "file:../presenter-knockout",
+    "br-formatting": "file:../br-formatting",
+    "momentjs": "file:../momentjs",
+    "br-core": "file:../br-core",
+    "br-parsing": "file:../br-parsing",
+    "topiarist": "file:../topiarist",
+    "br-validation": "file:../br-validation",
+    "br-workbench": "file:../br-workbench",
+    "br-knockout": "file:../br-knockout"
+  }
+}

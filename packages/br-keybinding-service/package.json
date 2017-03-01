@@ -1,0 +1,14 @@
+{
+  "name": "br-keybinding-service",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "br-presenter": "file:../br-presenter",
+    "br": "file:../br",
+    "br-keybinding-service": "file:../br-keybinding-service",
+    "mousetrap": "file:../mousetrap"
+  }
+}

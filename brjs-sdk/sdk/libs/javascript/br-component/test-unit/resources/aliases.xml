@@ -1,3 +1,0 @@
-<aliases xmlns="http://schema.bladerunnerjs.org/aliases">
-    <alias name="br.component.testSerializableComponent" class="br.component.TestSerializableComponent" />
-</aliases>

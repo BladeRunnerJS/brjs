@@ -1,0 +1,16 @@
+{
+  "name": "angular2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./converted_library.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "angular2-polyfills": "file:../angular2-polyfills",
+    "rx": "file:../rx",
+    "es6-shim": "file:../es6-shim",
+    "es6-promise": "file:../es6-promise",
+    "angular2": "file:../angular2"
+  }
+}

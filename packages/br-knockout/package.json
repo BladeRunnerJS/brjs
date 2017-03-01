@@ -1,0 +1,16 @@
+{
+  "name": "br-knockout",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "br-knockout": "file:../br-knockout",
+    "ko": "file:../ko",
+    "br": "file:../br",
+    "br-component": "file:../br-component",
+    "br-workbench": "file:../br-workbench",
+    "jstree": "file:../jstree"
+  }
+}

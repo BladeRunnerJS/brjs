@@ -1,6 +1,0 @@
-<aliasDefinitions xmlns="http://schema.bladerunnerjs.org/aliasDefinitions">
-	<alias
-		name="br.keybinding-service"
-		defaultClass="br.KeybindingService"
-	/>
-</aliasDefinitions>

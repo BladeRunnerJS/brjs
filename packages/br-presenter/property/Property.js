@@ -1,0 +1,296 @@
+'use strict';
+
+var Formatter = require('br-presenter/formatter/Formatter');
+var Core = require('br/Core');
+var PropertyListener = require('br-presenter/property/PropertyListener');
+var ListenerFactory = require('br-util/ListenerFactory');
+var Observable = require('br-util/Observable');
+var Errors = require('br/Errors');
+var KnockoutProperty = require('br-presenter/view/knockout/KnockoutProperty');
+var ListenerCompatUtil = require('../util/ListenerCompatUtil');
+
+/**
+ * @module br/presenter/property/Property
+ */
+
+/**
+ * Constructs a new <code>Property</code> instance &mdash; you will probably never want to
+ * construct a <code>Property</code> yourself since they are not writable.
+ *
+ * @class
+ * @alias module:br/presenter/property/Property
+ *
+ * @classdesc
+ * Instances of <code>Property</code> are used to store all the values held within a
+ * presentation model.
+ *
+ * <p>Each value within a presentation model is stored within a single <code>Property</code>
+ * instance, and updates to properties are displayed immediately within the view. The displayed
+ * value may be formatted prior to display if any formatters have been added using the
+ * {@link #addFormatter} method.</p>
+ *
+ * <p>A few varieties of property are available:</p>
+ *
+ * <dl>
+ *   <dt>{@link module:br/presenter/property/Property}:</dt>
+ *   <dd>Used for properties that are not writable by the end-developer, and whose value is
+ *	 updated automatically on behalf of the end-developer.</dd>
+ *   <dt>{@link module:br/presenter/property/WritableProperty}:</dt>
+ *   <dd>Used for properties that are completely accessible to the end-developer, but which
+ *	 are not editable by the end-user.</dd>
+ *   <dt>{@link module:br/presenter/property/EditableProperty}:</dt>
+ *   <dd>Used for properties that need to be editable by the end-user, and writable by the
+ *	 end-developer.</dd>
+ * </dl>
+ *
+ * @param {Object} vValue (optional) The default value for this property.
+ */
+function Property(vValue) {
+	KnockoutProperty.call(this);
+
+	if (vValue instanceof Array) {
+		if (this._containsPresentationNode(vValue)) {
+			throw new Errors.InvalidParametersError('Array passed into property instance contains a PresentationNode, use NodeList instead.');
+		}
+	}
+
+	/** @private */
+	this.m_vValue = vValue;
+
+	/** @private */
+	this.m_pFormatters = [];
+
+	/** @private */
+	this.m_oObservable = new Observable();
+
+	/** @private */
+	this.m_oChangeListenerFactory = new ListenerFactory(PropertyListener, 'onPropertyChanged');
+
+	/** @private */
+	this.m_oUpdateListenerFactory = new ListenerFactory(PropertyListener, 'onPropertyUpdated');
+}
+
+Core.extend(Property, KnockoutProperty);
+
+/**
+ * Returns the unformatted value for this property.
+ * @type Object
+ */
+Property.prototype.getValue = function() {
+	return this.m_vValue;
+};
+
+/**
+ * @private
+ */
+Property.prototype._$setInternalValue = function(vValue) {
+	var vOldValue = this.m_vValue;
+	var bBothValuesAreNaN = false;
+	this.m_vValue = vValue;
+
+	if (typeof vOldValue === 'number' && isNaN(vOldValue) && typeof this.m_vValue === 'number' && isNaN(this.m_vValue)) {
+		bBothValuesAreNaN = true;
+	}
+
+	this.updateView(this.getFormattedValue());
+
+	this.m_oObservable.notifyObservers('onPropertyUpdated');
+	if (vOldValue !== this.m_vValue && bBothValuesAreNaN === false) {
+		this.m_oObservable.notifyObservers('onPropertyChanged');
+	}
+
+	return this;
+};
+
+/**
+ * Returns the formatted value for this property if any formatters have been attached,
+ * otherwise returns the raw property value.
+ *
+ * @type Object
+ */
+Property.prototype.getFormattedValue = function() {
+	var sFormattedValue = this.m_vValue;
+
+	for (var i = 0, l = this.m_pFormatters.length; i < l; ++i) {
+		var oFormatterPair = this.m_pFormatters[i];
+		sFormattedValue = oFormatterPair.formatter.format(sFormattedValue, oFormatterPair.config);
+	}
+
+	return sFormattedValue;
+};
+
+/**
+ * Returns the rendered value after applying any active formatters,
+ * otherwise returns the raw property value.
+ *
+ * @type Object
+ */
+Property.prototype.getRenderedValue = function() {
+	return this.getValue();
+};
+
+/**
+ * Returns the path that would be required to bind this property from the view.
+ *
+ * <p>This method is used internally, but might also be useful in allowing the dynamic
+ * construction of views for arbitrary presentation models.</p>
+ *
+ * @type String
+ */
+Property.prototype.getPath = function() {
+	return this.m_sPath;
+};
+
+/**
+ * Add a {@link module:br/presenter/formatter/Formatter} that will be applied to the property before it's
+ * rendered to screen.
+ *
+ * <p>Any number of formatters can be added to a property, and will be applied in the same
+ * order in which the formatters were added.</p>
+ *
+ * @param {module:br/presenter/formatter/Formatter} oFormatter The formatter being added.
+ * @param {Object} mConfig (optional) Any additional configuration for the formatter.
+ * @type br.presenter.property.Property
+ */
+Property.prototype.addFormatter = function(oFormatter, mConfig) {
+	if (!Core.fulfills(oFormatter, Formatter)) {
+		throw new Errors.InvalidParametersError('oFormatter was not an instance of Formatter');
+	}
+
+	var oFormatterPair = {
+		formatter: oFormatter,
+		config: mConfig
+	};
+	this.m_pFormatters.push(oFormatterPair);
+	return this;
+};
+
+/**
+ * Add a {@link module:br/presenter/property/PropertyListener} that will be notified
+ * each time the property is updated.
+ *
+ * @param {module:br/presenter/property/PropertyListener} oListener The listener to be added.
+ * @param {boolean} bNotifyImmediately Whether to invoke the listener immediately using the current value.
+ * @type br.presenter.property.Property
+ */
+Property.prototype.addListener = function(oListener, bNotifyImmediately) {
+	if (!Core.fulfills(oListener, PropertyListener)) {
+		throw new Errors.InvalidParametersError('oListener was not an instance of PropertyListener');
+	}
+
+	this.m_oObservable.addObserver(oListener);
+
+	if (bNotifyImmediately) {
+		oListener.onPropertyUpdated();
+		oListener.onPropertyChanged();
+	}
+
+	return this;
+};
+
+/**
+ * Remove a previously added {@link module:br/presenter/property/PropertyListener}.
+ *
+ * @param {module:br/presenter/property/PropertyListener} oListener The listener being removed.
+ * @type br.presenter.property.Property
+ */
+Property.prototype.removeListener = function(oListener) {
+	this.m_oObservable.removeObserver(oListener);
+	return this;
+};
+
+/**
+ * Remove all previously added {@link module:br/presenter/property/PropertyListener} instances.
+ *
+ * @type br.presenter.property.Property
+ */
+Property.prototype.removeAllListeners = function() {
+	this.m_oObservable.removeAllObservers();
+	return this;
+};
+
+/**
+ * Convenience method that allows a change listener to be added to added for objects
+ * that do not themselves implement {@link module:br/presenter/property/PropertyListener}.
+ *
+ * <p>Listeners added using <code>addChangeListener()</code> will only be notified
+ * when {@link module:br/presenter/property/PropertyListener#onPropertyChanged} fires, and
+ * will not be notified if any of the other
+ * {@link module:br/presenter/property/PropertyListener} call-backs fire. The advantage to
+ * using this method is that objects can choose to listen to call-back events on multiple
+ * properties.</p>
+ *
+ * <p>We also allow <code>oListener</code> and <code>sMethod</code> to be used in place of
+ * <code>fCallback</code>, but this form is now deprecated as it's imcompatible with
+ * Closure Compiler's property renaming feature.</p>
+ *
+ * @param {Function} fCallback The call-back that will be invoked each time the property changes.
+ * @param {boolean} [bNotifyImmediately] (optional) Whether to invoke the listener immediately for the current value.
+ * @type br.presenter.property.PropertyListener
+ */
+Property.prototype.addChangeListener = function(fCallback, bNotifyImmediately) {
+	var oPropertyListener = this.m_oChangeListenerFactory.createListener(fCallback, bNotifyImmediately);
+	this.addListener(oPropertyListener, bNotifyImmediately);
+
+	return oPropertyListener;
+};
+
+/**
+ * Convenience method that allows an update listener to be added to added for objects
+ * that do not themselves implement {@link module:br/presenter/property/PropertyListener}.
+ *
+ * <p>Listeners added using <code>addUpdateListener()</code> will only be notified
+ * when {@link module:br/presenter/property/PropertyListener#onPropertyUpdated} fires, and
+ * will not be notified if any of the other
+ * {@link module:br/presenter/property/PropertyListener} call-backs fire. The advantage to
+ * using this method is that objects can choose to listen to call-back events on multiple
+ * properties.</p>
+ *
+ * <p>We also allow <code>oListener</code> and <code>sMethod</code> to be used in place of
+ * <code>fCallback</code>, but this form is now deprecated as it's imcompatible with
+ * Closure Compiler's property renaming feature.</p>
+ *
+ * @param {Function} fCallback The call-back that will be invoked each time the property is updated.
+ * @param {boolean} bNotifyImmediately (optional) Whether to invoke the listener immediately for the current value.
+ * @type br.presenter.property.PropertyListener
+ */
+Property.prototype.addUpdateListener = function(fCallback, bNotifyImmediately) {
+	var oPropertyListener = this.m_oUpdateListenerFactory.createListener(fCallback, bNotifyImmediately);
+	this.addListener(oPropertyListener, bNotifyImmediately);
+
+	return oPropertyListener;
+};
+
+/**
+ * @private
+ */
+Property.prototype._$setPath = function(sPath) {
+	this.m_sPath = sPath;
+};
+
+/**
+ * @private
+ */
+Property.prototype._$getObservable = function() {
+	return this.m_oObservable;
+};
+
+/**
+ * @private
+ */
+Property.prototype._containsPresentationNode = function(pValues) {
+	for (var idx = 0, max = pValues.length; idx < max; idx++) {
+		if (pValues[idx] instanceof PresentationNode) {
+			return true;
+		}
+	}
+
+	return false;
+};
+
+Property.prototype.addChangeListener = ListenerCompatUtil.enhance(Property.prototype.addChangeListener);
+Property.prototype.addUpdateListener = ListenerCompatUtil.enhance(Property.prototype.addUpdateListener);
+
+module.exports = Property;
+
+var PresentationNode = require('br-presenter/node/PresentationNode');

@@ -1,0 +1,18 @@
+{
+  "name": "br-component",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "br": "file:../br",
+    "br-component": "file:../br-component",
+    "br-presenter": "file:../br-presenter",
+    "jsunitextensions": "file:../jsunitextensions",
+    "mock4js": "file:../mock4js",
+    "br-test": "file:../br-test",
+    "emitr": "file:../emitr",
+    "br-core": "file:../br-core"
+  }
+}

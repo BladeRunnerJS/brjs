@@ -1,0 +1,13 @@
+{
+  "name": "mock4js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./converted_library.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "jsunitextensions": "file:../jsunitextensions",
+    "mock4js": "file:../mock4js"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "br-test",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "br-presenter": "file:../br-presenter",
+    "br-test": "file:../br-test",
+    "jquery": "file:../jquery",
+    "br": "file:../br",
+    "jsunitextensions": "file:../jsunitextensions",
+    "mock4js": "file:../mock4js",
+    "jasmine": "file:../jasmine",
+    "br-core": "file:../br-core",
+    "keyboard-event": "file:../keyboard-event",
+    "presenter-knockout": "file:../presenter-knockout"
+  }
+}
