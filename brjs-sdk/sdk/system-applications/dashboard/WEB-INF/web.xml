@@ -1,4 +1,11 @@
 <web-app>
+	<security-constraint>
+		<web-resource-collection>
+			<url-pattern>/</url-pattern>
+			<http-method-omission>TRACE</http-method-omission>
+		</web-resource-collection>
+	</security-constraint>
+	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
