@@ -1,22 +1,26 @@
 (function() {
+    var PresenterComponent = require('br/presenter/component/PresenterComponent');
+    var NodeListPresentationModel = require('br/presenter/NodeListPresentationModel');
     var GwtTestRunner = require("br/test/GwtTestRunner");
+
     GwtTestRunner.initialize();
+    PresenterComponent.PRESENTATION_MODEL_CLASSES['br/presenter/NodeListPresentationModel'] = NodeListPresentationModel;
 
     describe("View to model interactions for NodeList", function() {
         fixtures( require("br/presenter/NodeListFixtureFactory") );
-        
+
         it("contains a single node by default", function() {
             given("component.viewOpened = true");
             then("component.view.(.nodeListItem).count = 1");
                 and("component.view.(.nodeListItem).text = 'node #1'");
         });
-        
+
         it("allows the initially displayed node to be removed", function() {
             given("component.viewOpened = true");
             when("component.model.showZeroNodes.invoked => true");
             then("component.view.(.nodeListItem).count = 0");
         });
-        
+
         it("allows multiple nodes to be added", function() {
             given("component.viewOpened = true");
             when("component.model.showTwoNodes.invoked => true");
@@ -24,20 +28,20 @@
                 and("component.view.(.nodeListItem:first).text = 'node #1'");
                 and("component.view.(.nodeListItem:last).text = 'node #2'");
         });
-        
+
         it("allows single removed node to be added back in again", function() {
             given("test.continuesFrom = 'allows the initially displayed node to be removed'");
             when("component.model.showOneNode.invoked => true");
             then("component.view.(.nodeListItem).count = 1");
                 and("component.view.(.nodeListItem).text = 'node #1'");
         });
-        
+
         it("allows multiple displayed nodes to be removed", function() {
             given("test.continuesFrom = 'allows multiple nodes to be added'");
             when("component.model.showZeroNodes.invoked => true");
             then("component.view.(.nodeListItem).count = 0");
         });
-        
+
         it("allows multiple removed nodes to be added again", function() {
             given("test.continuesFrom = 'allows multiple displayed nodes to be removed'");
             when("component.model.showTwoNodes.invoked => true");
@@ -45,7 +49,7 @@
                 and("component.view.(.nodeListItem:first).text = 'node #1'");
                 and("component.view.(.nodeListItem:last).text = 'node #2'");
         });
-        
+
         it("allows multiple removed nodes to be added again in reverse order", function() {
             given("test.continuesFrom = 'allows multiple displayed nodes to be removed'");
             when("component.model.showTwoNodesReverseOrder.invoked => true");
@@ -53,14 +57,14 @@
                 and("component.view.(.nodeListItem:first).text = 'node #2'");
                 and("component.view.(.nodeListItem:last).text = 'node #1'");
         });
-        
+
         it("displays the first node with the standard template", function() {
             given("templateAwareComponent.viewOpened = true");
             then("templateAwareComponent.view.(#single-node-list .nodeListItem).count = 1");
                 and("templateAwareComponent.view.(#single-node-list .alternateNodeListItem).count = 0");
                 and("templateAwareComponent.view.(#single-node-list .nodeListItem).text = 'node #1'");
         });
-        
+
         it("displays other nodes with the alternate template", function() {
             given("templateAwareComponent.viewOpened = true");
             when("templateAwareComponent.model.showTwoNodes.invoked => true");
