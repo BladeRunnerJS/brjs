@@ -10,9 +10,10 @@ import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.appserver.ApplicationServer;
 import org.bladerunnerjs.api.logging.Logger;
 import org.bladerunnerjs.utility.ServerUtility;
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 
@@ -47,9 +48,9 @@ public class BRJSApplicationServer implements ApplicationServer
 		logger = brjs.logger(ApplicationServer.class);
 		
 		server = new Server();
-		SelectChannelConnector connector = new SelectChannelConnector();
-		connector.setPort(port);
-		server.addConnector(connector);
+		ServerConnector connector = new ServerConnector(server);
+        connector.setPort(port);
+        server.setConnectors(new Connector[] { connector });
 		
 		contexts = new ContextHandlerCollection();
 		server.setHandler(contexts);

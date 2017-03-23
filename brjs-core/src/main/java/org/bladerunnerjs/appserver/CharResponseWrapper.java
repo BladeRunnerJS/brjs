@@ -10,6 +10,7 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
@@ -33,6 +34,15 @@ public class CharResponseWrapper extends HttpServletResponseWrapper
 			public void write(int i) throws IOException
 			{
 				byteArrayOutputStream.write(i);
+			}
+			@Override
+			public boolean isReady()
+			{
+				return true;
+			}
+			@Override
+			public void setWriteListener(WriteListener writeListener)
+			{
 			}
 		};
 	}

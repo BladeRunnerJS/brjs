@@ -1,33 +1,14 @@
 
 apply plugin: 'java'
-apply plugin: 'retrolambda'
 apply plugin: org.bladerunnerjs.gradle.plugins.CompileOnly
-
-buildscript {
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath dependency('gradle-retrolambda')
-	}
-}
-
-retrolambda {
-	javaVersion JavaVersion.VERSION_1_7
-	oldJdk JAVA7_HOME
-	jdk JAVA8_HOME
-}
-project.afterEvaluate {
-	compileTestJava.dependsOn compileRetrolambdaMain
-}
 
 configurations {
 	javadocs
 	srcJar
 }
 
-dependencies {
-	retrolambdaConfig dependency('retrolambda')
+dependencies {	
+	compile dependency('jetty-server-all-v9')
 	
 	compile project(":brjs-servlet")
 	compile project(":brjs-logger")
@@ -39,7 +20,6 @@ dependencies {
 	compile dependency('validation-api')
 	compile dependency('bval-jsr303')
 	compile dependency('jsap')
-	compile dependency('jetty-all-server')
 	compile dependency('jta')
 	compile dependency('closure-compiler')
 	compile dependency('java-xmlbuilder')
@@ -61,7 +41,7 @@ dependencies {
 	compile dependency('httpclient')
 	compile dependency('hamcrest-all')
 	
-	compileOnly dependency('servlet-api')
+	compileOnly dependency('servlet-api-v3')
 	
 	testRuntime project(path: ':brjs-logger-binding')
 }
