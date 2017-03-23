@@ -11,7 +11,7 @@ public class TokenReplacingReader extends Reader
 	public static final char TOKEN_START = '@';
 	public static final char TOKEN_END = '@';
 	public static final String BRJS_KEY_PREFIX = "BRJS.";
-	public static final String NO_BRJS_TOKEN_CONFIGURED_MESSAGE = "No token finder has been configured for '"+BRJS_KEY_PREFIX+"*' tokens. Only 'user' tokens can be used at this location";
+	public static final String NO_BRJS_TOKEN_CONFIGURED_MESSAGE = "No token finder has been configured for "+BRJS_KEY_PREFIX+"* tokens. Only user tokens can be used at this location";
 	public static final String NO_BRJS_TOKEN_FOUND_MESSAGE = "The token '%s' is an invalid BRJS system token.";
 
 	private final TokenFinder brjsTokenFinder;

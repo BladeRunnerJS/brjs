@@ -213,20 +213,19 @@ public class ServedAppTest extends SpecTest
     	then(appServer).requestIs302Redirected("/app/bs/b1/workbench", "/app/bs/b1/workbench/");
 	}
 	
-///// FAILS with http code 500
-//	@Test
-//	public void requestsForInvalidModelPathsThatDoExistOnDiskReturn404() throws Exception
-//	{
-//		given(app).hasBeenPopulated("default")
-//			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
-//				+ "locales: en\n"
-//				+ "requirePrefix: appns")
-//			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
-//			.and(appServer).started();
-//		then(appServer).requestCannotBeMadeFor("/app/default-aspect/index.html");
-//		/* The correct URL is /app/en but /app/default-aspect/index.html is a valid path on disk. 
-//		 	All requests should go through the model so verify the invalid model request returns a 404 and is not served from disk. */
-//	}
+	@Test
+	public void requestsForInvalidModelPathsThatDoExistOnDiskReturn404() throws Exception
+	{
+		given(app).hasBeenPopulated("default")
+			.and(app).containsFileWithContents("app.conf", "localeCookieName: BRJS.LOCALE\n"
+				+ "locales: en\n"
+				+ "requirePrefix: appns")
+			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
+			.and(appServer).started();
+		then(appServer).requestCannotBeMadeFor("/app/default-aspect/index.html");
+		/* The correct URL is /app/en but /app/default-aspect/index.html is a valid path on disk. 
+		 	All requests should go through the model so verify the invalid model request returns a 404 and is not served from disk. */
+	}
 	
 	@Test
 	public void jspIndexPageCanBeAccessed() throws Exception
