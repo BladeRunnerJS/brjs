@@ -95,8 +95,8 @@ subprojects { p ->
 
 		if (project.plugins.hasPlugin(JavaPlugin)) {
 			if(project.name == 'brjs-servlet') {
-				sourceCompatibility = '1.6'
-				targetCompatibility = '1.6'
+				sourceCompatibility = '1.7'
+				targetCompatibility = '1.7'
 			}
 			else {
 				sourceCompatibility = '1.8'
