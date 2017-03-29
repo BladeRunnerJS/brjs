@@ -1,13 +1,10 @@
 language: java
 jdk:
-- oraclejdk7
 - oraclejdk8
 git:
  depth: 200
 sudo: false
 before_install:
-- export JAVA7_HOME=/usr/lib/jvm/java-7-oracle
-- export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
 - "export DISPLAY=:99.0"
 - "sh -e /etc/init.d/xvfb start"
 install:

@@ -2,7 +2,7 @@
 
 displayJavaInstallMessage() {
 	echo "$1"
-	echo "Please install Java 7 or Java 8 and ensure it's available on the path."
+	echo "Please install Java 8 and ensure it's available on the path."
 	echo "You can find more information about how to do this at http://bladerunnerjs.org/docs/use/install/."
 	exit 1
 }
