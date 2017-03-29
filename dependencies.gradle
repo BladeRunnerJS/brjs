@@ -26,66 +26,78 @@ configurations.all {
  * 			'jetty-all-server'	:	'org.eclipse.jetty.aggregate:jetty-all-server:8.1.0.v20120127'
  */
 Dependencies.putAll([
-	'gradle-retrolambda'		:	'me.tatarka:gradle-retrolambda:1.3.0',
-	'retrolambda'				:	'net.orfjackal.retrolambda:retrolambda:1.1.4',
+	'jetty-server-all-v9'		:	'org.eclipse.jetty.aggregate:jetty-all:9.4.2.v20170220',
 	
-	'jetty-all-server'			:	'org.eclipse.jetty.aggregate:jetty-all-server:7.6.15.v20140411',	/* version should be 7.x - this version uses servlet api v2.5 */
-	'jetty-jsp'					:	'org.eclipse.jetty:jetty-jsp:7.6.15.v20140411', /* this must be the same version as the Jetty version above */
-	'servlet-api'				:	'javax.servlet:servlet-api:2.5',	/* do not update - this is the version Tomcat 6.0.x uses */
+//	'jetty-server-v9'			:	'org.eclipse.jetty:jetty-server:9.4.2.v20170220',
+//	'jetty-servlet-v9'			:	'org.eclipse.jetty:jetty-servlet:9.4.2.v20170220',
+//	'jetty-webapp-v9'			:	'org.eclipse.jetty:jetty-webapp:9.4.2.v20170220',
+//	'jetty-security-v9'			:	'org.eclipse.jetty:jetty-security:9.4.2.v20170220',
+//	'jetty-util-v9'				:	'org.eclipse.jetty:jetty-util:9.4.2.v20170220',
+//	'jetty-plus-v9'				:	'org.eclipse.jetty:jetty-plus:9.4.2.v20170220',
+//	'jetty-http-v9'				:	'org.eclipse.jetty:jetty-http:9.4.2.v20170220',
+//	'jetty-jndi-v9'				:	'org.eclipse.jetty:jetty-jndi:9.4.2.v20170220',
+	'jetty-jsp-v9'				:	'org.eclipse.jetty:jetty-jsp:9.2.21.v20170120',
+//	'jetty-annotations-v9'		:	'org.eclipse.jetty:jetty-annotations:9.4.2.v20170220',
+//	'jetty-apache-jsp-v9'		:	'org.eclipse.jetty:apache-jsp:9.4.2.v20170220',
+//	'jetty-apache-jstl-v9'		:	'org.eclipse.jetty:apache-jstl:9.4.2.v20170220',
+	
+	'jetty-jsp-jdt'				:	'org.eclipse.jetty.toolchain:jetty-jsp-jdt:2.3.3',
+	
+	'servlet-api-v3'			:	'javax.servlet:javax.servlet-api:3.1.0',
 	
 	'jta'						:	'javax.transaction:jta:1.1',
 	'xom'						:	'com.io7m.xom:xom:1.2.10',
-	'javassist'					:	'org.javassist:javassist:3.18.2-GA',
-	'gson'						:	'com.google.code.gson:gson:2.2.4',
+	'javassist'					:	'org.javassist:javassist:3.21.0-GA',
+	'gson'						:	'com.google.code.gson:gson:2.8.0',
 	'validation-api'			:	'javax.validation:validation-api:1.1.0.Final',
 	'bval-jsr303'				:	'org.apache.bval:bval-jsr303:0.5',
-	'java-xmlbuilder'			:	'com.jamesmurty.utils:java-xmlbuilder:1.0',
+	'java-xmlbuilder'			:	'com.jamesmurty.utils:java-xmlbuilder:1.1',
 	'sjsxp'						:	'com.sun.xml.stream:sjsxp:1.0.2',
 	
 	'utils'						:	'org.ostermiller:utils:1.07.00',
 
 	'jsap'						:	'com.martiansoftware:jsap:2.1-brjs-1-6f84c0',
 
-	'commons-io'				:	'commons-io:commons-io:2.4',
-	'commons-lang3'				:	'org.apache.commons:commons-lang3:3.2',
-	'commons-codec'				:	'commons-codec:commons-codec:1.9',
-	'commons-fileupload'		:	'commons-fileupload:commons-fileupload:1.3.1',
+	'commons-io'				:	'commons-io:commons-io:2.5',
+	'commons-lang3'				:	'org.apache.commons:commons-lang3:3.5',
+	'commons-codec'				:	'commons-codec:commons-codec:1.10',
+	'commons-fileupload'		:	'commons-fileupload:commons-fileupload:1.3.2',
 	
-	'httpclient'				:	'org.apache.httpcomponents:httpclient:4.3.4',
-	'httpcore'					:	'org.apache.httpcomponents:httpcore:4.3.4',
-	'httpmime'					:	'org.apache.httpcomponents:httpmime:4.3.4',
-	'fluent-hc'					:	'org.apache.httpcomponents:fluent-hc:4.3.4',
+	'httpclient'				:	'org.apache.httpcomponents:httpclient:4.5.3',
+	'httpcore'					:	'org.apache.httpcomponents:httpcore:4.4.6',
+	'httpmime'					:	'org.apache.httpcomponents:httpmime:4.5.3',
+	'fluent-hc'					:	'org.apache.httpcomponents:fluent-hc:4.5.3',
 
-	'selenium-java'				:	'org.seleniumhq.selenium:selenium-java:2.44.0',
+	'selenium-java'				:	'org.seleniumhq.selenium:selenium-java:3.0.1',
 	
-	'slf4j-api'					:	'org.slf4j:slf4j-api:1.7.7',
-	'slf4j-log4j12'				:	'org.slf4j:slf4j-log4j12:1.7.7',
-	'yamlbeans'					:	'com.esotericsoftware.yamlbeans:yamlbeans:1.06',
+	'slf4j-api'					:	'org.slf4j:slf4j-api:1.7.23',
+	'slf4j-log4j12'				:	'org.slf4j:slf4j-log4j12:1.7.23',
+	'yamlbeans'					:	'com.esotericsoftware.yamlbeans:yamlbeans:1.09',
 
-	'ant'						:	'org.apache.ant:ant:1.9.4',
-	'ant-junit'					:	'org.apache.ant:ant-junit:1.9.4',
-	'xalan'						:	'xalan:xalan:2.7.1',
+	'ant'						:	'org.apache.ant:ant:1.10.1',
+	'ant-junit'					:	'org.apache.ant:ant-junit:1.10.1',
+	'xalan'						:	'xalan:xalan:2.7.2',
 
-	'junit'						:	'junit:junit:4.11',
-	'xmlunit'					:	'xmlunit:xmlunit:1.5',
-	'jmock-junit4'				:	'org.jmock:jmock-junit4:2.6.0',
-	'jmock'						:	'org.jmock:jmock:2.6.0',
-	'mockito-core'				:	'org.mockito:mockito-core:1.9.5',
-	'jetty-servlet-tester'		:	'org.eclipse.jetty:jetty-servlet-tester:7.0.0.M2',
+	'junit'						:	'junit:junit:4.12',
+	'xmlunit'					:	'xmlunit:xmlunit:1.6',
+	'jmock-junit4'				:	'org.jmock:jmock-junit4:2.8.2',
+	'jmock'						:	'org.jmock:jmock:2.8.2',
+	'mockito-core'				:	'org.mockito:mockito-core:1.10.19',
+	'jetty-servlet-tester'		:	'org.eclipse.jetty:jetty-servlet-tester:8.2.0.v20160908',
 	'jyaml'						:	'org.jyaml:jyaml:1.3',
 	'hamcrest-all'				:	'org.hamcrest:hamcrest-all:1.3',
 
-	'woodstox-core-asl'			:	'org.codehaus.woodstox:woodstox-core-asl:4.4.0',
-	'stax2-api'					:	'org.codehaus.woodstox:stax2-api:3.1.4',
+	'woodstox-core-asl'			:	'org.codehaus.woodstox:woodstox-core-asl:4.4.1',
+	'stax2-api'					:	'org.codehaus.woodstox:stax2-api:4.0.0',
 	'msv-core'					:	'net.java.dev.msv:msv-core:2013.6.1',
 	'trang'						:	'com.thaiopensource:trang:20091111',
 
-	'cobertura'					:	'net.sourceforge.cobertura:cobertura:1.9.4.1',
+	'cobertura'					:	'net.sourceforge.cobertura:cobertura:2.1.1',
 	'JsTestDriver'				:	'com.google:JsTestDriver:1.3.3d-brjs3',
-	'ecj'						:	'org.eclipse.jdt.core.compiler:ecj:3.7.2',
+	'ecj'						:	'org.eclipse.jdt.core.compiler:ecj:4.6.1',
 	'closure-compiler'			:	'org.bladerunnerjs:brjs-closure-compiler:v20150901-59e6ea3',
-	'jericho-html'				:	'net.htmlparser.jericho:jericho-html:3.3',
-	'wagon-http'				:	'org.apache.maven.wagon:wagon-http:2.2',
+	'jericho-html'				:	'net.htmlparser.jericho:jericho-html:3.4',
+	'wagon-http'				:	'org.apache.maven.wagon:wagon-http:2.10',
 
 	'apache-tomcat'				:	'org.apache:apache-tomcat:6.0.35@zip',
 

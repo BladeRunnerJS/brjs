@@ -3,10 +3,10 @@ apply plugin: org.bladerunnerjs.gradle.plugins.CompileOnly
 
 /* do not add any 'compile' dependencies here, this should be a very small project that is used in prod */
 dependencies {
-	compileOnly dependency('servlet-api')
+	compileOnly dependency('servlet-api-v3')
 	
 	testCompile dependency('httpclient')
-	testCompile dependency("jetty-all-server")
+	testCompile dependency("jetty-server-all-v9")
 	testCompile dependency("junit")
     testCompile dependency("hamcrest-all")
 	testCompile dependency("mockito-core")

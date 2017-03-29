@@ -315,7 +315,7 @@ public class IntegrationServeCommandTest extends SpecTest
 				.and(brjs).hasVersion("dev")
 				.and(logging).enabled();
 		when(brjs).runThreadedCommand("serve", "-e", "prod");
-		then(appServer).requestForUrlContains("/app1/v/dev/js/dev/combined/bundle.js", "An error occurred when the token finder 'JndiTokenFinder' attempted to locate a replacement for the the token 'SOME.TOKEN'.") // exception thrown when the JNDI filter tries to replace the same token
+		then(appServer).requestForUrlContains("/app1/v/dev/js/dev/combined/bundle.js", "An error occurred when the token finder &apos;JndiTokenFinder&apos; attempted to locate a replacement for the the token &apos;SOME.TOKEN&apos;.") // exception thrown when the JNDI filter tries to replace the same token
 			.and(logging).unorderedInfoMessageReceived(LoggingMissingTokenHandler.NO_TOKEN_REPLACEMENT_MESSAGE, "SOME.TOKEN", "prod" );
 	}
 	
@@ -332,7 +332,7 @@ public class IntegrationServeCommandTest extends SpecTest
 			.and(brjs).hasVersion("123");
 		when(brjs).runThreadedCommand("serve")
 			.and(appServer).requestIsMadeFor("/app1/v/dev/js/dev/combined/bundle.js", response);
-		then(response).containsText("The token finder 'PropertyFileTokenFinder' could not find a replacement for the token 'SOME.TOKEN'.");
+		then(response).containsText("The token finder &apos;PropertyFileTokenFinder&apos; could not find a replacement for the token &apos;SOME.TOKEN&apos;.");
 	}
 	
 	@Test

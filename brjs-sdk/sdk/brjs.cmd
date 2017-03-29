@@ -13,7 +13,7 @@ goto runBrjs
 
 :displayJavaInstallMessage
 echo %JAVA_INSTALL_EXCEPTION_MESSAGE%
-echo Please install Java 7 or Java 8 and ensure it's available on the PATH.
+echo Please install Java 8 and ensure it's available on the PATH.
 echo You can find more information about how to do this at 'http://bladerunnerjs.org/docs/use/install/'.
 exit /B 1
 

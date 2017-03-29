@@ -1,5 +1,11 @@
 <web-app>
-	
+   <security-constraint>
+      <web-resource-collection>
+         <url-pattern>/</url-pattern>
+         <http-method-omission>TRACE</http-method-omission>
+      </web-resource-collection>
+   </security-constraint>
+   
    <servlet>
        <servlet-name>jsDocServlet</servlet-name>
        <servlet-class>org.bladerunnerjs.servlet.FileServlet</servlet-class>

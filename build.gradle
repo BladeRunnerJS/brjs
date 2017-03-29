@@ -38,14 +38,6 @@ allprojects {
 		buildDate = projectBuildDate
 		buildHostname = projectBuildHostname
 	}
-	["JAVA7_HOME", "JAVA8_HOME"].each { propName ->
-		def propertyValue = project.hasProperty(propName) ? project.property(propName) : System.getenv()[propName]
-		project.ext.set(propName, propertyValue);
-		if (propertyValue == null) {
-			throw new GradleException("The property variable '$propName' is null and must be set either via an environment variable or as a Gradle property.")
-		}
-	}
-
 
 	def projectContainingSharedLogic = project
 	while (projectContainingSharedLogic != null) {
@@ -94,19 +86,13 @@ subprojects { p ->
 	afterEvaluate { project ->
 
 		if (project.plugins.hasPlugin(JavaPlugin)) {
-			if(project.name == 'brjs-core'
-					|| project.name == 'brjs-core-tests'
-					|| project.name == 'brjs-plugins') {
-				sourceCompatibility = '1.8'
-				targetCompatibility = '1.8'
-			}
-			else if(project.name == 'brjs-servlet') {
-				sourceCompatibility = '1.6'
-				targetCompatibility = '1.6'
-			}
-			else {
+			if(project.name == 'brjs-servlet') {
 				sourceCompatibility = '1.7'
 				targetCompatibility = '1.7'
+			}
+			else {
+				sourceCompatibility = '1.8'
+				targetCompatibility = '1.8'
 			}
 
 			project.tasks.withType(Test) { testTask ->

@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.apache.http.client.ClientProtocolException;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 
 public class JettyServerVerifier {
 	
@@ -37,6 +38,7 @@ public class JettyServerVerifier {
 	
 	private String getUrl(String urlPath)
 	{
-		return String.format("%s:%s%s", SpecTest.HTTP_REQUEST_PREFIX, jettyServer.getConnectors()[0].getPort(), urlPath);
+		int jettyPort = ((ServerConnector) jettyServer.getConnectors()[0]).getPort();
+		return String.format("%s:%s%s", SpecTest.HTTP_REQUEST_PREFIX, jettyPort, urlPath);
 	}
 }

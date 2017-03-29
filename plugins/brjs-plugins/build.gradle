@@ -1,34 +1,14 @@
 // the dependency on brjs-core is specified by the parent project
 
-buildscript {
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath dependency('gradle-retrolambda')
-	}
-}
-
 apply plugin: 'java'
 apply plugin: 'eclipse'
-apply plugin: 'retrolambda'
 apply plugin: org.bladerunnerjs.gradle.plugins.CompileOnly
 
-retrolambda {
-	javaVersion JavaVersion.VERSION_1_7
-	oldJdk JAVA7_HOME
-	jdk JAVA8_HOME
-}
-project.afterEvaluate {
-	compileTestJava.dependsOn compileRetrolambdaMain
-}
-
 dependencies {
-	retrolambdaConfig dependency('retrolambda')
-
 	compile project(path: ":brjs-core")
 	
-	testRuntime dependency('jetty-jsp')
+	testRuntime dependency('jetty-jsp-v9')
+	testRuntime dependency('jetty-jsp-jdt')
 }
 
 sourceSets {
