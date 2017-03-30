@@ -32,7 +32,7 @@ If you are interested in contributing to the BRJS core toolkit then the followin
 
 #### Install JDK
 
-BRJS is written and compiled using Java 8, but we distribute it and run the tests against it using Java 7, courtesy of [retrolambda](https://github.com/orfjackal/retrolambda). Because of this, you will need to do the following:
+BRJS is written and compiled using Java 8. Before running the build you will need to do the following:
 
   * Install Java 8 JDKs.
   * Configure `JAVA_HOME` to point to the Java 8 JDK home directory, as you prefer.
