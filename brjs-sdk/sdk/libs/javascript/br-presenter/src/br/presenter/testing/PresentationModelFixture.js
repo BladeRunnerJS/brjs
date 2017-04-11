@@ -300,7 +300,7 @@ PresentationModelFixture.InvocationCountSetter.prototype._getInvocationCountingP
 	var fOrigMethod = this._getMethod();
 	var fMethod = function() {
 		fMethod.invocationCount++;
-		fOrigMethod.apply(this, arguments);
+		return fOrigMethod.apply(this, arguments);
 	};
 	fMethod.invocationCount = nInitialValue;
 

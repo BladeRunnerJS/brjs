@@ -499,6 +499,23 @@
         });
     };
 
+    PresentationModelFixtureTest.prototype.test_wrappedFunctionsStillReturn = function()
+    {
+        var oPresentationModelFixture = new PresentationModelFixture();
+        var oPresentationModel = new PresentationModel();
+        oPresentationModelFixture.setComponent({getPresentationModel:function(){return oPresentationModel;}});
+
+        oPresentationModel.theFunction = function() {
+            return "a value";
+        };
+
+        oPresentationModelFixture.doGiven("theFunction.invocationCount", 0);
+       
+        var valueHolder = oPresentationModel.theFunction();
+
+        assertEquals(valueHolder, "a value");
+    };
+
     PresentationModelFixtureTest.prototype.test_invocationCountCanBeSetToANonZeroValue = function()
     {
         var oPresentationModelFixture = new PresentationModelFixture();
