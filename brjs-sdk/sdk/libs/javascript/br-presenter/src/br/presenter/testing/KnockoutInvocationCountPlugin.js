@@ -68,7 +68,7 @@ KnockoutInvocationCountPlugin.prototype.update = function(eElement, fValueAccess
 KnockoutInvocationCountPlugin.prototype._getInvocationCountingProxyMethod = function(fOrigMethod) {
 	var fMethod = function() {
 		fOrigMethod.invocationCount++;
-		fOrigMethod.apply(this, arguments);
+		return fOrigMethod.apply(this, arguments);
 	};
 	fOrigMethod.invocationCount = 0;
 	return fMethod;
