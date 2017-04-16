@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/BladeRunnerJS/brjs.png?label=ready&title=Ready)](https://waffle.io/BladeRunnerJS/brjs)
 # BladeRunnerJS (BRJS)
 
 **Divide & conquer complex web apps**
