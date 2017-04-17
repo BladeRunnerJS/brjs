@@ -2,10 +2,7 @@ package org.bladerunnerjs.app.servlet;
 
 import java.io.File;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -15,6 +12,8 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.bladerunnerjs.appserver.filter.TokenisingServletFilter;
+import org.bladerunnerjs.appserver.util.JndiTokenFinder;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
 import org.junit.Before;
@@ -42,12 +41,13 @@ public class RestApiServletTest
 	private RestApiService service;
 	private Server server;
 	private HttpClient client;
-	
+	private File testSdk;
+
 	@Before
 	public void setup() throws Exception
 	{
+		testSdk =  FileUtils.createTemporaryDirectory( this.getClass() );
 		service = mock(RestApiService.class);
-		File testSdk = FileUtils.createTemporaryDirectory( this.getClass() );
 		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(service), testSdk);
 		server.start();
 		client = new DefaultHttpClient();
@@ -299,4 +299,21 @@ public class RestApiServletTest
 		assertEquals( errorJsonBody, RestApiServletTestUtils.getResponseTextFromResponse(response) );
 	}
 	
+	@Test
+	public void test403ResponseReturnedForNotAllowedIPs() throws Exception
+	{
+		server.stop();
+
+		Map<String,String> initParameters = new HashMap<>();
+		initParameters.put("allowedIPs", "");
+
+		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(service), initParameters, testSdk);
+		server.start();
+
+		when(service.getApps()).thenReturn("<some list of apps>");
+		HttpResponse response = RestApiServletTestUtils.makeRequest(client, "GET", URL_BASE+"/apps");
+		assertEquals(403, response.getStatusLine().getStatusCode());
+	}
+
+
 }

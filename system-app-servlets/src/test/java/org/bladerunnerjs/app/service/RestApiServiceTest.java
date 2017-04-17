@@ -6,11 +6,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import org.bladerunnerjs.appserver.filter.TokenisingServletFilter;
+import org.bladerunnerjs.appserver.util.JndiTokenFinder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.bladerunnerjs.api.App;
@@ -271,16 +270,6 @@ public class RestApiServiceTest
 		service.createBlade("multi-bladeset-multi-blade-app", "a", "basic");
 		assertTrue( new File(temporarySdk.getParentFile(), "apps/multi-bladeset-multi-blade-app/a-bladeset/blades/basic").exists() );
 	}
-	
-	@Test(expected=Exception.class)
-	public void testCreatingNewBladeWhenBladeExists() throws Exception
-	{
-		File temporarySdk = createTemporarySdkInstall(new File(MORE_APPS_PATH));
-		setupService(temporarySdk);
-		assertTrue( new File(temporarySdk.getParentFile(), "apps/multi-bladeset-multi-blade-app/a-bladeset/blades/a-blade").exists() );
-		service.createBlade("multi-bladeset-multi-blade-app", "a", "a-blade");
-	}
-	
 	
 	/* release note tests */
 	@Test
