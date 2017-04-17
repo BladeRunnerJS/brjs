@@ -51,7 +51,16 @@ FieldValuePropertyListener.prototype.onPropertyChanged = function() {
  * @private
  * @see br.presenter.property.PropertyListener#onValidationSuccess
  */
+FieldValuePropertyListener.prototype.onPropertyChanged = function() {
+	this.m_oField.isValidationInProgress.setValue(true);
+};
+
+/**
+ * @private
+ * @see br.presenter.property.PropertyListener#onValidationSuccess
+ */
 FieldValuePropertyListener.prototype.onValidationSuccess = function(vPropertyValue, sErrorMessage) {
+	this.m_oField.isValidationInProgress.setValue(false);
 	this.m_oField.hasError.setValue(false);
 	this.m_oField.failureMessage.setValue('');
 };
@@ -61,6 +70,7 @@ FieldValuePropertyListener.prototype.onValidationSuccess = function(vPropertyVal
  * @see br.presenter.property.PropertyListener#onValidationError
  */
 FieldValuePropertyListener.prototype.onValidationError = function(vPropertyValue, sErrorMessage) {
+	this.m_oField.isValidationInProgress.setValue(false);
 	this.m_oField.hasError.setValue(true);
 	this.m_oField.failureMessage.setValue(sErrorMessage);
 };
