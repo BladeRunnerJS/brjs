@@ -8,12 +8,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.api.Asset;
-import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.SourceModule;
 import org.bladerunnerjs.api.TestPack;
 import org.bladerunnerjs.api.memoization.MemoizedFile;
 import org.bladerunnerjs.api.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.model.DirectoryLinkedAsset;
 
 
@@ -27,10 +27,10 @@ public class BRJSConformantRootDirectoryLinkedAsset implements DirectoryLinkedAs
 
 	public BRJSConformantRootDirectoryLinkedAsset(AssetContainer assetContainer) {
 		this.assetContainer = assetContainer;
-		this.dir = assetContainer.dir();
+		this.dir = assetContainer.dir();		
 		primaryRequirePath = calculateRequirePath(assetContainer);
 	}
-
+	
 	@Override
 	public void addImplicitDependencies(List<Asset> implicitDependencies) {
 		for (Asset asset : implicitDependencies) {
@@ -40,7 +40,7 @@ public class BRJSConformantRootDirectoryLinkedAsset implements DirectoryLinkedAs
 			this.implicitDependencies.add(asset);
 		}
 	}
-
+	
 	@Override
 	public Reader getReader() throws IOException
 	{
@@ -88,24 +88,22 @@ public class BRJSConformantRootDirectoryLinkedAsset implements DirectoryLinkedAs
 	{
 		return assetContainer;
 	}
-
+	
 	@Override
 	public boolean isScopeEnforced() {
 		return true;
 	}
-
+	
 	@Override
 	public boolean isRequirable()
 	{
 		return false;
 	}
-
+	
 	public static String calculateRequirePath(AssetContainer assetContainer) {
-		String requirePrefix = assetContainer.requirePrefix() + "@root";
 		if (assetContainer instanceof TestPack) {
-			return "test/" + requirePrefix;
+			return "test/"+assetContainer.requirePrefix();			
 		}
-
-		return requirePrefix;
+		return assetContainer.requirePrefix();
 	}
 }
