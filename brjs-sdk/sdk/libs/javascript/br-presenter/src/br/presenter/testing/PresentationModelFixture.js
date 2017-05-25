@@ -206,6 +206,8 @@ PresentationModelFixture.prototype._getItem = function(sItemName, nDistanceFromE
 			}
 		} else if ((sPartName == 'length') && (isDefinedAndInstanceOf(oItem, NodeList))) {
 			oItem = new NodeListLengthProperty(oItem);
+		} else if (this._mappings && this._mappings[sPartName]) {
+			oItem = this._getItem(this._mappings[sPartName], 0, oItem);
 		} else {
 			if (isDefinedAndInstanceOf(oItem, NodeList) && !(isDefinedAndInstanceOf(oItem, MappedNodeList))) {
 				oItem = oItem.getPresentationNodesArray()[this._getNodeListIndex(sPartName)];
@@ -295,6 +297,9 @@ PresentationModelFixture.InvocationCountSetter.prototype._getMethod = function()
 	return this.m_oPresentationNode[this.m_sMethod];
 };
 
+PresentationModelFixture.prototype.setPMMappings = function(mappings) {
+	this._mappings = mappings;
+};
 
 PresentationModelFixture.InvocationCountSetter.prototype._getInvocationCountingProxyMethod = function(nInitialValue) {
 	var fOrigMethod = this._getMethod();
