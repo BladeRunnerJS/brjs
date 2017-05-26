@@ -567,4 +567,21 @@
             oPresentationModelFixture.doGiven("theMethod.invocationCount", "10x");
         }, Errors.INVALID_TEST);
     };
+
+    PresentationModelFixtureTest.prototype.test_mappingsCanBeUsedToAccessPMProperties = function()
+    {
+        var oPresentationModelFixture = new PresentationModelFixture();
+        var oPresentationModel = new PresentationModel();
+        oPresentationModelFixture.setComponent({getPresentationModel:function(){return oPresentationModel;}});
+
+        oPresentationModel.property = new WritableProperty("Hello World!");
+        assertEquals("1a", "Hello World!", oPresentationModel.property.getValue());
+
+        oPresentationModelFixture.setPMMappings({'aMappingForProperty' : 'property'});
+
+        oPresentationModelFixture.doThen("aMappingForProperty", "Hello World!");
+
+        oPresentationModelFixture.doGiven("aMappingForProperty", "new value");
+        oPresentationModelFixture.doThen("property", "new value");
+    };
 })();
