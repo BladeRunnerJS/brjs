@@ -68,4 +68,11 @@
 	{
 		assertEquals("string", typeof this.oParser.toString() );
 	};
+
+	//this failed by returning 1026999.9999999999 before bignumberjs usage
+	LocalisedAmountParserTest.prototype.test_parseWorksWithFloatPrecisionErrorExamples = function()
+	{
+		var sValue = "1.027m";
+		assertEquals(1027000, this.oParser.parse(sValue, this.mAttributes));
+	};
 })();
