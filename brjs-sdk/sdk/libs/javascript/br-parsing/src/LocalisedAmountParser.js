@@ -4,6 +4,7 @@
 
 var topiarist = require('topiarist');
 var Parser = require('br/parsing/Parser');
+var BigNumber = require('bignumberjs');
 
 /**
  * @class
@@ -85,9 +86,9 @@ LocalisedAmountParser.prototype.parse = function(sValue, mAttributes)
 		return null;
 	}
 	
-	var nResult =  sValue * nMultiplier; //coerces the result to a number
-	
-	return nResult;
+	var result =  new BigNumber(sValue).times(new BigNumber(nMultiplier)); //coerces the result to a number
+
+	return parseFloat(result);
 };
 
 LocalisedAmountParser.prototype.isSingleUseParser = function() {

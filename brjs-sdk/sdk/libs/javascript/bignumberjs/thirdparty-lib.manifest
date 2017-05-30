@@ -1,0 +1,2 @@
+js: bignumber.js
+exports: BigNumber
