@@ -26,20 +26,20 @@ configurations.all {
  * 			'jetty-all-server'	:	'org.eclipse.jetty.aggregate:jetty-all-server:8.1.0.v20120127'
  */
 Dependencies.putAll([
-	'jetty-server-all-v9'		:	'org.eclipse.jetty.aggregate:jetty-all:9.4.2.v20170220',
+	'jetty-server-all-v9'		:	'org.eclipse.jetty.aggregate:jetty-all:9.4.6.v20170531',
 	
-//	'jetty-server-v9'			:	'org.eclipse.jetty:jetty-server:9.4.2.v20170220',
-//	'jetty-servlet-v9'			:	'org.eclipse.jetty:jetty-servlet:9.4.2.v20170220',
-//	'jetty-webapp-v9'			:	'org.eclipse.jetty:jetty-webapp:9.4.2.v20170220',
-//	'jetty-security-v9'			:	'org.eclipse.jetty:jetty-security:9.4.2.v20170220',
-//	'jetty-util-v9'				:	'org.eclipse.jetty:jetty-util:9.4.2.v20170220',
-//	'jetty-plus-v9'				:	'org.eclipse.jetty:jetty-plus:9.4.2.v20170220',
-//	'jetty-http-v9'				:	'org.eclipse.jetty:jetty-http:9.4.2.v20170220',
-//	'jetty-jndi-v9'				:	'org.eclipse.jetty:jetty-jndi:9.4.2.v20170220',
-	'jetty-jsp-v9'				:	'org.eclipse.jetty:jetty-jsp:9.2.21.v20170120',
-//	'jetty-annotations-v9'		:	'org.eclipse.jetty:jetty-annotations:9.4.2.v20170220',
-//	'jetty-apache-jsp-v9'		:	'org.eclipse.jetty:apache-jsp:9.4.2.v20170220',
-//	'jetty-apache-jstl-v9'		:	'org.eclipse.jetty:apache-jstl:9.4.2.v20170220',
+//	'jetty-server-v9'			:	'org.eclipse.jetty:jetty-server:9.4.6.v20170531',
+//	'jetty-servlet-v9'			:	'org.eclipse.jetty:jetty-servlet:9.4.6.v20170531',
+//	'jetty-webapp-v9'			:	'org.eclipse.jetty:jetty-webapp:9.4.6.v20170531',
+//	'jetty-security-v9'			:	'org.eclipse.jetty:jetty-security:9.4.6.v20170531',
+//	'jetty-util-v9'				:	'org.eclipse.jetty:jetty-util:9.4.6.v20170531',
+//	'jetty-plus-v9'				:	'org.eclipse.jetty:jetty-plus:9.4.6.v20170531',
+//	'jetty-http-v9'				:	'org.eclipse.jetty:jetty-http:9.4.6.v20170531',
+//	'jetty-jndi-v9'				:	'org.eclipse.jetty:jetty-jndi:9.4.6.v20170531',
+	'jetty-jsp-v9'				:	'org.eclipse.jetty:jetty-jsp:9.2.22.v20170606',
+//	'jetty-annotations-v9'		:	'org.eclipse.jetty:jetty-annotations:9.4.6.v20170531',
+//	'jetty-apache-jsp-v9'		:	'org.eclipse.jetty:apache-jsp:9.4.6.v20170531',
+//	'jetty-apache-jstl-v9'		:	'org.eclipse.jetty:apache-jstl:9.4.6.v20170531',
 	
 	'jetty-jsp-jdt'				:	'org.eclipse.jetty.toolchain:jetty-jsp-jdt:2.3.3',
 	
