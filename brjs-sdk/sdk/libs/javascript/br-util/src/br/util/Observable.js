@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
 /**
  * @module br/util/Observable
  */
 
-var Errors = require('br/Errors');
+var Errors = require("br/Errors");
 
 /**
  * Constructs a new <code>Observable</code>.
@@ -66,13 +66,16 @@ Observable.prototype.getCount = function() {
  *  <code>String</code>, <code>Number</code>, <code>Boolean</code> or <code>Function</code>.
  */
 Observable.prototype.addObserver = function(observer) {
-	if (!(observer instanceof Object) ||
+	if (
+		!(observer instanceof Object) ||
 		(observer instanceof String ||
-		observer instanceof Number ||
-		observer instanceof Boolean ||
-		observer instanceof Function)) {
-
-		throw new Errors.InvalidParametersError('An observer must be an object');
+			observer instanceof Number ||
+			observer instanceof Boolean ||
+			observer instanceof Function)
+	) {
+		throw new Errors.InvalidParametersError(
+			"An observer must be an object"
+		);
 	}
 
 	this.m_pObservers.push(observer);
@@ -90,7 +93,7 @@ Observable.prototype.addObserver = function(observer) {
  *  <code>String</code>, <code>Number</code>, <code>Boolean</code> or <code>Function</code>.
  */
 Observable.prototype.addUniqueObserver = function(observer) {
-	var observerNotAdded = (this._getObserverIndex(observer) == -1);
+	var observerNotAdded = this._getObserverIndex(observer) == -1;
 
 	if (observerNotAdded) {
 		this.addObserver(observer);
@@ -147,7 +150,7 @@ Observable.prototype.removeAllObservers = function() {
 	this.m_pObservers = [];
 };
 
- /**
+/**
  * Gets a list of all the observers that have been registered with this <code>Observable</code>.
  *
  * @return {Array} A list of the observers that have been registered.
@@ -177,8 +180,10 @@ Observable.prototype.notifyObservers = function(methodName, parameters) {
 	var observersCopy = this.m_pObservers.slice();
 	for (var idx = 0, len = observersCopy.length; idx < len; idx++) {
 		var observer = observersCopy[idx];
-		if (typeof observer[methodName] !== 'function') {
-			throw new Errors.NotSupportedError("Observer does not implement '" + methodName + "'");
+		if (typeof observer[methodName] !== "function") {
+			throw new Errors.NotSupportedError(
+				"Observer does not implement '" + methodName + "'"
+			);
 		}
 
 		observer[methodName].apply(observer, parameters);
@@ -215,7 +220,11 @@ Observable.prototype.notify = function(methodName) {
  *
  * @see br.util.Observable#notifyObservers to notify without guarding against exceptions.
  */
-Observable.prototype.notifyObserversWithTryCatch = function(methodName, parameters, throwExceptions) {
+Observable.prototype.notifyObserversWithTryCatch = function(
+	methodName,
+	parameters,
+	throwExceptions
+) {
 	if (!parameters) {
 		parameters = [];
 	}
@@ -227,7 +236,9 @@ Observable.prototype.notifyObserversWithTryCatch = function(methodName, paramete
 		try {
 			observer[methodName].apply(observer, parameters);
 		} catch (e) {
-			failedNotifications.push(new Observable.FailedNotification(observer, methodName, e));
+			failedNotifications.push(
+				new Observable.FailedNotification(observer, methodName, e)
+			);
 		}
 	}
 
