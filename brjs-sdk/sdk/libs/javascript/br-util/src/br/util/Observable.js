@@ -69,7 +69,7 @@ Observable.prototype.addObserver = function(observer) {
 	if (
 		!(typeof observer === "object" && observer !== null) ||
 		(typeof observer === "string" ||
-			typeof observer === "number" ||
+			(typeof observer === "number" && !isNan(observer)) ||
 			typeof observer === "boolean" ||
 			typeof observer === "function")
 	) {
