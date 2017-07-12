@@ -67,11 +67,11 @@ Observable.prototype.getCount = function() {
  */
 Observable.prototype.addObserver = function(observer) {
 	if (
-		!(observer instanceof Object) ||
-		(observer instanceof String ||
-			observer instanceof Number ||
-			observer instanceof Boolean ||
-			observer instanceof Function)
+		!(typeof observer === "object" && observer !== null) ||
+		(typeof observer === "string" ||
+			typeof observer === "number" ||
+			typeof observer === "boolean" ||
+			typeof observer === "function")
 	) {
 		throw new Errors.InvalidParametersError(
 			"An observer must be an object"
