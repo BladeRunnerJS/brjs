@@ -139,11 +139,7 @@
 		assertException(function() { oThis.m_oObservable.addObserver(10); }, "InvalidParametersError");
 	};
 
-	ObservableTest.prototype.test_addNumericObserverFails = function()
-	{
-		var oThis = this;
-		assertException(function() { oThis.m_oObservable.addObserver(new Number(10)); }, "InvalidParametersError");
-	};
+
 
 	ObservableTest.prototype.test_addStringObserverFails = function()
 	{
@@ -151,11 +147,7 @@
 		assertException(function() { oThis.m_oObservable.addObserver("test"); }, "InvalidParametersError");
 	};
 
-	ObservableTest.prototype.test_addNewStringObserverFails = function()
-	{
-		var oThis = this;
-		assertException(function() { oThis.m_oObservable.addObserver(new String("test")); }, "InvalidParametersError");
-	};
+
 
 	ObservableTest.prototype.test_addFunctionObserverFails = function()
 	{
@@ -170,11 +162,7 @@
 		assertException(function() { oThis.m_oObservable.addObserver(false); }, "InvalidParametersError");
 	};
 
-	ObservableTest.prototype.test_addBooleanObserverFails = function()
-	{
-		var oThis = this;
-		assertException(function() { oThis.m_oObservable.addObserver(new Boolean(false)); }, "InvalidParametersError");
-	};
+
 
 	ObservableTest.prototype.test_addDuplicateObserverSucceeds = function()
 	{
@@ -213,22 +201,10 @@
 		assertException(function() { oThis.m_oObservable.addUniqueObserver(10); }, "InvalidParametersError");
 	};
 
-	ObservableTest.prototype.test_addNumericUniqueObserverFails = function()
-	{
-		var oThis = this;
-		assertException(function() { oThis.m_oObservable.addUniqueObserver(new Number(10)); }, "InvalidParametersError");
-	};
-
 	ObservableTest.prototype.test_addStringUniqueObserverFails = function()
 	{
 		var oThis = this;
 		assertException(function() { oThis.m_oObservable.addUniqueObserver("test"); }, "InvalidParametersError");
-	};
-
-	ObservableTest.prototype.test_addNewStringUniqueObserverFails = function()
-	{
-		var oThis = this;
-		assertException(function() { oThis.m_oObservable.addUniqueObserver(new String("test")); }, "InvalidParametersError");
 	};
 
 	ObservableTest.prototype.test_addFunctionUniqueObserverFails = function()
@@ -242,12 +218,6 @@
 	{
 		var oThis = this;
 		assertException(function() { oThis.m_oObservable.addUniqueObserver(false); }, "InvalidParametersError");
-	};
-
-	ObservableTest.prototype.test_addBooleanUniqueObserverFails = function()
-	{
-		var oThis = this;
-		assertException(function() { oThis.m_oObservable.addUniqueObserver(new Boolean(false)); }, "InvalidParametersError");
 	};
 
 	ObservableTest.prototype.test_addDuplicateUniqueObserverFails = function()
