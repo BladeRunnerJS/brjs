@@ -79,7 +79,7 @@ else if (document.implementation.hasFeature('KeyboardEvent', '3.0')) {
 else if (document.createEventObject) {
   KeyboardEvent = IE8KeyboardEvent;
 }
-else if (navigator.userAgent == 'PhantomJS') {
+else if (navigator.userAgent.indexOf('PhantomJS') !== -1) {
   // seems to support DL3 keyboard events even though it doesn't claim to
   KeyboardEvent = DL3KeyboardEvent;
 }
