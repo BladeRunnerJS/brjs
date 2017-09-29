@@ -371,7 +371,9 @@ Translator.prototype._getTranslationForKeyOrUndefined = function(token) {
 	var message = I18nStore.getTranslation(token);
 
 	if (typeof message === 'undefined') {
-		log.warn(Translator.MESSAGES.UNTRANSLATED_TOKEN_LOG_MSG, token, I18nStore.locale);
+		if (!window.suppressI18nWarnings){
+			log.warn(Translator.MESSAGES.UNTRANSLATED_TOKEN_LOG_MSG, token, I18nStore.locale);
+		}
 		if (!require('service!br.app-meta-service').isDev()) {
 			message = I18nStore.getDefaultTranslation(token);
 		}
