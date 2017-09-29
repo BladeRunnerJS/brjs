@@ -4,11 +4,11 @@
 * @module br/i18n/Translator
 */
 
-var Errors = require('br/Errors');
-var LocalisedNumber = require('./LocalisedNumber');
-var fell = require('fell');
-var log = fell.getLogger('br.i18n.Translator');
-var I18nStore = require('./I18nStore');
+var Errors = require("br/Errors");
+var LocalisedNumber = require("./LocalisedNumber");
+var fell = require("fell");
+var log = fell.getLogger("br.i18n.Translator");
+var I18nStore = require("./I18nStore");
 // LocalisedDate and LocalisedTime use br/i18n which depends on this class,
 // so they have to be required where they are used or there would be a circular
 // dependency.
@@ -16,7 +16,6 @@ var I18nStore = require('./I18nStore');
 var regExp = /\@\{(.*?)\}/m;
 var TEST_DATE_FORMAT_SHORT = "d-m-Y";
 var TEST_DATE_FORMAT_LONG = "D, d M, Y, h:i:s A";
-
 
 /**
 * @class
@@ -33,20 +32,23 @@ var TEST_DATE_FORMAT_LONG = "D, d M, Y, h:i:s A";
 * For example <code>require("br/i18n").i18n("some.i18n.key")</code>.</p>
 */
 function Translator(messageDefinitions, useLocale) {
-	var defaultLocale = Object.keys(require('service!br.app-meta-service').getLocales())[0];
+  var defaultLocale = Object.keys(
+    require("service!br.app-meta-service").getLocales()
+  )[0];
 
-	/** @private */
-	this.localizationPrefs = {};
+  /** @private */
+  this.localizationPrefs = {};
 
-	I18nStore.initialize(messageDefinitions, useLocale || 'en', defaultLocale);
+  I18nStore.initialize(messageDefinitions, useLocale || "en", defaultLocale);
 }
 
 Translator.MESSAGES = {
-	UNTRANSLATED_TOKEN_LOG_MSG: 'A translation has not been provided for the i18n key "{0}" in the "{1}" locale'
+  UNTRANSLATED_TOKEN_LOG_MSG:
+    'A translation has not been provided for the i18n key "{0}" in the "{1}" locale'
 };
 
 Translator.prototype.setLocale = function(locale) {
-	I18nStore.locale = locale;
+  I18nStore.locale = locale;
 };
 
 /**
@@ -67,18 +69,18 @@ Translator.prototype.setLocale = function(locale) {
 *         messages.
 */
 Translator.prototype.translate = function(text, type) {
-	var message;
-	var match = regExp.exec(text);
-	type = type || "xml";
-	while (match) {
-		message = this._getTranslationForKey(match[1]);
-		if (type == "xml") {
-			message = this.convertXMLEntityChars(message);
-		}
-		text = text.replace(match[0], message);
-		match = regExp.exec(text);
-	}
-	return text;
+  var message;
+  var match = regExp.exec(text);
+  type = type || "xml";
+  while (match) {
+    message = this._getTranslationForKey(match[1]);
+    if (type == "xml") {
+      message = this.convertXMLEntityChars(message);
+    }
+    text = text.replace(match[0], message);
+    match = regExp.exec(text);
+  }
+  return text;
 };
 
 /**
@@ -92,7 +94,7 @@ Translator.prototype.translate = function(text, type) {
  *         translation set, otherwise <code>false</code>.
  */
 Translator.prototype.tokenExists = function(token) {
-	return I18nStore.tokenExists(token);
+  return I18nStore.tokenExists(token);
 };
 
 /**
@@ -104,13 +106,13 @@ Translator.prototype.tokenExists = function(token) {
 *         corresponding XML entity reference.
 */
 Translator.prototype.convertXMLEntityChars = function(text) {
-	text = text.replace(/&/g, "&amp;");
-	text = text.replace(/</g, "&lt;");
-	text = text.replace(/>/g, "&gt;");
-	text = text.replace(/\"/g, "&quot;");
-	text = text.replace(/\'/g, "&apos;");
+  text = text.replace(/&/g, "&amp;");
+  text = text.replace(/</g, "&lt;");
+  text = text.replace(/>/g, "&gt;");
+  text = text.replace(/\"/g, "&quot;");
+  text = text.replace(/\'/g, "&apos;");
 
-	return text;
+  return text;
 };
 
 /**
@@ -133,15 +135,15 @@ Translator.prototype.convertXMLEntityChars = function(text) {
  *         arguments.
  */
 Translator.prototype.getMessage = function(token, templateArgs) {
-	templateArgs = templateArgs || {};
-	var text = this._getTranslationForKeyOrUndefined(token);
-	if (text != null) {
-		for (var key in templateArgs) {
-			var regEx = new RegExp("\\[" + key + "\\]", "g");
-			text = text.replace(regEx, templateArgs[key]);
-		}
-	}
-	return formatTranslationResponseIfTranslationWasUnknown(token, text);
+  templateArgs = templateArgs || {};
+  var text = this._getTranslationForKeyOrUndefined(token);
+  if (text != null) {
+    for (var key in templateArgs) {
+      var regEx = new RegExp("\\[" + key + "\\]", "g");
+      text = text.replace(regEx, templateArgs[key]);
+    }
+  }
+  return formatTranslationResponseIfTranslationWasUnknown(token, text);
 };
 
 /**
@@ -155,7 +157,10 @@ Translator.prototype.getMessage = function(token, templateArgs) {
  * @returns The date format string, e.g. YYYY-mm-dd.
  */
 Translator.prototype.getDateFormat = function() {
-	return this.localizationPrefs.dateFormat || this._getTranslationForKey("br.i18n.date.format");
+  return (
+    this.localizationPrefs.dateFormat ||
+    this._getTranslationForKey("br.i18n.date.format")
+  );
 };
 
 /**
@@ -169,7 +174,10 @@ Translator.prototype.getDateFormat = function() {
  * @returns The date format string, e.g. d/m/Y.
  */
 Translator.prototype.getShortDateFormat = function() {
-	return this.localizationPrefs.shortDateFormat || this._getTranslationForKey("br.i18n.date.format.typed");
+  return (
+    this.localizationPrefs.shortDateFormat ||
+    this._getTranslationForKey("br.i18n.date.format.typed")
+  );
 };
 
 /**
@@ -205,12 +213,12 @@ Translator.prototype.getShortDateFormat = function() {
  * @returns The formatted date string.
  */
 Translator.prototype.formatDate = function(date, dateFormat) {
-	if (!dateFormat) {
-		dateFormat = this.getDateFormat();
-	}
+  if (!dateFormat) {
+    dateFormat = this.getDateFormat();
+  }
 
-	var localisedDate = new (require('./LocalisedDate'))(date);
-	return localisedDate.format(dateFormat);
+  var localisedDate = new (require("./LocalisedDate"))(date);
+  return localisedDate.format(dateFormat);
 };
 
 /**
@@ -234,8 +242,8 @@ Translator.prototype.formatDate = function(date, dateFormat) {
  * @type String
  */
 Translator.prototype.formatTime = function(time) {
-	var localisedTime = new (require('./LocalisedTime'))(time);
-	return localisedTime.format();
+  var localisedTime = new (require("./LocalisedTime"))(time);
+  return localisedTime.format();
 };
 
 /**
@@ -259,15 +267,17 @@ Translator.prototype.formatTime = function(time) {
  * @type String
  */
 Translator.prototype.formatNumber = function(number, thousandsSeparator) {
-	var localisedNumber = new LocalisedNumber(number);
-	if (!thousandsSeparator) {
-		thousandsSeparator = this.localizationPrefs.thousandsSeparator ||
-				this._getTranslationForKey("br.i18n.number.grouping.separator");
-	}
-	var decimalRadixCharacter = this.localizationPrefs.decimalRadixCharacter ||
-			this._getTranslationForKey("br.i18n.decimal.radix.character");
+  var localisedNumber = new LocalisedNumber(number);
+  if (!thousandsSeparator) {
+    thousandsSeparator =
+      this.localizationPrefs.thousandsSeparator ||
+      this._getTranslationForKey("br.i18n.number.grouping.separator");
+  }
+  var decimalRadixCharacter =
+    this.localizationPrefs.decimalRadixCharacter ||
+    this._getTranslationForKey("br.i18n.decimal.radix.character");
 
-	return localisedNumber.format(thousandsSeparator, decimalRadixCharacter);
+  return localisedNumber.format(thousandsSeparator, decimalRadixCharacter);
 };
 
 /**
@@ -288,30 +298,35 @@ Translator.prototype.formatNumber = function(number, thousandsSeparator) {
  * @returns {Number} A parsed number or null if the value can't be parsed.
  */
 Translator.prototype.parseNumber = function(number, thousandsSeparator) {
-	if (!thousandsSeparator) {
-		thousandsSeparator = this.localizationPrefs.thousandsSeparator ||
-				this._getTranslationForKey('br.i18n.number.grouping.separator');
-	}
+  if (!thousandsSeparator) {
+    thousandsSeparator =
+      this.localizationPrefs.thousandsSeparator ||
+      this._getTranslationForKey("br.i18n.number.grouping.separator");
+  }
 
-	var decimalPlaceCharacter = this.localizationPrefs.decimalRadixCharacter ||
-			this._getTranslationForKey("br.i18n.decimal.radix.character");
+  var decimalPlaceCharacter =
+    this.localizationPrefs.decimalRadixCharacter ||
+    this._getTranslationForKey("br.i18n.decimal.radix.character");
 
-	thousandsSeparator = thousandsSeparator.replace(/[-[\]*+?.,\\^$|#\s]/g, "\\$&");
-	var regEx = new RegExp(thousandsSeparator, "g");
-	number = number.replace(regEx, '');
-	number = number.replace(decimalPlaceCharacter, '.');
+  thousandsSeparator = thousandsSeparator.replace(
+    /[-[\]*+?.,\\^$|#\s]/g,
+    "\\$&"
+  );
+  var regEx = new RegExp(thousandsSeparator, "g");
+  number = number.replace(regEx, "");
+  number = number.replace(decimalPlaceCharacter, ".");
 
-	var numberLength = number.length;
+  var numberLength = number.length;
 
-	if (number[numberLength - 1] === decimalPlaceCharacter) {
-		number = number.substr(0, numberLength - 1);
-	}
+  if (number[numberLength - 1] === decimalPlaceCharacter) {
+    number = number.substr(0, numberLength - 1);
+  }
 
-	if (isNaN(number)) {
-		return null;
-	}
+  if (isNaN(number)) {
+    return null;
+  }
 
-	return Number(number);
+  return Number(number);
 };
 
 /**
@@ -323,25 +338,27 @@ Translator.prototype.parseNumber = function(number, thousandsSeparator) {
  * @type String
  */
 Translator.prototype.stripNonNumericCharacters = function(value) {
-	var length = value.length;
-	var joiner = [];
-	var isDecimalPointFound = false;
-	var decimalPlaceCharacter = this.localizationPrefs.decimalRadixCharacter || this._getTranslationForKey("br.i18n.decimal.radix.character");
+  var length = value.length;
+  var joiner = [];
+  var isDecimalPointFound = false;
+  var decimalPlaceCharacter =
+    this.localizationPrefs.decimalRadixCharacter ||
+    this._getTranslationForKey("br.i18n.decimal.radix.character");
 
-	for (var i = 0; i < length; i++) {
-		var thisChar = value.charAt(i);
-		if (isNaN(thisChar) === true) {
-			if (thisChar === decimalPlaceCharacter) {
-				if (isDecimalPointFound == false) {
-					joiner.push(".");
-					isDecimalPointFound = true;
-				}
-			}
-		} else {
-			joiner.push(thisChar);
-		}
-	}
-	return joiner.join("");
+  for (var i = 0; i < length; i++) {
+    var thisChar = value.charAt(i);
+    if (isNaN(thisChar) === true) {
+      if (thisChar === decimalPlaceCharacter) {
+        if (isDecimalPointFound == false) {
+          joiner.push(".");
+          isDecimalPointFound = true;
+        }
+      }
+    } else {
+      joiner.push(thisChar);
+    }
+  }
+  return joiner.join("");
 };
 
 /**
@@ -350,38 +367,48 @@ Translator.prototype.stripNonNumericCharacters = function(value) {
  * @param {Map} localizationPrefs A map containing the localization preferences.
  */
 Translator.prototype.setLocalizationPreferences = function(localizationPrefs) {
-	this.localizationPrefs = localizationPrefs;
+  this.localizationPrefs = localizationPrefs;
 };
 
 /** @private */
 Translator.prototype._getTranslationForKey = function(token) {
-	var text = this._getTranslationForKeyOrUndefined(token);
-	return formatTranslationResponseIfTranslationWasUnknown(token, text);
+  var text = this._getTranslationForKeyOrUndefined(token);
+  return formatTranslationResponseIfTranslationWasUnknown(token, text);
 };
 
 /** @private */
 Translator.prototype._getTranslationForKeyOrUndefined = function(token) {
-	if (!this.tokenExists(token)) {
-		var logConsole = (window.jstestdriver) ? jstestdriver.console : window.console;
-		if (logConsole && logConsole.warn && !window.suppressI18nWarnings) {
-		    logConsole.warn('Unable to find a replacement for the i18n key "' + token + '"');
-		}
-	}
+  if (!this.tokenExists(token)) {
+    var logConsole = window.jstestdriver
+      ? jstestdriver.console
+      : window.console;
+    if (logConsole && logConsole.warn && !window.suppressI18nWarnings) {
+      logConsole.warn(
+        'Unable to find a replacement for the i18n key "' + token + '"'
+      );
+    }
+  }
 
-	var message = I18nStore.getTranslation(token);
+  var message = I18nStore.getTranslation(token);
 
-	if (typeof message === 'undefined') {
-		log.warn(Translator.MESSAGES.UNTRANSLATED_TOKEN_LOG_MSG, token, I18nStore.locale);
-		if (!require('service!br.app-meta-service').isDev()) {
-			message = I18nStore.getDefaultTranslation(token);
-		}
-	}
+  if (typeof message === "undefined") {
+    if (!window.suppressI18nWarnings) {
+      log.warn(
+        Translator.MESSAGES.UNTRANSLATED_TOKEN_LOG_MSG,
+        token,
+        I18nStore.locale
+      );
+    }
+    if (!require("service!br.app-meta-service").isDev()) {
+      message = I18nStore.getDefaultTranslation(token);
+    }
+  }
 
-	return message;
+  return message;
 };
 
 function formatTranslationResponseIfTranslationWasUnknown(key, text) {
-	return (text) ? text : "??? " + key + " ???";
+  return text ? text : "??? " + key + " ???";
 }
 
 module.exports = Translator;
