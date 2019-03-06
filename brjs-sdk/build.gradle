@@ -24,6 +24,8 @@ dependencies {
 	system project(":plugins:brjs-check-i18n-plugin")
 	system dependency('jetty-jsp-v9')
 	system dependency('jetty-jsp-jdt')
+	system dependency('selenium-java')
+	system dependency('guava')
 
 	application project(path: ':brjs-servlet')
 
@@ -31,14 +33,13 @@ dependencies {
 
 	systemAppServlets (project(path: ':system-app-servlets'))
 
-	testRunner dependency('selenium-java')
 	testRunner dependency('JsTestDriver')
 	testRunner dependency('validation-api')
 	testRunner dependency('sjsxp')
 
 	testRunner project(path: ':brjs-logger')
 	testRunner project(path: ':brjs-logger-binding')
-	
+
 	browsers_dep dependency('chrome')
 	browsers_dep dependency('firefox')
 	browsers_dep dependency('phantomjs')
