@@ -14,6 +14,7 @@ dependencies {
 	compile project(":brjs-logger")
 	compile dependency('commons-io')
 	compile dependency('commons-lang3')
+	compile dependency('commons-codec')
 	compile dependency('slf4j-api')
 	compile dependency('gson')
 	compile dependency('yamlbeans')

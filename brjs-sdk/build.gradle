@@ -22,9 +22,10 @@ dependencies {
 	system project(path: ':brjs-logger')
 	system project(":brjs-logger-binding")
 	system project(":plugins:brjs-check-i18n-plugin")
-	system dependency('selenium-java')
 	system dependency('jetty-jsp-v9')
 	system dependency('jetty-jsp-jdt')
+	system dependency('selenium-java')
+	system dependency('guava')
 
 	application project(path: ':brjs-servlet')
 
@@ -38,7 +39,7 @@ dependencies {
 
 	testRunner project(path: ':brjs-logger')
 	testRunner project(path: ':brjs-logger-binding')
-	
+
 	browsers_dep dependency('chrome')
 	browsers_dep dependency('firefox')
 	browsers_dep dependency('phantomjs')
